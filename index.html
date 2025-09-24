@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="styles.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Pacifico&display=swap" rel="stylesheet">
+  <!-- playful, handwritten vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
-  <header class="topbar">
+<body class="paper">
+  <header class="topbar poster-frame">
     <div class="brand">
       <span class="leaf">🌿</span>
-      <span class="brand-text">Cannabis Cultivation & Colligative Properties</span>
+      <span class="brand-text">Stoney Science: Osmotic Pressure</span>
     </div>
     <div class="controls">
       <button id="prevBtn" title="Prev (←)">◀</button>
@@ -32,51 +33,46 @@
 
     <!-- Slide 0: Title -->
     <section class="slide current" data-duration="30">
-      <div class="inner">
-        <h1>Osmotic Pressure in Cannabis Cultivation</h1>
-        <p class="subtitle">A 3–5 minute mini-brief with chill vibes</p>
+      <div class="inner poster-frame">
+        <h1>Stoney Science: pH &amp; Osmotic Pressure</h1>
+        <p class="subtitle">The chill mini-brief for cannabis cultivation</p>
         <figure class="hero">
           <img src="assets/figure2.jpg" alt="Indoor hydroponic grow tent">
           <figcaption>Hydroponic grow tent (title visual)</figcaption>
         </figure>
       </div>
       <aside class="notes">
-        Hook: “Today we’re zooming into osmotic pressure—the colligative property that
-        literally moves water into roots.” Outline: (1) What OP is, (2) Why it matters in hydro,
-        (3) How to manage it for yield/quality, (4) Quick takeaways. Mention that full
-        references are at the end.
+        Hook + outline. Vibe check: match the infographic style and keep it friendly.
       </aside>
     </section>
 
     <!-- Slide 1: Colligative/Osmosis basics -->
     <section class="slide" data-duration="50">
-      <div class="inner">
+      <div class="inner poster-frame">
         <h2>What is Osmotic Pressure?</h2>
         <ul class="bullets">
-          <li>A <em>colligative</em> property—depends on number of dissolved particles</li>
+          <li>It’s a <em>colligative</em> property — depends on number of dissolved particles</li>
           <li>Pressure needed to stop water flow across a semipermeable membrane</li>
-          <li>Plant cells rely on it for water balance & turgor</li>
+          <li>Plant cells use it to keep that juicy turgor 😎</li>
         </ul>
         <figure>
           <img src="assets/figure1.jpg" alt="Phase diagram for colligative properties">
-          <figcaption>Colligative properties (freezing depression / boiling elevation)</figcaption>
+          <figcaption>Colligative properties (freezing ↓ / boiling ↑)</figcaption>
         </figure>
       </div>
       <aside class="notes">
-        Define colligative: magnitude depends on particle count, not identity.
-        Name the four: vapor pressure lowering, boiling point elevation, freezing point depression,
-        osmotic pressure. Connect to roots + turgor.
+        Define the four colligative props and connect to root water movement.
       </aside>
     </section>
 
     <!-- Slide 2: Hydroponic context -->
     <section class="slide" data-duration="45">
-      <div class="inner">
+      <div class="inner poster-frame">
         <h2>Hydro Systems: Why OP Matters</h2>
         <ul class="bullets">
-          <li>Precise nutrient ions ↑ solution OP → influences water uptake</li>
-          <li>Too low → underfeeding; too high → osmotic stress / burn</li>
-          <li>Goal: keep OP in the “just right” lane for growth & consistency</li>
+          <li>Ions in solution ↑ OP → changes root water uptake</li>
+          <li>Too low → underfed; too high → osmotic stress / tip burn</li>
+          <li>Sweet spot = consistent growth &amp; quality</li>
         </ul>
         <figure>
           <img src="assets/figure3.jpg" alt="Greenhouse cannabis cultivation">
@@ -84,87 +80,82 @@
         </figure>
       </div>
       <aside class="notes">
-        Hydro reliance and ion contributions to OP; yield impacts when OP is off.
+        Mention yield & cannabinoid profile consequences when OP drifts.
       </aside>
     </section>
 
     <!-- Slide 3: Root mechanisms -->
     <section class="slide" data-duration="45">
-      <div class="inner two-up">
+      <div class="inner poster-frame two-up">
         <div>
           <h2>Root-Level Osmosis</h2>
-          <img src="assets/figure4.jpg" alt="Root hair osmosis diagram">
+          <img src="assets/figure4.jpg" alt="Root hair osmosis diagram" class="sticker">
         </div>
         <div>
           <h2>Water Transport</h2>
-          <img src="assets/figure5.jpg" alt="Root transport & osmoregulation">
+          <img src="assets/figure5.jpg" alt="Root transport & osmoregulation" class="sticker">
         </div>
       </div>
       <aside class="notes">
-        Roots sense local osmotic changes and adjust osmotic potential; aquaporins,
-        ionic balances, and transport pathways help maintain turgor and nutrient flow
-        under varying solution strengths.
+        Aquaporins, osmolytes, and membrane transport = how roots ride OP waves.
       </aside>
     </section>
 
     <!-- Slide 4: Grower controls -->
     <section class="slide" data-duration="50">
-      <div class="inner two-up">
+      <div class="inner poster-frame two-up">
         <div>
           <h2>Manage the Solution</h2>
           <ul class="bullets">
-            <li>Track EC by stage:
-              <strong>0.8–1.3</strong> seedling • <strong>1.2–1.6</strong> veg • <strong>1.6–2.0</strong> flower</li>
-            <li>Balance mass flow (transpiration losses ≈ dosing)</li>
-            <li>Closed loops + dosing control = stable OP</li>
+            <li><span class="tag">EC</span> by stage: <strong>0.8–1.3</strong> seedling • <strong>1.2–1.6</strong> veg • <strong>1.6–2.0</strong> flower</li>
+            <li><span class="tag">Mass balance</span> Replace transpired water with proper nutrient strength</li>
+            <li><span class="tag">Closed loop</span> + dosing = stable OP</li>
           </ul>
-          <img src="assets/figure6.jpg" alt="Ebb-and-flow hydroponic system">
+          <img src="assets/figure6.jpg" alt="Ebb-and-flow hydroponic system" class="sticker">
         </div>
         <div>
           <h2>NFT Example</h2>
-          <img src="assets/figure7.jpg" alt="Nutrient Film Technique diagram">
+          <img src="assets/figure7.jpg" alt="Nutrient Film Technique diagram" class="sticker">
         </div>
       </div>
       <aside class="notes">
-        EC as a practical proxy for OP; show typical ranges and stress the idea that OP
-        control improves water/nutrient-use efficiency and consistency.
+        EC as practical proxy, dosing automation, avoid salt creep.
       </aside>
     </section>
 
     <!-- Slide 5: Outcomes -->
     <section class="slide" data-duration="35">
-      <div class="inner">
-        <h2>Yield & Quality</h2>
+      <div class="inner poster-frame">
+        <h2>Yield &amp; Quality</h2>
         <ul class="bullets">
-          <li>Better OP control → higher biomass & more reliable cannabinoids</li>
-          <li>Chemical profile (THC/terpenes) can shift with salinity/OP</li>
-          <li>Next up: AI/mass-balance dosing and strain-specific tuning</li>
+          <li>Better OP control → healthier plants &amp; reliable cannabinoids</li>
+          <li>OP &amp; salinity can nudge THC/terpenes</li>
+          <li>Future: AI + strain-specific recipes</li>
         </ul>
       </div>
       <aside class="notes">
-        Findings on yield boosts and composition changes under optimized
-        fertigation/recirculation regimes; note strain-specific optimization trends.
+        Cite improvements with recirc/fertigation and composition tuning.
       </aside>
     </section>
 
     <!-- Slide 6: Wrap -->
     <section class="slide" data-duration="25">
-      <div class="inner">
+      <div class="inner poster-frame">
         <h2>Takeaways</h2>
         <ul class="bullets">
-          <li>Osmotic pressure is the root’s water gatekeeper</li>
-          <li>Right ion strength = healthy uptake, growth, and quality</li>
-          <li>Monitor EC, manage mass balance, prefer closed loops</li>
+          <li>OP = the root’s water gatekeeper</li>
+          <li>Dial ion strength, not just pH</li>
+          <li>Monitor EC • Manage mass flow • Prefer closed loops</li>
         </ul>
       </div>
       <aside class="notes">
-        Quick recap; invite questions about dialing EC by cultivar and environment.
+        Thank you! Questions welcome.
       </aside>
     </section>
 
     <!-- Slide 7: References -->
     <section class="slide" data-duration="40">
-      <div class="inner refs">
+      <div class="inner poster-frame refs">
         <h2>References (APA 7)</h2>
         <div class="ref-list">
           <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15. https://doi.org/10.1186/s13007-024-01265-5</p>
@@ -192,11 +183,11 @@
           <p>Zhao, C., Zayed, O., Yu, Z., Jiang, W., Zhu, P., Hsu, C. C., … Assmann, S. M. (2022). Root osmotic sensing from local perception to systemic responses. <em>Plant Physiology</em>. (PMC10442022).</p>
           <p>Zurita-Silva, A., Fuentes, F., Zamora, P., Jacobsen, S. E., &amp; Schwember, A. R. (2017). Durum wheat roots adapt to salinity by remodeling nitrogen metabolites and sucrose. <em>Frontiers in Plant Science</em>. (PMC5220018).</p>
           <hr>
-          <p><strong>Image credits.</strong> Colligative phase diagram; indoor grow tent; greenhouse; root hair osmosis; root transport pathways; ebb-and-flow diagram; Nutrient Film Technique diagram. (All figures from provided course materials / sources listed above.)</p>
+          <p><strong>Image credits.</strong> Colligative phase diagram; indoor grow tent; greenhouse; root hair osmosis; root transport pathways; ebb-and-flow diagram; Nutrient Film Technique diagram. (Figures from your provided course materials.)</p>
         </div>
       </div>
       <aside class="notes">
-        Invite questions; acknowledge image sources; remind that slides + code will be posted.
+        Close with acknowledgements and where to find the repo.
       </aside>
     </section>
 
