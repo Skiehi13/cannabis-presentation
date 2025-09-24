@@ -1,0 +1,70 @@
+:root{
+  --bg1:#1b4332; --bg2:#3a0ca3; --ink:#f5f7ff; --accent:#b5e48c; --muted:#dbe4ff;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  font-family:'Inter',system-ui,Arial,sans-serif;
+  background: radial-gradient(1200px 600px at 10% 0%, #2d6a4f, transparent 70%),
+              linear-gradient(135deg, var(--bg1), var(--bg2));
+  overflow:hidden;
+}
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.6rem 1rem; background:rgba(0,0,0,.25); backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(255,255,255,.1)
+}
+.brand{display:flex;gap:.6rem;align-items:center}
+.brand .leaf{font-size:1.3rem}
+.brand-text{font-weight:700; letter-spacing:.2px}
+.controls{display:flex; gap:.5rem; align-items:center}
+.controls button{
+  background:rgba(255,255,255,.1); color:var(--ink); border:1px solid rgba(255,255,255,.2);
+  padding:.35rem .6rem; border-radius:.6rem; cursor:pointer
+}
+.controls button:hover{background:rgba(255,255,255,.18)}
+#clock{font-variant-numeric:tabular-nums; padding-left:.4rem; opacity:.9}
+
+.progress-wrap{height:6px; background:rgba(255,255,255,.08)}
+.progress-bar{height:6px; width:0%; background:linear-gradient(90deg,#b5e48c,#80ffdb); transition:width .25s ease}
+
+#deck{height:calc(100vh - 64px); padding:1rem; outline:none}
+.slide{display:none; height:100%; overflow:auto; padding:1.5rem}
+.slide.current{display:block; animation:fade .6s ease}
+.inner{max-width:1000px; margin:0 auto}
+.two-up{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
+
+h1,h2{font-family:'Pacifico', cursive; line-height:1.1; margin:.2rem 0 .6rem}
+h1{font-size:2.3rem}
+h2{font-size:1.7rem}
+.subtitle{opacity:.9; margin-bottom:1rem}
+
+.bullets{list-style:none; padding:0; margin:0 0 1rem 0}
+.bullets li{margin:.35rem 0; padding-left:.2rem}
+.bullets li::marker{content:""}
+.bullets li::before{content:"🍁 "; margin-right:.35rem}
+
+img{max-width:100%; height:auto; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.hero img{max-height:50vh; object-fit:cover}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:.4rem}
+
+.refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem}
+.refs p{font-size:.95rem; line-height:1.35; margin:.45rem 0}
+hr{border:none; border-top:1px solid rgba(255,255,255,.25); margin:.7rem 0}
+
+.help{
+  position:fixed; left:0; right:0; bottom:0;
+  padding:.3rem .8rem; background:rgba(0,0,0,.22); font-size:.85rem; text-align:center;
+  border-top:1px solid rgba(255,255,255,.1)
+}
+
+/* speaker notes bubble */
+.notes{
+  display:none; position:fixed; right:12px; bottom:48px; max-width:420px;
+  background:rgba(0,0,0,.75); border:1px solid rgba(255,255,255,.2); padding:.8rem 1rem; border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4); backdrop-filter:blur(4px); z-index:10
+}
+.notes.show{display:block}
+
+@keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}

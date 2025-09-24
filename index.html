@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Osmotic Pressure in Cannabis Cultivation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="leaf">🌿</span>
+      <span class="brand-text">Cannabis Cultivation & Colligative Properties</span>
+    </div>
+    <div class="controls">
+      <button id="prevBtn" title="Prev (←)">◀</button>
+      <button id="nextBtn" title="Next (→)">▶</button>
+      <button id="notesToggle" title="Toggle Notes (N)">Notes</button>
+      <button id="timerToggle" title="Start/Pause Timer (T)">Timer</button>
+      <button id="fsToggle" title="Fullscreen (F)">Fullscreen</button>
+      <span id="clock" aria-live="polite">00:00</span>
+    </div>
+  </header>
+
+  <div class="progress-wrap" aria-hidden="true">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+
+  <main id="deck" tabindex="0" aria-live="polite">
+
+    <!-- Slide 0: Title -->
+    <section class="slide current" data-duration="30">
+      <div class="inner">
+        <h1>Osmotic Pressure in Cannabis Cultivation</h1>
+        <p class="subtitle">A 3–5 minute mini-brief with chill vibes</p>
+        <figure class="hero">
+          <img src="assets/figure2.jpg" alt="Indoor hydroponic grow tent">
+          <figcaption>Hydroponic grow tent (title visual)</figcaption>
+        </figure>
+      </div>
+      <aside class="notes">
+        Hook: “Today we’re zooming into osmotic pressure—the colligative property that
+        literally moves water into roots.” Outline: (1) What OP is, (2) Why it matters in hydro,
+        (3) How to manage it for yield/quality, (4) Quick takeaways. Mention that full
+        references are at the end.
+      </aside>
+    </section>
+
+    <!-- Slide 1: Colligative/Osmosis basics -->
+    <section class="slide" data-duration="50">
+      <div class="inner">
+        <h2>What is Osmotic Pressure?</h2>
+        <ul class="bullets">
+          <li>A <em>colligative</em> property—depends on number of dissolved particles</li>
+          <li>Pressure needed to stop water flow across a semipermeable membrane</li>
+          <li>Plant cells rely on it for water balance & turgor</li>
+        </ul>
+        <figure>
+          <img src="assets/figure1.jpg" alt="Phase diagram for colligative properties">
+          <figcaption>Colligative properties (freezing depression / boiling elevation)</figcaption>
+        </figure>
+      </div>
+      <aside class="notes">
+        Define colligative: magnitude depends on particle count, not identity.
+        Name the four: vapor pressure lowering, boiling point elevation, freezing point depression,
+        osmotic pressure. Connect to roots + turgor.
+      </aside>
+    </section>
+
+    <!-- Slide 2: Hydroponic context -->
+    <section class="slide" data-duration="45">
+      <div class="inner">
+        <h2>Hydro Systems: Why OP Matters</h2>
+        <ul class="bullets">
+          <li>Precise nutrient ions ↑ solution OP → influences water uptake</li>
+          <li>Too low → underfeeding; too high → osmotic stress / burn</li>
+          <li>Goal: keep OP in the “just right” lane for growth & consistency</li>
+        </ul>
+        <figure>
+          <img src="assets/figure3.jpg" alt="Greenhouse cannabis cultivation">
+          <figcaption>Controlled environments tighten OP control</figcaption>
+        </figure>
+      </div>
+      <aside class="notes">
+        Hydro reliance and ion contributions to OP; yield impacts when OP is off.
+      </aside>
+    </section>
+
+    <!-- Slide 3: Root mechanisms -->
+    <section class="slide" data-duration="45">
+      <div class="inner two-up">
+        <div>
+          <h2>Root-Level Osmosis</h2>
+          <img src="assets/figure4.jpg" alt="Root hair osmosis diagram">
+        </div>
+        <div>
+          <h2>Water Transport</h2>
+          <img src="assets/figure5.jpg" alt="Root transport & osmoregulation">
+        </div>
+      </div>
+      <aside class="notes">
+        Roots sense local osmotic changes and adjust osmotic potential; aquaporins,
+        ionic balances, and transport pathways help maintain turgor and nutrient flow
+        under varying solution strengths.
+      </aside>
+    </section>
+
+    <!-- Slide 4: Grower controls -->
+    <section class="slide" data-duration="50">
+      <div class="inner two-up">
+        <div>
+          <h2>Manage the Solution</h2>
+          <ul class="bullets">
+            <li>Track EC by stage:
+              <strong>0.8–1.3</strong> seedling • <strong>1.2–1.6</strong> veg • <strong>1.6–2.0</strong> flower</li>
+            <li>Balance mass flow (transpiration losses ≈ dosing)</li>
+            <li>Closed loops + dosing control = stable OP</li>
+          </ul>
+          <img src="assets/figure6.jpg" alt="Ebb-and-flow hydroponic system">
+        </div>
+        <div>
+          <h2>NFT Example</h2>
+          <img src="assets/figure7.jpg" alt="Nutrient Film Technique diagram">
+        </div>
+      </div>
+      <aside class="notes">
+        EC as a practical proxy for OP; show typical ranges and stress the idea that OP
+        control improves water/nutrient-use efficiency and consistency.
+      </aside>
+    </section>
+
+    <!-- Slide 5: Outcomes -->
+    <section class="slide" data-duration="35">
+      <div class="inner">
+        <h2>Yield & Quality</h2>
+        <ul class="bullets">
+          <li>Better OP control → higher biomass & more reliable cannabinoids</li>
+          <li>Chemical profile (THC/terpenes) can shift with salinity/OP</li>
+          <li>Next up: AI/mass-balance dosing and strain-specific tuning</li>
+        </ul>
+      </div>
+      <aside class="notes">
+        Findings on yield boosts and composition changes under optimized
+        fertigation/recirculation regimes; note strain-specific optimization trends.
+      </aside>
+    </section>
+
+    <!-- Slide 6: Wrap -->
+    <section class="slide" data-duration="25">
+      <div class="inner">
+        <h2>Takeaways</h2>
+        <ul class="bullets">
+          <li>Osmotic pressure is the root’s water gatekeeper</li>
+          <li>Right ion strength = healthy uptake, growth, and quality</li>
+          <li>Monitor EC, manage mass balance, prefer closed loops</li>
+        </ul>
+      </div>
+      <aside class="notes">
+        Quick recap; invite questions about dialing EC by cultivar and environment.
+      </aside>
+    </section>
+
+    <!-- Slide 7: References -->
+    <section class="slide" data-duration="40">
+      <div class="inner refs">
+        <h2>References (APA 7)</h2>
+        <div class="ref-list">
+          <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15. https://doi.org/10.1186/s13007-024-01265-5</p>
+          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638. https://doi.org/10.1371/journal.pone.0302638</p>
+          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537. https://doi.org/10.1104/pp.114.246124</p>
+          <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
+          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality: An evaluation of the effects of ecological water regeneration in greenhouse cultivation. <em>Global Scientific Research in Biological and Pharmaceutical Sciences, 4</em>(2), 156–170.</p>
+          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). Rooted in therapeutics: Comprehensive analyses of <em>Cannabis sativa</em> root extracts reveals potent antioxidant, anti-inflammatory, and bactericidal properties. <em>Frontiers in Pharmacology, 15</em>, 1465136. https://doi.org/10.3389/fphar.2024.1465136</p>
+          <p>Grossmann, G., Guo, W. J., Ehrhardt, D. W., Frommer, W. B., Sit, R. V., Quake, S. R., &amp; Meier, M. (2015). The divining root: Moisture-driven responses of roots at the micro- and macro-scale. <em>PNAS</em>. (PMC4817643).</p>
+          <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system: Interrelationships between cannabinoid compositions, morphological, physiological and phenological traits. <em>Plants, 12</em>(3), 493. https://doi.org/10.3390/plants12030493</p>
+          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). Machine learning approach to remove ion interference effect in agricultural nutrient solutions. <em>arXiv</em>:1907.10794.</p>
+          <p>Mattoteia, D., Bagatta, M., Piazza, S., Torrini, L., Brighenti, V., Benedetti, S., … Benvenuto, M. (2021). Yield, characterization, and possible exploitation of <em>Cannabis sativa</em> L. roots grown under aeroponics cultivation. <em>Molecules, 26</em>(16), 4889. https://doi.org/10.3390/molecules26164889</p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204. https://doi.org/10.3390/su141610204</p>
+          <p>Nosalewicz, A., Siecińska, J., Kondracka, A., &amp; Nosalewicz, M. (2024). Not so hidden anymore: Advances and challenges in understanding root growth under water deficits. <em>Frontiers in Plant Science</em>. (PMC11062450).</p>
+          <p>Park, K. S., Bechu, A., Chambon, C., Grard, T., Guilbert, A., Bouchereau, A., &amp; Larher, F. R. (2021). Nutrient dosing framework for an emission-free urban hydroponic production. <em>Frontiers in Plant Science, 12</em>, 768717. https://doi.org/10.3389/fpls.2021.768717</p>
+          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>. https://doi.org/10.48550/arXiv.1203.0206</p>
+          <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in soft plant roots. <em>Soft Matter, 21</em>(3), 485–497. https://doi.org/10.1039/D4SM01083C</p>
+          <p>Potin, S., Garry, G., Bourdeaux, E., Leborgne, C., Lequart-Pillon, M., Benvenuto, J., … Sahuc, P. (2024). Effect of augmented nutrient composition and fertigation system on biomass yield and cannabinoid content of medicinal cannabis (<em>Cannabis sativa</em> L.) cultivation. <em>Frontiers in Plant Science, 15</em>, 1322824. https://doi.org/10.3389/fpls.2024.1322824</p>
+          <p>Pourakbar, L., Khosh-Khui, M., &amp; Shahsavari, N. (2023). Current perspective on nutrient solution management strategies to improve the nutrient and water use efficiency in hydroponic systems. <em>Canadian Journal of Plant Science, 103</em>(6), 671–684. https://doi.org/10.1139/cjps-2023-0034</p>
+          <p>Rahmawati, Y., Ridlo, Z. R., &amp; Wardani, S. (2023). The learners’ conceptual understanding: Literature review of vapor-pressure lowering and boiling-point elevation. <em>EduLearn, 17</em>(4), 543–551.</p>
+          <p>Saloner, A., &amp; Bernstein, N. (2024). Environmental and agronomic factors affecting the chemical composition and biological activity of cannabis extracts (Editorial). <em>Frontiers in Plant Science</em>. (PMC11061510).</p>
+          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source matters: High NH₄/NO₃ ratio reduces cannabinoids, terpenoids, and yield in medical cannabis. <em>Frontiers in Plant Science</em>. (PMC9198551).</p>
+          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2024). Effect of augmented nutrient composition and fertigation system on biomass yield and cannabinoid content of medicinal cannabis (<em>Cannabis sativa</em> L.) cultivation. <em>Frontiers in Plant Science</em>. (PMC10847352).</p>
+          <p>Singh, H., Jassal, R. K., Kang, J. S., Sandhu, S. S., Kang, H., &amp; Grewal, K. (2022). Silicon can improve nutrient uptake and performance of black cumin under drought and salinity stresses. <em>Communications in Soil Science and Plant Analysis, 53</em>(16), 2089–2108. https://doi.org/10.1080/00103624.2022.2112590</p>
+          <p>Zhao, C., Zayed, O., Yu, Z., Jiang, W., Zhu, P., Hsu, C. C., … Assmann, S. M. (2022). Root osmotic sensing from local perception to systemic responses. <em>Plant Physiology</em>. (PMC10442022).</p>
+          <p>Zurita-Silva, A., Fuentes, F., Zamora, P., Jacobsen, S. E., &amp; Schwember, A. R. (2017). Durum wheat roots adapt to salinity by remodeling nitrogen metabolites and sucrose. <em>Frontiers in Plant Science</em>. (PMC5220018).</p>
+          <hr>
+          <p><strong>Image credits.</strong> Colligative phase diagram; indoor grow tent; greenhouse; root hair osmosis; root transport pathways; ebb-and-flow diagram; Nutrient Film Technique diagram. (All figures from provided course materials / sources listed above.)</p>
+        </div>
+      </div>
+      <aside class="notes">
+        Invite questions; acknowledge image sources; remind that slides + code will be posted.
+      </aside>
+    </section>
+
+  </main>
+
+  <footer class="help">
+    <p>Keys: ← / → to navigate • N = notes • T = timer • F = fullscreen • Space = next</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
