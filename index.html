@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Osmotic Pressure in Cannabis Cultivation</title>
+  <title>Stoney Science — Chemistry for Cannabis Cultivators</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="styles.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,15 +13,15 @@
   <header class="topbar poster-frame">
     <div class="brand">
       <span class="leaf">🌿</span>
-      <span class="brand-text">Stoney Science: Osmotic Pressure</span>
+      <span class="brand-text">Stoney Science</span>
     </div>
     <div class="controls">
       <button id="prevBtn" title="Prev (←)">◀</button>
       <button id="nextBtn" title="Next (→)">▶</button>
-      <button id="notesToggle" title="Toggle Notes (N)">Notes</button>
-      <button id="timerToggle" title="Start/Pause Timer (T)">Timer</button>
+      <button id="glossaryBtn" title="Glossary (G)">Glossary</button>
       <button id="fsToggle" title="Fullscreen (F)">Fullscreen</button>
       <span id="clock" aria-live="polite">00:00</span>
+      <button id="timerToggle" title="Start/Pause Timer (T)">Timer</button>
     </div>
   </header>
 
@@ -32,170 +32,168 @@
   <main id="deck" tabindex="0" aria-live="polite">
 
     <!-- Slide 0: Title -->
-    <section class="slide current" data-duration="30">
-      <div class="inner poster-frame">
-        <h1>Stoney Science: pH &amp; Osmotic Pressure</h1>
-        <p class="subtitle">The chill mini-brief for cannabis cultivation</p>
+    <section class="slide current" data-duration="25">
+      <div class="inner poster-frame titlecard">
+        <h1>Stoney Science</h1>
+        <h2 class="subtitle">Chemistry for Cannabis Cultivators</h2>
+        <p class="byline">Amanda Mallette, Chem103-02-Chem II</p>
+
         <figure class="hero">
           <img src="assets/figure2.jpg" alt="Indoor hydroponic grow tent">
-          <figcaption>Hydroponic grow tent (title visual)</figcaption>
         </figure>
       </div>
-      <aside class="notes">
-        Hook + outline. Vibe check: match the infographic style and keep it friendly.
-      </aside>
     </section>
 
-    <!-- Slide 1: Colligative/Osmosis basics -->
-    <section class="slide" data-duration="50">
+    <!-- Slide 1: Colligative basics -->
+    <section class="slide" data-duration="55">
       <div class="inner poster-frame">
-        <h2>What is Osmotic Pressure?</h2>
+        <h2>Colligative Properties: what & why growers care</h2>
         <ul class="bullets">
-          <li>It’s a <em>colligative</em> property — depends on number of dissolved particles</li>
-          <li>Pressure needed to stop water flow across a semipermeable membrane</li>
-          <li>Plant cells use it to keep that juicy turgor 😎</li>
+          <li><button class="def" data-term="colligative">Colligative properties</button> depend on the <em>number</em> of dissolved particles, not what they are.</li>
+          <li>They change water’s behavior: <button class="def" data-term="vpl">vapor pressure lowering</button>, <button class="def" data-term="bpe">boiling point ↑</button>, <button class="def" data-term="fpd">freezing point ↓</button>, and <button class="def" data-term="op">osmotic pressure</button>.</li>
+          <li>In grows, the big one is <strong>osmotic pressure</strong> → controls water movement into roots.</li>
         </ul>
         <figure>
           <img src="assets/figure1.jpg" alt="Phase diagram for colligative properties">
-          <figcaption>Colligative properties (freezing ↓ / boiling ↑)</figcaption>
+          <figcaption>How dissolved stuff nudges water’s boiling/freezing points</figcaption>
         </figure>
+        <details class="more"><summary>More context</summary>
+          Think “crowding water with ions.” More dissolved nutrients = stronger pull that resists pure water moving in.
+        </details>
       </div>
-      <aside class="notes">
-        Define the four colligative props and connect to root water movement.
-      </aside>
     </section>
 
-    <!-- Slide 2: Hydroponic context -->
-    <section class="slide" data-duration="45">
-      <div class="inner poster-frame">
-        <h2>Hydro Systems: Why OP Matters</h2>
-        <ul class="bullets">
-          <li>Ions in solution ↑ OP → changes root water uptake</li>
-          <li>Too low → underfed; too high → osmotic stress / tip burn</li>
-          <li>Sweet spot = consistent growth &amp; quality</li>
-        </ul>
-        <figure>
-          <img src="assets/figure3.jpg" alt="Greenhouse cannabis cultivation">
-          <figcaption>Controlled environments tighten OP control</figcaption>
-        </figure>
-      </div>
-      <aside class="notes">
-        Mention yield & cannabinoid profile consequences when OP drifts.
-      </aside>
-    </section>
-
-    <!-- Slide 3: Root mechanisms -->
-    <section class="slide" data-duration="45">
+    <!-- Slide 2: Osmosis in roots -->
+    <section class="slide" data-duration="55">
       <div class="inner poster-frame two-up">
         <div>
-          <h2>Root-Level Osmosis</h2>
-          <img src="assets/figure4.jpg" alt="Root hair osmosis diagram" class="sticker">
+          <h2>Osmosis = water follows particles</h2>
+          <p>Roots are tiny water gates. If outside solution is too strong, water leaves cells; too weak, cells overfill. The sweet spot keeps leaves perky and nutrients flowing.</p>
+          <figure>
+            <img src="assets/figure4.jpg" alt="Root hair osmosis diagram" class="sticker">
+            <figcaption>Water moving across the root hair membrane</figcaption>
+          </figure>
         </div>
         <div>
-          <h2>Water Transport</h2>
+          <h2>How plants cope</h2>
+          <ul class="bullets">
+            <li>Open/close water channels (<em>aqua­porins</em>)</li>
+            <li>Stash small molecules (osmolytes) to hold water</li>
+            <li>Route flow through cell walls vs. through cells</li>
+          </ul>
           <img src="assets/figure5.jpg" alt="Root transport & osmoregulation" class="sticker">
         </div>
       </div>
-      <aside class="notes">
-        Aquaporins, osmolytes, and membrane transport = how roots ride OP waves.
-      </aside>
     </section>
 
-    <!-- Slide 4: Grower controls -->
-    <section class="slide" data-duration="50">
-      <div class="inner poster-frame two-up">
-        <div>
-          <h2>Manage the Solution</h2>
-          <ul class="bullets">
-            <li><span class="tag">EC</span> by stage: <strong>0.8–1.3</strong> seedling • <strong>1.2–1.6</strong> veg • <strong>1.6–2.0</strong> flower</li>
-            <li><span class="tag">Mass balance</span> Replace transpired water with proper nutrient strength</li>
-            <li><span class="tag">Closed loop</span> + dosing = stable OP</li>
-          </ul>
+    <!-- Slide 3: Hydro systems & OP -->
+    <section class="slide" data-duration="55">
+      <div class="inner poster-frame">
+        <h2>Hydroponics = managing solution strength</h2>
+        <ul class="bullets">
+          <li><strong>EC</strong> (electrical conductivity) tracks ion strength → a handy proxy for osmotic pressure.</li>
+          <li>Too low EC → underfeeding, slow growth. Too high → osmotic stress, tip burn.</li>
+          <li>Typical ranges: <span class="tag">0.8–1.3</span> seedling • <span class="tag">1.2–1.6</span> veg • <span class="tag">1.6–2.0</span> flower.</li>
+        </ul>
+        <div class="two-up">
           <img src="assets/figure6.jpg" alt="Ebb-and-flow hydroponic system" class="sticker">
-        </div>
-        <div>
-          <h2>NFT Example</h2>
           <img src="assets/figure7.jpg" alt="Nutrient Film Technique diagram" class="sticker">
         </div>
+        <details class="more"><summary>Grower tip</summary>
+          Keep a log: EC in, EC out, and plant look. If runoff EC climbs all week, salts are concentrating—time to dilute or refresh.
+        </details>
       </div>
-      <aside class="notes">
-        EC as practical proxy, dosing automation, avoid salt creep.
-      </aside>
     </section>
 
-    <!-- Slide 5: Outcomes -->
-    <section class="slide" data-duration="35">
+    <!-- Slide 4: Try it — OP sweet spot -->
+    <section class="slide" data-duration="55">
       <div class="inner poster-frame">
-        <h2>Yield &amp; Quality</h2>
-        <ul class="bullets">
-          <li>Better OP control → healthier plants &amp; reliable cannabinoids</li>
-          <li>OP &amp; salinity can nudge THC/terpenes</li>
-          <li>Future: AI + strain-specific recipes</li>
-        </ul>
+        <h2>Find the sweet spot</h2>
+        <p>Drag the slider to try different solution strengths. Watch how the plant “feels.”</p>
+
+        <div class="sim">
+          <label for="ecRange">Solution strength (EC mS/cm)</label>
+          <input id="ecRange" type="range" min="0.4" max="2.6" step="0.1" value="1.5" />
+          <div class="readout">
+            <span>EC: <strong id="ecVal">1.5</strong></span>
+            <span>Tonicity: <strong id="tonicity">isotonic</strong></span>
+            <span>Uptake: <strong id="uptake">balanced</strong></span>
+          </div>
+          <div class="plantbar">
+            <div id="waterArrow" class="arrow"></div>
+          </div>
+        </div>
+
+        <p class="sim-note">Rule of thumb: seedlings like it gentler; flowering plants tolerate (and need) a bit stronger.</p>
       </div>
-      <aside class="notes">
-        Cite improvements with recirc/fertigation and composition tuning.
-      </aside>
     </section>
 
-    <!-- Slide 6: Wrap -->
-    <section class="slide" data-duration="25">
+    <!-- Slide 5: Quick check -->
+    <section class="slide" data-duration="55">
       <div class="inner poster-frame">
-        <h2>Takeaways</h2>
-        <ul class="bullets">
-          <li>OP = the root’s water gatekeeper</li>
-          <li>Dial ion strength, not just pH</li>
-          <li>Monitor EC • Manage mass flow • Prefer closed loops</li>
-        </ul>
-      </div>
-      <aside class="notes">
-        Thank you! Questions welcome.
-      </aside>
-    </section>
+        <h2>Quick check</h2>
 
-    <!-- Slide 7: References -->
-    <section class="slide" data-duration="40">
-      <div class="inner poster-frame refs">
-        <h2>References (APA 7)</h2>
-        <div class="ref-list">
-          <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15. https://doi.org/10.1186/s13007-024-01265-5</p>
-          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638. https://doi.org/10.1371/journal.pone.0302638</p>
-          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537. https://doi.org/10.1104/pp.114.246124</p>
-          <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
-          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality: An evaluation of the effects of ecological water regeneration in greenhouse cultivation. <em>Global Scientific Research in Biological and Pharmaceutical Sciences, 4</em>(2), 156–170.</p>
-          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). Rooted in therapeutics: Comprehensive analyses of <em>Cannabis sativa</em> root extracts reveals potent antioxidant, anti-inflammatory, and bactericidal properties. <em>Frontiers in Pharmacology, 15</em>, 1465136. https://doi.org/10.3389/fphar.2024.1465136</p>
-          <p>Grossmann, G., Guo, W. J., Ehrhardt, D. W., Frommer, W. B., Sit, R. V., Quake, S. R., &amp; Meier, M. (2015). The divining root: Moisture-driven responses of roots at the micro- and macro-scale. <em>PNAS</em>. (PMC4817643).</p>
-          <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system: Interrelationships between cannabinoid compositions, morphological, physiological and phenological traits. <em>Plants, 12</em>(3), 493. https://doi.org/10.3390/plants12030493</p>
-          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). Machine learning approach to remove ion interference effect in agricultural nutrient solutions. <em>arXiv</em>:1907.10794.</p>
-          <p>Mattoteia, D., Bagatta, M., Piazza, S., Torrini, L., Brighenti, V., Benedetti, S., … Benvenuto, M. (2021). Yield, characterization, and possible exploitation of <em>Cannabis sativa</em> L. roots grown under aeroponics cultivation. <em>Molecules, 26</em>(16), 4889. https://doi.org/10.3390/molecules26164889</p>
-          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204. https://doi.org/10.3390/su141610204</p>
-          <p>Nosalewicz, A., Siecińska, J., Kondracka, A., &amp; Nosalewicz, M. (2024). Not so hidden anymore: Advances and challenges in understanding root growth under water deficits. <em>Frontiers in Plant Science</em>. (PMC11062450).</p>
-          <p>Park, K. S., Bechu, A., Chambon, C., Grard, T., Guilbert, A., Bouchereau, A., &amp; Larher, F. R. (2021). Nutrient dosing framework for an emission-free urban hydroponic production. <em>Frontiers in Plant Science, 12</em>, 768717. https://doi.org/10.3389/fpls.2021.768717</p>
-          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>. https://doi.org/10.48550/arXiv.1203.0206</p>
-          <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in soft plant roots. <em>Soft Matter, 21</em>(3), 485–497. https://doi.org/10.1039/D4SM01083C</p>
-          <p>Potin, S., Garry, G., Bourdeaux, E., Leborgne, C., Lequart-Pillon, M., Benvenuto, J., … Sahuc, P. (2024). Effect of augmented nutrient composition and fertigation system on biomass yield and cannabinoid content of medicinal cannabis (<em>Cannabis sativa</em> L.) cultivation. <em>Frontiers in Plant Science, 15</em>, 1322824. https://doi.org/10.3389/fpls.2024.1322824</p>
-          <p>Pourakbar, L., Khosh-Khui, M., &amp; Shahsavari, N. (2023). Current perspective on nutrient solution management strategies to improve the nutrient and water use efficiency in hydroponic systems. <em>Canadian Journal of Plant Science, 103</em>(6), 671–684. https://doi.org/10.1139/cjps-2023-0034</p>
-          <p>Rahmawati, Y., Ridlo, Z. R., &amp; Wardani, S. (2023). The learners’ conceptual understanding: Literature review of vapor-pressure lowering and boiling-point elevation. <em>EduLearn, 17</em>(4), 543–551.</p>
-          <p>Saloner, A., &amp; Bernstein, N. (2024). Environmental and agronomic factors affecting the chemical composition and biological activity of cannabis extracts (Editorial). <em>Frontiers in Plant Science</em>. (PMC11061510).</p>
-          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source matters: High NH₄/NO₃ ratio reduces cannabinoids, terpenoids, and yield in medical cannabis. <em>Frontiers in Plant Science</em>. (PMC9198551).</p>
-          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2024). Effect of augmented nutrient composition and fertigation system on biomass yield and cannabinoid content of medicinal cannabis (<em>Cannabis sativa</em> L.) cultivation. <em>Frontiers in Plant Science</em>. (PMC10847352).</p>
-          <p>Singh, H., Jassal, R. K., Kang, J. S., Sandhu, S. S., Kang, H., &amp; Grewal, K. (2022). Silicon can improve nutrient uptake and performance of black cumin under drought and salinity stresses. <em>Communications in Soil Science and Plant Analysis, 53</em>(16), 2089–2108. https://doi.org/10.1080/00103624.2022.2112590</p>
-          <p>Zhao, C., Zayed, O., Yu, Z., Jiang, W., Zhu, P., Hsu, C. C., … Assmann, S. M. (2022). Root osmotic sensing from local perception to systemic responses. <em>Plant Physiology</em>. (PMC10442022).</p>
-          <p>Zurita-Silva, A., Fuentes, F., Zamora, P., Jacobsen, S. E., &amp; Schwember, A. R. (2017). Durum wheat roots adapt to salinity by remodeling nitrogen metabolites and sucrose. <em>Frontiers in Plant Science</em>. (PMC5220018).</p>
-          <hr>
-          <p><strong>Image credits.</strong> Colligative phase diagram; indoor grow tent; greenhouse; root hair osmosis; root transport pathways; ebb-and-flow diagram; Nutrient Film Technique diagram. (Figures from your provided course materials.)</p>
+        <div class="quiz" data-correct="b">
+          <p class="q">Q1. Colligative properties mostly depend on…</p>
+          <button class="opt" data-key="a">A. The chemical identity of the solute</button>
+          <button class="opt" data-key="b">B. The number of dissolved particles</button>
+          <button class="opt" data-key="c">C. The color of the solution</button>
+          <p class="feedback" aria-live="polite"></p>
+        </div>
+
+        <div class="quiz" data-correct="c">
+          <p class="q">Q2. If your nutrient solution is too concentrated, roots most likely…</p>
+          <button class="opt" data-key="a">A. Take up more water</button>
+          <button class="opt" data-key="b">B. Are unaffected</button>
+          <button class="opt" data-key="c">C. Lose water (osmotic stress)</button>
+          <p class="feedback" aria-live="polite"></p>
         </div>
       </div>
-      <aside class="notes">
-        Close with acknowledgements and where to find the repo.
-      </aside>
+    </section>
+
+    <!-- Slide 6: References -->
+    <section class="slide" data-duration="40">
+      <div class="inner poster-frame refs">
+        <h2>References</h2>
+        <div class="ref-list">
+          <!-- keep your full list; shortened here only for readability -->
+          <p>Azoulay-Shemer, T., et al. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods</em>. https://doi.org/10.1186/s13007-024-01265-5</p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability</em>, 14(16), 10204.</p>
+          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>.</p>
+          <p>…(insert the rest of your list here)…</p>
+        </div>
+      </div>
     </section>
 
   </main>
 
   <footer class="help">
-    <p>Keys: ← / → to navigate • N = notes • T = timer • F = fullscreen • Space = next</p>
+    <p>Keys: ← / → to navigate • G = glossary • T = timer • F = fullscreen • Space = next</p>
   </footer>
+
+  <!-- Glossary modal -->
+  <dialog id="glossary">
+    <div class="glossary-wrap poster-frame">
+      <button class="close" aria-label="Close glossary">✖</button>
+      <h3>Glossary</h3>
+      <dl>
+        <dt id="g-colligative">Colligative properties</dt>
+        <dd>Water behavior changes caused simply by how many particles are dissolved (not which kind).</dd>
+
+        <dt id="g-op">Osmotic pressure</dt>
+        <dd>The “counter-pressure” needed to stop water from moving across a membrane toward a stronger solution.</dd>
+
+        <dt id="g-vpl">Vapor pressure lowering</dt>
+        <dd>Dissolved particles make it harder for water to evaporate.</dd>
+
+        <dt id="g-bpe">Boiling point elevation</dt>
+        <dd>More particles → water boils at a slightly higher temperature.</dd>
+
+        <dt id="g-fpd">Freezing point depression</dt>
+        <dd>More particles → water freezes at a slightly lower temperature.</dd>
+      </dl>
+    </div>
+  </dialog>
 
   <script src="main.js"></script>
 </body>
