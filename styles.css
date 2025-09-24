@@ -88,8 +88,7 @@ body.paper::before{
 }
 .subtitle{font-family:'Kalam', cursive; font-weight:700; font-size:1.7rem; margin:.2rem 0 .2rem}
 .byline{opacity:.95; margin:0 0 .6rem 0; font-weight:700}
-.byline .name{display:block}
-.byline .course{display:block}
+.byline .name,.byline .course{display:block}
 .hero img{max-height:65vh; width:100%; object-fit:cover; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
 
 /* layout & media */
@@ -126,10 +125,37 @@ h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* plantbar (kept for compatibility if you use it elsewhere) */
-.plantbar{position:relative; height:16px; border:3px solid var(--ink); border-radius:999px; background:#fff; display:none}
-.arrow{position:absolute; top:-8px; left:50%; width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:14px solid #2f7d32; transition:left .2s ease}
-
 /* Quiz */
 .quiz{margin:1rem auto; max-width:800px; padding:.6rem; border:3px dashed rgba(0,0,0,.3); border-radius:14px; background:#fff}
-.quiz .opt{display:block; width:100%; text-align:left; margin:.25rem 0
+.quiz .opt{display:block; width:100%; text-align:left; margin:.25rem 0; padding:.55rem .7rem; border:2px solid var(--ink); border-radius:12px; background:#fff; cursor:pointer; font-weight:600}
+.quiz .opt.correct{background:#b6e36e}
+.quiz .opt.wrong{background:#ffd166}
+.quiz .feedback{min-height:1.2em; margin-top:.35rem; font-weight:700}
+
+/* Refs */
+.refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
+.refs p{font-size:.95rem; line-height:1.35; margin:.45rem 0}
+
+/* footer */
+.help{
+  position:fixed; left:0; right:0; bottom:0;
+  padding:.35rem .8rem; background:#fff; font-size:.9rem; text-align:center;
+  border-top:3px solid var(--ink)
+}
+
+/* “Happy Growing!” */
+.happy{
+  margin-top:.6rem; font-family:'Kalam', cursive; font-weight:700;
+  text-align:center; letter-spacing:.8px;
+}
+
+/* Glossary modal */
+.modal[hidden]{display:none}
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; z-index:50}
+.glossary-wrap{max-width:720px; margin:auto; padding:1rem; background:var(--frame); position:relative}
+.glossary-wrap .close{position:absolute; top:.6rem; right:.6rem; border:3px solid var(--ink); background:#fff; border-radius:10px; padding:.2rem .45rem; cursor:pointer}
+.glossary-wrap h3{font-family:'Fredoka'; margin:.3rem 0 .6rem; text-align:center}
+.glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
+.glossary-wrap dt{font-family:'Kalam'; font-weight:700}
+
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
