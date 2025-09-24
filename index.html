@@ -15,12 +15,12 @@
       <span class="brand-text">Stoney Science</span>
     </div>
     <div class="controls">
-      <button id="prevBtn" title="Prev (←)">◀</button>
-      <button id="nextBtn" title="Next (→)">▶</button>
-      <button id="glossaryBtn" class="icon" title="Glossary (G)" aria-haspopup="dialog" aria-controls="glossary" aria-expanded="false">📖</button>
-      <button id="fsToggle" title="Fullscreen (F)">Fullscreen</button>
+      <button id="prevBtn" type="button" title="Prev (←)">◀</button>
+      <button id="nextBtn" type="button" title="Next (→)">▶</button>
+      <button id="glossaryBtn" type="button" class="icon" title="Glossary (G)" aria-haspopup="dialog" aria-controls="glossary" aria-expanded="false">📖</button>
+      <button id="fsToggle" type="button" title="Fullscreen (F)">Fullscreen</button>
       <span id="clock" aria-live="polite">00:00</span>
-      <button id="timerToggle" title="Start/Pause Timer (T)">Timer</button>
+      <button id="timerToggle" type="button" title="Start/Pause Timer (T)">Timer</button>
     </div>
   </header>
 
@@ -50,7 +50,7 @@
     <!-- Slide 1: Colligative basics -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
-        <h2>Colligative Properties: what & why growers care</h2>
+        <h2>Colligative Properties: what &amp; why growers care</h2>
         <ul class="bullets">
           <li><button class="def" data-term="colligative">Colligative properties</button> depend on the <em>number</em> of dissolved particles, not which chemical they are.</li>
           <li>They tweak water behavior: <button class="def" data-term="vpl">vapor pressure lowering</button>, <button class="def" data-term="bpe">boiling ↑</button>, <button class="def" data-term="fpd">freezing ↓</button>, and <button class="def" data-term="op">osmotic pressure</button>.</li>
@@ -85,7 +85,7 @@
             <li>Stash small molecules (osmolytes) to hold water</li>
             <li>Route flow through cell walls vs. through cells</li>
           </ul>
-          <img src="assets/figure5.jpg" alt="Root transport & osmoregulation" class="sticker">
+          <img src="assets/figure5.jpg" alt="Root transport &amp; osmoregulation" class="sticker">
         </div>
         <div class="happy">HAPPY GROWING!</div>
       </div>
@@ -213,7 +213,7 @@
     <p>Keys: ← / → to navigate • 📖 = glossary (or press G) • T = timer • F = fullscreen • Space = next</p>
   </footer>
 
-  <!-- Glossary modal (custom, not <dialog> for perfect GH Pages support) -->
+  <!-- Glossary modal -->
   <div id="glossary" class="modal" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle" hidden>
     <div class="glossary-wrap poster-frame">
       <button class="close" aria-label="Close glossary">✖</button>
