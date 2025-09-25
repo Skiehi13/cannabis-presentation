@@ -25,7 +25,7 @@ body.paper::before{
 }
 .dark.paper::before{opacity:.15}
 
-/* Progress bar (hidden while presenting) */
+/* Progress bar (hidden in presenting mode) */
 .progress-wrap{height:8px; background:var(--barbg); margin:10px; border-radius:8px; border:1px solid var(--barstroke)}
 .progress-bar{height:8px; width:0%; background:var(--rainbow); border-radius:8px; transition:width .25s ease}
 .presenting .progress-wrap{ display:none !important; }
@@ -34,7 +34,7 @@ body.paper::before{
 #deck{ height:calc(100svh - 50px); padding:14px; outline:none; position:relative; }
 .presenting #deck{ position:fixed; inset:0; padding:0; height:100svh; width:100vw; overflow:hidden; }
 
-/* Only one slide shows */
+/* Only one slide shows (no stacking) */
 .slide{
   display:none;
   position:absolute; inset:0;
@@ -52,7 +52,7 @@ body.paper::before{
 @keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
 @keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
 
-/* Scaled inner content */
+/* Scaled inner content to fit screen */
 .inner{ max-width:1100px; margin:0 auto; padding:1.1rem; transform-origin:center top; }
 .center{text-align:center}
 
@@ -101,15 +101,6 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Quiz (if you add more later) */
-.quiz{margin:1rem auto; max-width:800px; padding:.6rem; border:3px dashed rgba(0,0,0,.3); border-radius:14px; background:#fff}
-.dark .quiz{ background:#0e1418; border-color: rgba(255,255,255,.25); }
-.quiz .opt{display:block; width:100%; text-align:left; margin:.25rem 0; padding:.55rem .7rem; border:2px solid var(--ink); border-radius:12px; background:#fff; cursor:pointer; font-weight:600}
-.dark .quiz .opt{ background:#12171c; }
-.quiz .opt.correct{background:#b6e36e}
-.quiz .opt.wrong{background:#ffd166}
-.quiz .feedback{min-height:1.2em; margin-top:.35rem; font-weight:700}
-
 /* References */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
 .presenting .refs .ref-list{ max-height:none; overflow:visible; }
@@ -140,14 +131,13 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
   border-radius:18px;
   overflow:hidden;
   background:#fff;
-  touch-action: none; /* enable custom pan/zoom */
+  touch-action: none;
   box-shadow: 0 6px 0 rgba(0,0,0,.12);
 }
 .dark .pz-viewport{ background:#0e1418; }
 .pz-img{
   user-select:none; -webkit-user-drag:none; pointer-events:none;
   transform-origin: 0 0;
-  /* transform set by JS */
 }
 .pz-controls{
   position:absolute; right:.6rem; bottom:.6rem; display:flex; gap:.35rem;
@@ -159,7 +149,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
 .dark .pz-btn{ background:#12171c; }
 .pz-hint{ font-size:.9rem; color:var(--muted); margin:.35rem 0 0; }
 
-/* Handout */
+/* Handout mode */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
 .handout .slide{ display:block !important; position:static; height:auto; overflow:visible; margin: 0 auto 24px; }
@@ -177,9 +167,3 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
   .inner.poster-frame{ box-shadow:none; }
   .inner.poster-frame::after{ display:none; }
 }
-
-/* Animations for slide enter */
-.slide.current.anim-right{ animation: enterRight .45s cubic-bezier(.22,1,.36,1) both; }
-.slide.current.anim-left{  animation: enterLeft  .45s cubic-bezier(.22,1,.36,1) both; }
-@keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
-@keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
