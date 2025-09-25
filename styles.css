@@ -64,23 +64,18 @@ body.paper::before{
 }
 .dark .inner.poster-frame::after{ border-color: rgba(255,255,255,.18); }
 
-/* Showcase slide (use more of the screen) */
+/* Showcase slide (pH image uses more of the screen) */
 .showcase .inner.poster-frame{ padding:4px; border-width:5px; }
-.showcase .inner.poster-frame::after{ display:none; } /* reclaim space */
+.showcase .inner.poster-frame::after{ display:none; }
 .fullbleed-max{ margin:0; height:100%; }
 .fullbleed-max img{
-  display:block;
-  width:100%;
-  height:min(92vh, 98svh); /* BIG: almost the whole screen */
-  object-fit:contain;       /* center automatically */
-  border-radius:18px;
-  background:#fff;
-  border:0;                 /* no extra border; frame provides it */
-  box-shadow:none;
+  display:block; width:100%;
+  height:min(92vh, 98svh);
+  object-fit:contain; border-radius:18px; background:#fff; border:0; box-shadow:none;
 }
 .dark .fullbleed-max img{ background:#0e1418; }
 
-/* Title */
+/* Title & text */
 .titlecard h1{ font-family:'Fredoka'; font-weight:700; font-size:2.8rem; line-height:1.05; margin:.2rem 0 .25rem; }
 .titlecard h1::after{ content:""; display:block; height:10px; margin-top:6px; border-radius:6px; background:var(--rainbow); }
 .subtitle{font-family:'Kalam'; font-weight:700; font-size:1.7rem; margin:.2rem 0 .2rem}
@@ -89,7 +84,6 @@ body.paper::before{
 .hero img{max-height:65vh; width:100%; object-fit:cover; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
 .dark .hero img{ background:#0e1418; }
 
-/* Layout & media */
 .two-up{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
 img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
 .dark img{ background:#0e1418; }
@@ -98,6 +92,7 @@ figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
 
 /* Text lists */
 h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
+.minihead{font-family:'Kalam'; margin:.1rem 0 .3rem; font-size:1.3rem}
 .bullets{list-style:none; padding:0; margin:0 0 1rem 0; font-size:1.08rem}
 .bullets li{margin:.5rem 0; padding-left:1.5rem; position:relative}
 .bullets li::before{
@@ -109,13 +104,40 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .more{margin-top:.5rem}
 .more summary{cursor:pointer; font-weight:700}
 
-/* SIM */
+/* SIM (osmosis) */
 .sim{margin-top:.5rem}
 .sim label{display:block; font-weight:700; margin-bottom:.25rem}
 .sim input[type=range]{width:100%}
 .readout{display:flex; gap:1rem; justify-content:center; margin:.35rem 0 .6rem 0; font-weight:700}
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
+
+/* Reaction Coordinates diagram */
+.rc-controls{display:flex; gap:.75rem; justify-content:center; align-items:center; margin:.4rem 0 .6rem}
+.rc-controls label{font-weight:700}
+.rc-controls .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.dark .rc-controls .btn{background:#12171c}
+
+.rc-svg{width:100%; max-width:860px; height:auto; margin:.2rem auto; display:block}
+.axis{font-family:'Kalam'; font-size:16px; fill:var(--ink)}
+.label{font-family:'Kalam'; font-size:16px; fill:#333}
+.baseline{stroke:#999; stroke-width:3; stroke-dasharray:6 6}
+
+.curve{fill:none; stroke-width:6; filter: drop-shadow(0 2px 0 rgba(0,0,0,.12))}
+.curve.uncat{stroke:#7b61ff}
+.curve.cat{stroke:#2f7d32}
+.hidden{display:none}
+
+.ea-line{stroke:#222; stroke-width:3; stroke-dasharray:6 6}
+.ea-arrow{fill:#222}
+.ea-text{font-family:'Kalam'; font-size:20px; fill:#222}
+
+.dot{fill:#ff8a00; opacity:.9; animation: climb 2.2s linear infinite}
+@keyframes climb{
+  0%   { transform: translateX(0px) translateY(0px); }
+  50%  { transform: translateX(220px) translateY(-160px); }
+  100% { transform: translateX(480px) translateY(20px); }
+}
 
 /* References */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
