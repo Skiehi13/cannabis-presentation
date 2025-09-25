@@ -1,9 +1,26 @@
+/* ---------- THEME TOKENS ---------- */
 :root{
   --paper:#f6f1e4;
   --ink:#2a2a2a;
-  --rainbow: linear-gradient(90deg,#ff6b6b 0%,#ffb86b 18%,#ffd166 32%,#b6e36e 46%,#7bd0b2 60%,#76a9fa 76%,#b388ff 100%);
-  --accent:#2f7d32;
   --frame:#fffdf7;
+  --accent:#2f7d32;
+  --muted:#555;
+  --shadow:0 10px 0 rgba(0,0,0,.08);
+  --barbg:rgba(0,0,0,.08);
+  --barstroke:rgba(0,0,0,.15);
+  --rainbow: linear-gradient(90deg,#ff6b6b 0%,#ffb86b 18%,#ffd166 32%,#b6e36e 46%,#7bd0b2 60%,#76a9fa 76%,#b388ff 100%);
+}
+
+/* Dark theme overrides */
+.dark{
+  --paper:#0f1214;
+  --ink:#e9e9e9;
+  --frame:#12171c;
+  --accent:#7ed957;
+  --muted:#a9b0b6;
+  --shadow:0 10px 0 rgba(0,0,0,.35);
+  --barbg:rgba(255,255,255,.18);
+  --barstroke:rgba(255,255,255,.25);
 }
 
 *{box-sizing:border-box}
@@ -12,7 +29,9 @@ body.paper{
   margin:0; color:var(--ink);
   background: var(--paper);
   font-family:'Quicksand', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  overflow:hidden; /* no page scroll while presenting */
 }
+body.handout{ overflow:auto; } /* allow scrolling in handout mode */
 
 /* subtle paper noise */
 body.paper::before{
@@ -26,8 +45,9 @@ body.paper::before{
   mix-blend-mode:multiply;
   opacity:.5;
 }
+.dark.paper::before{opacity:.15}
 
-/* top bar */
+/* ---------- CHROME ---------- */
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
   padding:.6rem 1rem;
@@ -35,9 +55,15 @@ body.paper::before{
   border:4px solid var(--ink);
   border-radius:18px;
   margin:10px;
-  box-shadow: 0 6px 0 rgba(0,0,0,.1);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(2px);
 }
+.dark .topbar{ background:#0006; }
+.presenting .topbar,
+.presenting .help,
+.presenting .progress-wrap{ display:none !important; } /* hide chrome in presenting */
+.presenting #deck{ height:100vh; padding:0; } /* give slides full viewport */
+
 .brand{display:flex;gap:.6rem;align-items:center}
 .brand .leaf{font-size:1.4rem}
 .brand-text{font-family:'Fredoka', system-ui; font-weight:700; letter-spacing:.2px}
@@ -49,19 +75,29 @@ body.paper::before{
   padding:.35rem .6rem; border-radius:12px; cursor:pointer;
   font-weight:600; box-shadow: 0 3px 0 rgba(0,0,0,.15);
 }
+.dark .controls button{ background:#1a1f25; box-shadow: 0 3px 0 rgba(0,0,0,.45); }
+
 .controls .icon{font-size:1.1rem; line-height:1}
 .controls button:hover{transform:translateY(-1px)}
 #clock{font-variant-numeric:tabular-nums; padding-left:.4rem; opacity:.9; font-weight:700}
 
 /* progress */
-.progress-wrap{height:8px; background:rgba(0,0,0,.08); margin:0 10px; border-radius:8px; border:1px solid rgba(0,0,0,.15)}
+.progress-wrap{height:8px; background:var(--barbg); margin:0 10px; border-radius:8px; border:1px solid var(--barstroke)}
 .progress-bar{height:8px; width:0%; background:var(--rainbow); border-radius:8px; transition:width .25s ease}
 
-/* deck */
+/* ---------- DECK ---------- */
 #deck{height:calc(100vh - 120px); padding:14px; outline:none}
-.slide{display:none; height:100%; overflow:auto; padding:10px}
-.slide.current{display:block; animation:fade .5s ease}
-.inner{max-width:1100px; margin:0 auto; padding:1.1rem}
+.slide{
+  display:none; height:100%;
+  overflow:hidden;           /* no inner scrollbars */
+  padding:10px;
+  display:flex; align-items:flex-start; justify-content:center;
+}
+.slide.current{display:flex; animation:fade .5s ease}
+.inner{
+  max-width:1100px; margin:0 auto; padding:1.1rem;
+  transform-origin:center top; /* for scale-to-fit */
+}
 .center{text-align:center}
 
 /* poster frame */
@@ -69,7 +105,7 @@ body.paper::before{
   background:var(--frame);
   border:6px solid var(--ink);
   border-radius:26px;
-  box-shadow: 0 10px 0 rgba(0,0,0,.08);
+  box-shadow: var(--shadow);
 }
 .inner.poster-frame{position:relative}
 .inner.poster-frame::after{
@@ -78,6 +114,7 @@ body.paper::before{
   border:2px solid rgba(0,0,0,.25);
   border-radius:20px; pointer-events:none;
 }
+.dark .inner.poster-frame::after{ border-color: rgba(255,255,255,.18); }
 
 /* title card */
 .titlecard h1{
@@ -90,15 +127,17 @@ body.paper::before{
 .byline{opacity:.95; margin:0 0 .6rem 0; font-weight:700}
 .byline .name,.byline .course{display:block}
 .hero img{max-height:65vh; width:100%; object-fit:cover; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
+.dark .hero img{ background:#0e1418; }
 
 /* layout & media */
 .two-up{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
 img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
+.dark img{ background:#0e1418; }
 .sticker{transform:rotate(-0.8deg)}
-figcaption{font-size:.9rem; color:#555; margin-top:.35rem}
+figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
 
 /* headings + bullets */
-h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; color:#2b2b2b}
+h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; color:var(--ink)}
 .bullets{list-style:none; padding:0; margin:0 0 1rem 0; font-size:1.08rem}
 .bullets li{margin:.5rem 0; padding-left:1.5rem; position:relative}
 .bullets li::before{
@@ -112,12 +151,13 @@ h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0
   padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px;
   background:#fff; font-weight:700; box-shadow: 0 2px 0 rgba(0,0,0,.12);
 }
+.dark .tag{ background:#0e1418; }
 
 /* “More” expanders */
 .more{margin-top:.5rem}
 .more summary{cursor:pointer; font-weight:700}
 
-/* SIM styles */
+/* SIM */
 .sim{margin-top:.5rem}
 .sim label{display:block; font-weight:700; margin-bottom:.25rem}
 .sim input[type=range]{width:100%}
@@ -127,7 +167,9 @@ h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0
 
 /* Quiz */
 .quiz{margin:1rem auto; max-width:800px; padding:.6rem; border:3px dashed rgba(0,0,0,.3); border-radius:14px; background:#fff}
+.dark .quiz{ background:#0e1418; border-color: rgba(255,255,255,.25); }
 .quiz .opt{display:block; width:100%; text-align:left; margin:.25rem 0; padding:.55rem .7rem; border:2px solid var(--ink); border-radius:12px; background:#fff; cursor:pointer; font-weight:600}
+.dark .quiz .opt{ background:#12171c; }
 .quiz .opt.correct{background:#b6e36e}
 .quiz .opt.wrong{background:#ffd166}
 .quiz .feedback{min-height:1.2em; margin-top:.35rem; font-weight:700}
@@ -136,12 +178,13 @@ h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
 .refs p{font-size:.95rem; line-height:1.35; margin:.45rem 0}
 
-/* footer help */
+/* footer */
 .help{
   position:fixed; left:0; right:0; bottom:0;
   padding:.35rem .8rem; background:#fff; font-size:.9rem; text-align:center;
   border-top:3px solid var(--ink)
 }
+.dark .help{ background:#12171c; }
 
 /* “Happy Growing!” */
 .happy{
@@ -159,8 +202,33 @@ h2{font-family:'Kalam', cursive; font-weight:700; font-size:2rem; margin:.1rem 0
 .modal{position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; z-index:50}
 .glossary-wrap{max-width:720px; margin:auto; padding:1rem; background:var(--frame); position:relative}
 .glossary-wrap .close{position:absolute; top:.6rem; right:.6rem; border:3px solid var(--ink); background:#fff; border-radius:10px; padding:.2rem .45rem; cursor:pointer}
+.dark .glossary-wrap .close{ background:#12171c; }
 .glossary-wrap h3{font-family:'Fredoka'; margin:.3rem 0 .6rem; text-align:center}
 .glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
 .glossary-wrap dt{font-family:'Kalam'; font-weight:700}
 
+/* ---------- HANDOUT MODE (on-screen preview) ---------- */
+.handout .topbar,
+.handout .help,
+.handout .progress-wrap,
+.handout .modal{ display:none !important; }
+.handout #deck{ height:auto; padding:20px; }
+.handout .slide{ display:block !important; height:auto; overflow:visible; margin: 0 auto 24px; }
+.handout .inner{ transform:none !important; margin-top:0 !important; }
+.handout .inner.poster-frame::after{ display:none; }
+
+/* ---------- PRINT ---------- */
+@media print{
+  :root{ print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+  body{ background:#fff; color:#000 }
+  .topbar, .help, .progress-wrap, .modal{ display:none !important; }
+  #deck{ height:auto; padding:0 }
+  .slide{ display:block !important; height:auto; overflow:visible; page-break-after:always; }
+  .inner{ transform:none !important; margin-top:0 !important; }
+  .inner.poster-frame{ box-shadow:none; }
+  .inner.poster-frame::after{ display:none; }
+  .presenter-only{ display:none !important; }
+}
+
+/* ---------- ANIM ---------- */
 @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
