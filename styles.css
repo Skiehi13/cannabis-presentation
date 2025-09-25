@@ -34,20 +34,19 @@ body.paper::before{
 #deck{ height:calc(100svh - 50px); padding:14px; outline:none; position:relative; }
 .presenting #deck{ position:fixed; inset:0; padding:0; height:100svh; width:100vw; overflow:hidden; }
 
-/* Only one slide shows: default hidden, absolute when presenting */
+/* Only one slide shows */
 .slide{
-  display:none;              /* <— key: hidden by default */
+  display:none;
   position:absolute; inset:0;
   height:100%;
   overflow:hidden;
   padding:10px;
   align-items:flex-start; justify-content:center;
 }
-.slide.current{ display:flex; } /* only current renders */
-
+.slide.current{ display:flex; }
 .presenting .slide{ padding:0; }
 
-/* Enter animations (no exit stacking) */
+/* Enter animations */
 .slide.current.anim-right{ animation: enterRight .45s cubic-bezier(.22,1,.36,1) both; }
 .slide.current.anim-left{  animation: enterLeft  .45s cubic-bezier(.22,1,.36,1) both; }
 @keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
@@ -102,7 +101,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Quiz */
+/* Quiz (if you add more later) */
 .quiz{margin:1rem auto; max-width:800px; padding:.6rem; border:3px dashed rgba(0,0,0,.3); border-radius:14px; background:#fff}
 .dark .quiz{ background:#0e1418; border-color: rgba(255,255,255,.25); }
 .quiz .opt{display:block; width:100%; text-align:left; margin:.25rem 0; padding:.55rem .7rem; border:2px solid var(--ink); border-radius:12px; background:#fff; cursor:pointer; font-weight:600}
@@ -133,6 +132,33 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
 .glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
 .glossary-wrap dt{font-family:'Kalam'; font-weight:700}
 
+/* ----- pH infographic pan/zoom ----- */
+.pz{ position:relative; margin:.4rem auto 0; max-width:100%; }
+.pz-viewport{
+  height:min(68vh, 78svh);
+  border:4px solid var(--ink);
+  border-radius:18px;
+  overflow:hidden;
+  background:#fff;
+  touch-action: none; /* enable custom pan/zoom */
+  box-shadow: 0 6px 0 rgba(0,0,0,.12);
+}
+.dark .pz-viewport{ background:#0e1418; }
+.pz-img{
+  user-select:none; -webkit-user-drag:none; pointer-events:none;
+  transform-origin: 0 0;
+  /* transform set by JS */
+}
+.pz-controls{
+  position:absolute; right:.6rem; bottom:.6rem; display:flex; gap:.35rem;
+}
+.pz-btn{
+  border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.25rem .55rem; font-weight:700; cursor:pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,.12);
+}
+.dark .pz-btn{ background:#12171c; }
+.pz-hint{ font-size:.9rem; color:var(--muted); margin:.35rem 0 0; }
+
 /* Handout */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
@@ -151,3 +177,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
   .inner.poster-frame{ box-shadow:none; }
   .inner.poster-frame::after{ display:none; }
 }
+
+/* Animations for slide enter */
+.slide.current.anim-right{ animation: enterRight .45s cubic-bezier(.22,1,.36,1) both; }
+.slide.current.anim-left{  animation: enterLeft  .45s cubic-bezier(.22,1,.36,1) both; }
+@keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
+@keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
