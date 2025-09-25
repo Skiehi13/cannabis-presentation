@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", function () {
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
-  // Start at slide 0
+  // Start at slide 0, ensure no stacking
   var i = 0;
   slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
   slides[0].classList.add("current");
@@ -135,11 +135,18 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ---------- Pan/Zoom for the pH infographic ----------
+  // ---------- Pan/Zoom for the pH infographic (anchored center) ----------
   var pz = document.querySelector(".pz");
   if (pz){
     var viewport = pz.querySelector(".pz-viewport");
     var img = pz.querySelector(".pz-img");
+
+    // Anchor (0..1) within the image to center on load/reset
+    var ax = parseFloat(pz.getAttribute("data-anchor-x"));
+    var ay = parseFloat(pz.getAttribute("data-anchor-y"));
+    if (isNaN(ax)) ax = 0.5;
+    if (isNaN(ay)) ay = 0.58; // default: pH band
+
     var zoom = 1, minZ = 0.6, maxZ = 3.5;
     var tx = 0, ty = 0;
     var dragging = false, lastX = 0, lastY = 0;
@@ -147,13 +154,11 @@ window.addEventListener("DOMContentLoaded", function () {
     function apply(){
       img.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + zoom + ")";
     }
-    function clamp(){
-      zoom = Math.max(minZ, Math.min(maxZ, zoom));
-    }
+    function clamp(){ zoom = Math.max(minZ, Math.min(maxZ, zoom)); }
+
     function zoomAt(px, py, factor){
       var prev = zoom;
       zoom *= factor; clamp();
-      // Keep the point under cursor stable
       var rect = viewport.getBoundingClientRect();
       var cx = px - rect.left - tx;
       var cy = py - rect.top  - ty;
@@ -188,34 +193,29 @@ window.addEventListener("DOMContentLoaded", function () {
         var act = this.getAttribute("data-action");
         if(act==="in"){ zoomAt(viewport.clientWidth/2, viewport.clientHeight/2, 1.15); }
         if(act==="out"){ zoomAt(viewport.clientWidth/2, viewport.clientHeight/2, 0.87); }
-        if(act==="reset"){ zoom = 1; tx = 0; ty = 0; apply(); }
+        if(act==="reset"){ fitInfographic(true); }
       });
     });
 
-    // Initial fit: center image
+    // Fit & center the specified anchor point
     function fitInfographic(){
-      // natural size
       var iw = img.naturalWidth || img.width;
       var ih = img.naturalHeight || img.height;
       var vw = viewport.clientWidth, vh = viewport.clientHeight;
-      if (iw && ih){
-        var s = Math.min(vw/iw, vh/ih);
-        zoom = Math.max(minZ, Math.min(1, s * 0.98)); // fit but allow zoom-in
-        tx = (vw - iw*zoom)/2;
-        ty = (vh - ih*zoom)/2;
-        apply();
-      } else {
-        // try again after load
-        img.addEventListener("load", fitInfographic, {once:true});
-      }
+      if (!(iw && ih)) { img.addEventListener("load", function(){ fitInfographic(); }, {once:true}); return; }
+
+      var s = Math.min(vw/iw, vh/ih) * 0.98;
+      zoom = Math.max(minZ, Math.min(1, s));
+      tx = vw/2 - (ax * iw * zoom);
+      ty = vh/2 - (ay * ih * zoom);
+      apply();
     }
+
+    // Initial fit
     fitInfographic();
 
-    // Refit on resize
-    window.addEventListener("resize", function(){
-      // Keep current zoom/position but re-center if image is smaller than viewport
-      apply();
-    });
+    // Keep transform on resize
+    window.addEventListener("resize", function(){ apply(); });
   }
 
   // Presenter link on refs slide (optional)
