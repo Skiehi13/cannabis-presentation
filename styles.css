@@ -84,6 +84,7 @@ body.paper::before{
 .hero img{max-height:65vh; width:100%; object-fit:cover; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
 .dark .hero img{ background:#0e1418; }
 
+/* Layout & media */
 .two-up{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
 img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px solid var(--ink); box-shadow: 0 6px 0 rgba(0,0,0,.12)}
 .dark img{ background:#0e1418; }
@@ -113,12 +114,13 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .sim-note{margin-top:.4rem}
 
 /* Reaction Coordinates diagram */
-.rc-controls{display:flex; gap:.75rem; justify-content:center; align-items:center; margin:.4rem 0 .6rem}
+.rc-controls{display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; align-items:center; margin:.4rem 0 .5rem}
 .rc-controls label{font-weight:700}
 .rc-controls .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
 .dark .rc-controls .btn{background:#12171c}
+.rc-readouts{display:flex; gap:1rem; justify-content:center; align-items:center; font-weight:700; margin:.2rem 0 .4rem}
 
-.rc-svg{width:100%; max-width:860px; height:auto; margin:.2rem auto; display:block}
+.rc-svg{width:100%; max-width:860px; height:auto; margin:.1rem auto .2rem; display:block}
 .axis{font-family:'Kalam'; font-size:16px; fill:var(--ink)}
 .label{font-family:'Kalam'; font-size:16px; fill:#333}
 .baseline{stroke:#999; stroke-width:3; stroke-dasharray:6 6}
@@ -132,7 +134,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .ea-arrow{fill:#222}
 .ea-text{font-family:'Kalam'; font-size:20px; fill:#222}
 
-.dot{fill:#ff8a00; opacity:.9; animation: climb 2.2s linear infinite}
+.dot{fill:#ff8a00; opacity:.9; animation: climb var(--dotDur,2.2s) linear infinite}
 @keyframes climb{
   0%   { transform: translateX(0px) translateY(0px); }
   50%  { transform: translateX(220px) translateY(-160px); }
