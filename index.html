@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="paper">
-  <!-- slim progress (hidden in presenting mode) -->
   <div class="progress-wrap" aria-hidden="true">
     <div id="progressBar" class="progress-bar"></div>
   </div>
@@ -160,16 +159,16 @@
       </div>
     </section>
 
-    <!-- ——— PART 3: Reaction Coordinates ——— -->
+    <!-- ——— PART 3: Reaction Coordinates (THCA) ——— -->
 
-    <!-- RC Slide A (from Kinetics slide 2, no heading) -->
+    <!-- RC Slide A (content from Kinetics slide 2, no heading) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame center">
-        <p class="rc-reaction"><span class="tag">Model reaction (S<sub>N</sub>2):</span> CH<sub>3</sub>Br + Nu<sup>−</sup> → CH<sub>3</sub>Nu + Br<sup>−</sup></p>
+        <p class="rc-reaction"><span class="tag">Model reaction:</span> THCA → THC + CO₂ (decarboxylation)</p>
         <ul class="bullets">
-          <li><strong>Activation energy (E<sub>a</sub>):</strong> minimum energy needed to reach the transition state.</li>
-          <li><strong>Transition state:</strong> highest-energy arrangement along the path from reactants → products.</li>
-          <li><strong>Reaction coordinate:</strong> “progress bar” of the molecular rearrangement; energy profile shows the hump.</li>
+          <li><strong>Activation energy (E<sub>a</sub>):</strong> energy needed to reach the transition state.</li>
+          <li><strong>Transition state:</strong> highest-energy arrangement on route to products.</li>
+          <li><strong>Reaction coordinate:</strong> “progress bar” for bond changes; the energy profile shows the hump.</li>
         </ul>
         <div class="happy">HAPPY GROWING!</div>
       </div>
@@ -182,18 +181,17 @@
         <div class="two-up">
           <div>
             <ul class="bullets">
-              <li><strong>E<sub>a</sub>:</strong> ~25–30 kcal·mol⁻¹</li>
-              <li><strong>Optimal temperature:</strong> 110–130 °C</li>
-              <li><strong>Processing goal:</strong> Maximize THC while preserving terpenes</li>
+              <li><strong>E<sub>a</sub> (baseline):</strong> ~120 kJ·mol⁻¹ (~28.7 kcal·mol⁻¹)</li>
+              <li><strong>Sweet spot:</strong> 110–130 °C (balance conversion vs. terpene loss)</li>
+              <li><strong>Goal:</strong> Max THC, minimize oxidation &amp; terpene evaporation</li>
             </ul>
           </div>
           <div>
-            <h3 class="minihead">Process optimization</h3>
+            <h3 class="minihead">Process cues</h3>
             <ul class="bullets">
-              <li>Precise temperature control to avoid terpene loss</li>
-              <li>Time management for full conversion</li>
-              <li>Inert atmosphere to limit oxidation</li>
-              <li>Quality tracking: cannabinoids &amp; terpene profile</li>
+              <li>Precise temp control &amp; adequate time</li>
+              <li>Gentle ramp, inert/closed system if possible</li>
+              <li>Track cannabinoids &amp; terpenes to tune recipe</li>
             </ul>
           </div>
         </div>
@@ -201,49 +199,53 @@
       </div>
     </section>
 
-    <!-- RC Slide C (from Kinetics slide 6: interactive diagram) -->
-    <section class="slide" data-duration="45">
+    <!-- RC Slide C (from Kinetics slide 6: interactive THCA diagram) -->
+    <section class="slide" data-duration="50">
       <div class="inner poster-frame center">
-        <h2>Reaction Coordinate — make it move</h2>
+        <h2>Reaction Coordinate — THCA decarb</h2>
 
         <div class="rc-controls" role="group" aria-label="Reaction diagram toggles">
           <label><input id="rcEa" type="checkbox" checked> Show Eₐ</label>
-          <label><input id="rcCatalyst" type="checkbox"> Catalyst effect</label>
-          <label><input id="rcTemp" type="checkbox"> Temperature effect</label>
+          <label><input id="rcCatalyst" type="checkbox"> Catalyst (≈ −30% Eₐ)</label>
+          <label class="slider-wrap">Temp:
+            <input id="rcTemp" type="range" min="80" max="150" value="120" step="1">
+            <span id="rcTempVal">120 °C</span>
+          </label>
           <button id="rcReset" class="btn">Reset</button>
         </div>
 
-        <svg id="rcDiagram" class="rc-svg" viewBox="0 0 680 420" role="img" aria-label="Reaction coordinate energy diagram">
+        <div class="rc-readouts">
+          <span>Eₐ: <strong id="rcEaVal">120</strong> kJ·mol⁻¹</span>
+          <span>k(T)/k(120 °C): <strong id="rcRelRate">1.00×</strong></span>
+        </div>
+
+        <svg id="rcDiagram" class="rc-svg" viewBox="0 0 680 420" role="img" aria-label="Reaction coordinate energy diagram for THCA decarb">
           <!-- Axes -->
           <line x1="60" y1="360" x2="640" y2="360" stroke="currentColor" stroke-width="3"/>
           <line x1="60" y1="360" x2="60" y2="40" stroke="currentColor" stroke-width="3"/>
           <text x="645" y="380" class="axis">Reaction progress →</text>
           <text x="18" y="50" class="axis" transform="rotate(-90 18,50)">Energy</text>
 
-          <!-- Reactants & products baseline -->
+          <!-- Baselines -->
           <line x1="80" y1="280" x2="200" y2="280" class="baseline"/>
           <line x1="520" y1="240" x2="620" y2="240" class="baseline"/>
-          <text x="110" y="270" class="label">Reactants</text>
-          <text x="540" y="230" class="label">Products</text>
+          <text x="110" y="270" class="label">Reactants (THCA)</text>
+          <text x="520" y="230" class="label">Products (THC + CO₂)</text>
 
-          <!-- Uncatalyzed curve -->
-          <path id="curve-uncat" class="curve uncat"
-                d="M 80,280 C 200,80 440,400 620,240" />
+          <!-- Curves (paths updated by JS) -->
+          <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,140 460,320 620,240" />
+          <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,180 460,300 620,240" />
 
-          <!-- Catalyzed (lower barrier) -->
-          <path id="curve-cat" class="curve cat hidden"
-                d="M 80,280 C 220,150 440,320 620,240" />
-
-          <!-- Ea arrow (uncat) -->
+          <!-- E_a indicator (position updated by JS) -->
           <g id="eaGroup">
-            <line x1="240" y1="110" x2="240" y2="280" class="ea-line"/>
-            <polygon points="240,100 234,114 246,114" class="ea-arrow"/>
-            <polygon points="240,290 234,276 246,276" class="ea-arrow"/>
-            <text x="248" y="200" class="ea-text">Eₐ</text>
+            <line id="eaLine" x1="320" y1="150" x2="320" y2="280" class="ea-line"/>
+            <polygon id="eaArrowUp"   points="320,140 314,154 326,154" class="ea-arrow"/>
+            <polygon id="eaArrowDown" points="320,290 314,276 326,276" class="ea-arrow"/>
+            <text id="eaText" x="328" y="210" class="ea-text">Eₐ</text>
           </g>
 
-          <!-- Temperature effect: animated “molecules” climbing -->
-          <g id="tempDots" class="hidden">
+          <!-- Temperature effect: animated “molecules” -->
+          <g id="tempDots">
             <circle class="dot" cx="120" cy="300" r="5"/>
             <circle class="dot" cx="140" cy="300" r="5" style="animation-delay:.25s"/>
             <circle class="dot" cx="160" cy="300" r="5" style="animation-delay:.5s"/>
@@ -251,7 +253,7 @@
           </g>
         </svg>
 
-        <p class="sim-note">Catalyst lowers the barrier (new pathway). Higher temperature puts more molecules over the barrier.</p>
+        <p class="sim-note">Arrhenius: <em>k ∝ e<sup>−Eₐ/RT</sup></em>. Warmer → faster; catalysts lower Eₐ (new pathway).</p>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
@@ -292,7 +294,6 @@
           <p>Smith, M. B. (2020). <em>March's Advanced Organic Chemistry</em> (8th ed.). Wiley.</p>
         </div>
 
-        <!-- presenter-only link (add ?presenter=1 to show) -->
         <p id="presenterTools" class="presenter-only" hidden>
           Presenter tools: <a href="speaker_notes.md" target="_blank" rel="noopener">Open speaker notes</a>
         </p>
