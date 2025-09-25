@@ -183,61 +183,11 @@
       </div>
     </section>
 
-    <!-- Interactive RC -->
-    <section class="slide" data-duration="50">
-      <div class="inner poster-frame center">
-        <h2>Reaction Coordinate — THCA decarb</h2>
-        <div class="rc-controls" role="group" aria-label="Reaction diagram controls">
-          <label><input id="rcEa" type="checkbox" checked> Show Eₐ</label>
-          <label><input id="rcCatalyst" type="checkbox"> Matrix/solvent assist (≈ −30% Eₐ)</label>
-          <label class="slider-wrap">Temp:
-            <input id="rcTemp" type="range" min="80" max="150" value="120" step="1">
-            <span id="rcTempVal">120 °C</span>
-          </label>
-          <button id="rcReset" class="btn">Reset</button>
-        </div>
-        <div class="rc-readouts">
-          <span>Eₐ: <strong id="rcEaVal">120</strong> kJ·mol⁻¹</span>
-          <span>k(T)/k(120 °C): <strong id="rcRelRate">1.00×</strong></span>
-        </div>
-        <svg id="rcDiagram" class="rc-svg" viewBox="0 0 680 420" role="img" aria-label="Reaction coordinate energy diagram for THCA decarb">
-          <line x1="60" y1="360" x2="640" y2="360" stroke="currentColor" stroke-width="3"/>
-          <line x1="60" y1="360" x2="60" y2="40" stroke="currentColor" stroke-width="3"/>
-          <text x="645" y="380" class="axis">Reaction progress →</text>
-          <text x="18" y="50" class="axis" transform="rotate(-90 18,50)">Energy</text>
-          <line x1="80" y1="280" x2="200" y2="280" class="baseline"/>
-          <line x1="520" y1="240" x2="620" y2="240" class="baseline"/>
-          <text x="110" y="270" class="label">Reactants (THCA)</text>
-          <text x="520" y="230" class="label">Products (THC + CO₂)</text>
-          <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,140 460,320 620,240" />
-          <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,180 460,300 620,240" />
-          <g id="eaGroup">
-            <line id="eaLine" x1="320" y1="150" x2="320" y2="280" class="ea-line"/>
-            <polygon id="eaArrowUp"   points="320,140 314,154 326,154" class="ea-arrow"/>
-            <polygon id="eaArrowDown" points="320,290 314,276 326,276" class="ea-arrow"/>
-            <text id="eaText" x="328" y="210" class="ea-text">Eₐ</text>
-          </g>
-          <g id="tempDots">
-            <circle class="dot" cx="120" cy="300" r="5"/>
-            <circle class="dot" cx="140" cy="300" r="5" style="animation-delay:.25s"/>
-            <circle class="dot" cx="160" cy="300" r="5" style="animation-delay:.5s"/>
-            <circle class="dot" cx="180" cy="300" r="5" style="animation-delay:.75s"/>
-          </g>
-          <g id="terpCaution" class="hidden">
-            <polygon points="580,80 560,120 600,120" fill="#ff9800"/>
-            <text x="560" y="140" class="axis" style="fill:#ff9800;font-weight:700">Terpene caution</text>
-          </g>
-        </svg>
-        <p class="sim-note">Warmer = faster (Arrhenius), but above ~130 °C many terpenes volatilize/oxidize.</p>
-        <div class="happy">HAPPY GROWING!</div>
-      </div>
-    </section>
-
-    <!-- MODEL MOLECULES — THC -->
+    <!-- MODEL MOLECULES — THC (image + table only) -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
         <div>
-          <img src="assets/thc.jpg" alt="THC 2D structure" />
+          <img src="assets/thc.jpg" alt="THC model structure" />
         </div>
         <div>
           <h2>(−)-Δ9-trans-Tetrahydrocannabinol</h2>
@@ -245,7 +195,6 @@
             <li><strong>Molecular formula:</strong> C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></li>
             <li>Hydrophobic core with phenolic –OH; forms from THCA decarb</li>
           </ul>
-
           <table class="prop-table" aria-label="THC properties">
             <thead><tr><th>Property</th><th>Value</th></tr></thead>
             <tbody>
@@ -255,30 +204,16 @@
               <tr><td>Soil Absorption Coefficient (Koc)</td><td>8128</td></tr>
             </tbody>
           </table>
-
-          <div class="mol3d">
-            <div class="viewer-toolbar" data-viewer="viewer-thc" data-url="assets/559095.mol">
-              <label><input type="radio" name="thcStyle" value="stick" checked> Ball-and-Stick</label>
-              <label><input type="radio" name="thcStyle" value="sphere"> Spacefill</label>
-              <button class="btn" data-action="spin">Spin</button>
-              <button class="btn" data-action="reset">Reset</button>
-            </div>
-            <div id="viewer-thc" class="viewer" aria-label="THC 3D model" role="img">
-              <noscript><div class="viz-note">Enable JavaScript to see the 3D model.</div></noscript>
-            </div>
-            <p class="viz-note">Loaded from local MOL with 3Dmol.js.</p>
-          </div>
-
           <div class="happy">HAPPY GROWING!</div>
         </div>
       </div>
     </section>
 
-    <!-- MODEL MOLECULES — CBD -->
+    <!-- MODEL MOLECULES — CBD (image + table only) -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
         <div>
-          <img src="assets/cbd.jpg" alt="CBD 2D structure" />
+          <img src="assets/cbd.jpg" alt="CBD model structure" />
         </div>
         <div>
           <h2>(−)-trans-Cannabidiol</h2>
@@ -286,7 +221,6 @@
             <li><strong>Molecular formula:</strong> C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></li>
             <li>Two phenolic –OH groups; different ring connectivity vs. THC</li>
           </ul>
-
           <table class="prop-table" aria-label="CBD properties">
             <thead><tr><th>Property</th><th>Value</th></tr></thead>
             <tbody>
@@ -296,26 +230,12 @@
               <tr><td>Soil Absorption Coefficient (Koc)</td><td>8128</td></tr>
             </tbody>
           </table>
-
-          <div class="mol3d">
-            <div class="viewer-toolbar" data-viewer="viewer-cbd" data-url="assets/15266.mol">
-              <label><input type="radio" name="cbdStyle" value="stick" checked> Ball-and-Stick</label>
-              <label><input type="radio" name="cbdStyle" value="sphere"> Spacefill</label>
-              <button class="btn" data-action="spin">Spin</button>
-              <button class="btn" data-action="reset">Reset</button>
-            </div>
-            <div id="viewer-cbd" class="viewer" aria-label="CBD 3D model" role="img">
-              <noscript><div class="viz-note">Enable JavaScript to see the 3D model.</div></noscript>
-            </div>
-            <p class="viz-note">Loaded from local MOL with 3Dmol.js.</p>
-          </div>
-
           <div class="happy">HAPPY GROWING!</div>
         </div>
       </div>
     </section>
 
-    <!-- REFERENCES (expanded) -->
+    <!-- REFERENCES (kept the same) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
