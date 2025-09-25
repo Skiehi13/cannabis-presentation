@@ -1,51 +1,41 @@
 // Ensure the DOM is fully parsed before wiring events
 window.addEventListener("DOMContentLoaded", function () {
-  // --- slide state ---
+  var deck = document.getElementById("deck");
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
   var i = 0;
-
-  var prevBtn = document.getElementById("prevBtn");
-  var nextBtn = document.getElementById("nextBtn");
-  var fsBtn   = document.getElementById("fsToggle");
-  var timerBtn= document.getElementById("timerToggle");
-  var clock   = document.getElementById("clock");
-  var bar     = document.getElementById("progressBar");
-
-  var handoutToggle = document.getElementById("handoutToggle");
-  var printBtn      = document.getElementById("printBtn");
-  var themeToggle   = document.getElementById("themeToggle");
+  var bar = document.getElementById("progressBar");
 
   // Durations (seconds) from data-duration
   var durations = slides.map(function(s){ return Number(s.getAttribute("data-duration") || 40); });
   var total = durations.reduce(function(a,b){ return a+b; }, 0);
 
-  // --- scale-to-fit helpers ---
+  // ---------- Fit-to-viewport logic ----------
   function fitSlide(slide){
     if(!slide || document.body.classList.contains("handout")) return resetSlide(slide);
     var inner = slide.querySelector(".inner");
     if(!inner) return;
 
-    // Reset first to get natural size
+    // Reset to natural size
     inner.style.transform = "none";
     inner.style.marginTop = "0";
 
-    var pad = 12; // breathing room
-    var availW = slide.clientWidth - pad*2;
-    var availH = slide.clientHeight - pad*2;
+    var pad = 16;
+    var availW = deck.clientWidth  - pad*2;
+    var availH = deck.clientHeight - pad*2;
 
     var rect = inner.getBoundingClientRect();
-    var scale = Math.min(availW / rect.width, availH / rect.height);
+    var naturalW = Math.max(rect.width, inner.scrollWidth);
+    var naturalH = Math.max(rect.height, inner.scrollHeight);
 
-    // Allow mild upscaling; cap to avoid fuzzy edges
+    var scale = Math.min(availW / naturalW, availH / naturalH);
     scale = Math.max(0.5, Math.min(scale, 1.25));
 
     inner.style.transformOrigin = "center top";
     inner.style.transform = "scale(" + scale + ")";
 
-    // center vertically when scaled down
-    var newH = rect.height * scale;
+    var newH = naturalH * scale;
     var y = (availH - newH) / 2;
     inner.style.marginTop = y > 0 ? (y + "px") : "0";
   }
@@ -55,9 +45,10 @@ window.addEventListener("DOMContentLoaded", function () {
   }
   function fitCurrent(){ fitSlide(slides[i]); }
 
+  // ---------- Progress ----------
   function setProgress() {
     var elapsed = durations.slice(0,i).reduce(function(a,b){ return a+b; }, 0);
-    bar.style.width = ((elapsed/total)*100) + "%";
+    if(bar) bar.style.width = ((elapsed/total)*100) + "%";
   }
 
   function show(k){
@@ -65,91 +56,65 @@ window.addEventListener("DOMContentLoaded", function () {
     i = (k + slides.length) % slides.length;
     slides[i].classList.add("current");
     setProgress();
-    // ensure images loaded -> fit
     fitCurrent();
   }
-  function next(){ ensureStarted(); if(!isHandout()) show(i+1); }
-  function prev(){ ensureStarted(); if(!isHandout()) show(i-1); }
+  function next(){ ensurePresenting(); if(!isHandout()) show(i+1); }
+  function prev(){ ensurePresenting(); if(!isHandout()) show(i-1); }
 
   document.addEventListener("keydown", function(e){
     if(e.key==="ArrowRight"||e.key===" "){ next(); }
     if(e.key==="ArrowLeft"){ prev(); }
     if(e.key && e.key.toLowerCase()==="f"){ toggleFS(); }
-    if(e.key && e.key.toLowerCase()==="t"){ toggleTimer(); }
     if(e.key && e.key.toLowerCase()==="g"){ toggleGlossary(true); }
     if(e.key && e.key.toLowerCase()==="h"){ toggleHandout(); }
     if(e.key && e.key.toLowerCase()==="p"){ doPrint(); }
     if(e.key && e.key.toLowerCase()==="d"){ toggleTheme(); }
+    if (e.altKey && e.key && e.key.toLowerCase() === "s" && presenterTools){
+      presenterTools.hidden = !presenterTools.hidden; fitCurrent();
+    }
   });
 
-  if (prevBtn) prevBtn.onclick = prev;
-  if (nextBtn) nextBtn.onclick = next;
-  if (fsBtn)   fsBtn.onclick   = function(){ ensureStarted(); toggleFS(); };
-  if (timerBtn)timerBtn.onclick= toggleTimer;
-  if (handoutToggle) handoutToggle.onclick = toggleHandout;
-  if (printBtn)      printBtn.onclick      = doPrint;
-  if (themeToggle)   themeToggle.onclick   = toggleTheme;
-
-  // Click anywhere on the deck starts presenting (requests fullscreen) once
+  // Click anywhere on the deck starts presenting + tries fullscreen
   var started = false;
-  function ensureStarted(){
+  function ensurePresenting(){
     if(started) return;
     started = true;
     document.body.classList.add("presenting");
-    // try to enter fullscreen (requires user gesture; this is called from a click/keypress)
     try{
       if(!document.fullscreenElement && document.documentElement.requestFullscreen){
-        document.documentElement.requestFullscreen().catch(function(){ /* ignore */ });
+        document.documentElement.requestFullscreen().catch(function(){});
       }
     }catch(e){}
     fitCurrent();
   }
-  document.getElementById("deck").addEventListener("click", function(){ ensureStarted(); });
+  if (deck) deck.addEventListener("click", ensurePresenting);
 
-  // Fullscreen change toggles 'presenting' chrome
   document.addEventListener("fullscreenchange", function(){
     if(document.fullscreenElement){ document.body.classList.add("presenting"); }
     else { document.body.classList.remove("presenting"); }
     fitCurrent();
   });
 
-  // --- fullscreen toggle ---
   function toggleFS(){
     var el = document.documentElement;
     if(!document.fullscreenElement && el.requestFullscreen){ el.requestFullscreen(); }
     else if (document.exitFullscreen){ document.exitFullscreen(); }
   }
 
-  // --- simple timer ---
-  var t0 = null, ticking = false, rafId=null;
-  function renderClock(){
-    if(!ticking) return;
-    var secs = Math.floor((performance.now()-t0)/1000);
-    var m = String(Math.floor(secs/60)).padStart(2,"0");
-    var s = String(secs%60).padStart(2,"0");
-    clock.textContent = m + ":" + s;
-    rafId = requestAnimationFrame(renderClock);
-  }
-  function toggleTimer(){
-    if(!ticking){ t0 = performance.now(); ticking = true; renderClock(); }
-    else { ticking = false; cancelAnimationFrame(rafId); }
-  }
-
-  // --- Glossary modal & inline defs ---
+  // ---------- Glossary ----------
   var glossary = document.getElementById("glossary");
-  var glossaryBtn = document.getElementById("glossaryBtn");
+  var glossaryBtn = null; // no button now; keyboard (G) opens
   var closeGloss = glossary ? glossary.querySelector(".close") : null;
 
   function toggleGlossary(open){
     if(!glossary) return;
-    if(open){ glossary.hidden = false; if(glossaryBtn) glossaryBtn.setAttribute("aria-expanded","true"); }
-    else { glossary.hidden = true; if(glossaryBtn) glossaryBtn.setAttribute("aria-expanded","false"); }
+    if(open){ glossary.hidden = false; }
+    else { glossary.hidden = true; }
   }
-  if (glossaryBtn) glossaryBtn.addEventListener("click", function(){ toggleGlossary(true); });
   if (closeGloss)  closeGloss.addEventListener("click", function(){ toggleGlossary(false); });
   if (glossary)    glossary.addEventListener("click", function(e){ if(e.target===glossary) toggleGlossary(false); });
 
-  // Inline definition buttons jump to the right term
+  // Inline def buttons still open glossary
   var defBtns = document.querySelectorAll(".def");
   for (var d=0; d<defBtns.length; d++){
     defBtns[d].addEventListener("click", function(){
@@ -162,7 +127,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- SIM: EC -> tonicity/uptake + svg arrows ---
+  // ---------- SIM ----------
   var ecRange = document.getElementById("ecRange");
   if(ecRange){
     var ecVal = document.getElementById("ecVal");
@@ -174,7 +139,6 @@ window.addEventListener("DOMContentLoaded", function () {
       var ec = Number(ecRange.value);
       ecVal.textContent = ec.toFixed(1);
 
-      // teaching bands
       var t = "isotonic", u = "balanced", inAlpha = 0.9, outAlpha = 0.25;
       if(ec < 1.1){ t = "hypotonic"; u = "water rushes in"; inAlpha = 1; outAlpha = 0.15; }
       else if(ec > 2.0){ t = "hypertonic"; u = "water leaves cells"; inAlpha = 0.15; outAlpha = 1; }
@@ -182,14 +146,13 @@ window.addEventListener("DOMContentLoaded", function () {
       uptake.textContent = u;
       if (arrowsIn)  arrowsIn.setAttribute("opacity", String(inAlpha));
       if (arrowsOut) arrowsOut.setAttribute("opacity", String(outAlpha));
-      // refit in case labels wrap
       fitCurrent();
     };
     ecRange.addEventListener("input", update);
     update();
   }
 
-  // --- Quiz blocks ---
+  // ---------- Quiz ----------
   var quizzes = document.querySelectorAll(".quiz");
   for (var q=0; q<quizzes.length; q++){
     (function(block){
@@ -205,66 +168,50 @@ window.addEventListener("DOMContentLoaded", function () {
           } else {
             this.classList.add("wrong"); if(fb) fb.textContent = "Not quite — think number of particles, not identity.";
           }
-          fitCurrent(); // feedback line height might change
+          fitCurrent();
         });
       }
     })(quizzes[q]);
   }
 
-  // --- Presenter tools: reveal notes if ?presenter=1 or Alt+S ---
+  // ---------- Presenter tools toggle ----------
   var presenterTools = document.getElementById("presenterTools");
   try {
     var qs = new URLSearchParams(location.search);
     if (presenterTools && qs.get("presenter") === "1") presenterTools.hidden = false;
-  } catch(e){ /* ignore older browsers */ }
+  } catch(e){}
 
-  document.addEventListener("keydown", function(e){
-    if (e.altKey && e.key && e.key.toLowerCase() === "s" && presenterTools){
-      presenterTools.hidden = !presenterTools.hidden;
-      fitCurrent();
-    }
-  });
-
-  // --- Handout view ---
+  // ---------- Handout / Print ----------
   function isHandout(){ return document.body.classList.contains("handout"); }
   function toggleHandout(){
     var on = document.body.classList.toggle("handout");
-    if(handoutToggle) handoutToggle.setAttribute("aria-pressed", on ? "true" : "false");
-    // Reset transforms in handout; refit when leaving
-    if(on){
-      slides.forEach(resetSlide);
-    } else {
-      fitCurrent();
-    }
+    if(on){ slides.forEach(resetSlide); }
+    else { fitCurrent(); }
   }
-
-  // --- Print helper ---
   function doPrint(){
     var wasHandout = isHandout();
     if(!wasHandout) document.body.classList.add("handout");
     setTimeout(function(){ window.print(); if(!wasHandout) document.body.classList.remove("handout"); }, 50);
   }
 
-  // --- Theme toggle (light/dark) ---
+  // ---------- Theme ----------
   var saved = null;
   try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
   if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){
     document.body.classList.add("dark");
-    if(themeToggle) themeToggle.textContent = "☀️";
-    if(themeToggle) themeToggle.setAttribute("aria-pressed","true");
   }
   function toggleTheme(){
     var dark = document.body.classList.toggle("dark");
-    if(themeToggle){
-      themeToggle.textContent = dark ? "☀️" : "🌙";
-      themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-    }
     try { localStorage.setItem("stoneyTheme", dark ? "dark" : "light"); } catch(e){}
     fitCurrent();
   }
 
-  // Refit on resize and when images load
+  // ---------- Refit triggers ----------
   window.addEventListener("resize", fitCurrent);
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitCurrent);
+  }
   document.querySelectorAll(".slide img").forEach(function(img){
     img.addEventListener("load", function(){
       if(img.closest(".slide") === slides[i]) fitCurrent();
@@ -274,6 +221,5 @@ window.addEventListener("DOMContentLoaded", function () {
   // init
   setProgress();
   fitCurrent();
-  var deck = document.getElementById("deck");
   if (deck) deck.focus();
 });
