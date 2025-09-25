@@ -134,36 +134,147 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // RC diagram interactivity
+  // -------- Reaction Coordinates (THCA) interactivity --------
   (function(){
     var svg = document.getElementById("rcDiagram");
     if(!svg) return;
 
+    // Controls
     var chkEa = document.getElementById("rcEa");
     var chkCat = document.getElementById("rcCatalyst");
-    var chkTemp = document.getElementById("rcTemp");
+    var tempSlider = document.getElementById("rcTemp");
+    var tempVal = document.getElementById("rcTempVal");
     var btnReset = document.getElementById("rcReset");
 
-    var cat = document.getElementById("curve-cat");
-    var ea = document.getElementById("eaGroup");
-    var dots = document.getElementById("tempDots");
+    // Readouts
+    var eaVal = document.getElementById("rcEaVal");
+    var relRate = document.getElementById("rcRelRate");
+
+    // SVG elems
+    var pathUncat = document.getElementById("curve-uncat");
+    var pathCat   = document.getElementById("curve-cat");
+    var eaGroup   = document.getElementById("eaGroup");
+    var eaLine    = document.getElementById("eaLine");
+    var eaArrowUp = document.getElementById("eaArrowUp");
+    var eaArrowDn = document.getElementById("eaArrowDown");
+    var eaText    = document.getElementById("eaText");
+    var dots      = document.getElementById("tempDots");
+
+    // Constants
+    var Ea_ref_kJ = 120;             // baseline THCA decarb E_a
+    var catalystFactor = 0.70;       // 30% lower E_a with "catalyst" toggle (illustrative)
+    var TrefC = 120, R = 8.314;      // reference temp and gas constant
+
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function kRel(Ea_kJ, T_C){
+      var T = T_C + 273.15, Tref = TrefC + 273.15;
+      var Ea = Ea_kJ * 1000; // J/mol
+      var exponent = -Ea/R * (1/T - 1/Tref);
+      return Math.exp(exponent); // k(T)/k(Tref)
+    }
+
+    // Map E_a to peak Y position (lower E_a => lower hump)
+    function yPeakFromEa(Ea_kJ){
+      var EaMin = 70, EaMax = 140;            // kJ/mol range for mapping
+      var yMax = 160, yMin = 90;              // px on SVG (y small = higher peak)
+      var t = clamp((Ea_kJ - EaMin)/(EaMax - EaMin), 0, 1);
+      return yMax - t * (yMax - yMin);        // 160 → 90 as Ea increases
+    }
+
+    // Build a nice cubic curve given peak Y
+    function buildCurve(yPeak){
+      // Geometry: start/reactants (80,280), end/products (620,240)
+      var x0=80,  y0=280;
+      var x3=620, y3=240;
+      var x1=220, x2=460;
+      // Control-point Ys: pull toward the peak
+      var y1 = (y0 + yPeak)*0.45;
+      var y2 = (y3 + yPeak)*0.55 + 40;
+      return `M ${x0},${y0} C ${x1},${y1} ${x2},${y2} ${x3},${y3}`;
+    }
 
     function sync(){
-      ea.style.display   = chkEa && chkEa.checked ? "block" : "none";
-      cat.classList.toggle("hidden", !(chkCat && chkCat.checked));
-      dots.classList.toggle("hidden", !(chkTemp && chkTemp.checked));
+      // Current settings
+      var useCat = !!(chkCat && chkCat.checked);
+      var T_C = tempSlider ? Number(tempSlider.value) : TrefC;
+      var Ea_kJ = useCat ? Ea_ref_kJ * catalystFactor : Ea_ref_kJ;
+
+      // Update label/readouts
+      if (tempVal) tempVal.textContent = T_C.toFixed(0) + " °C";
+      if (eaVal) eaVal.textContent = Ea_kJ.toFixed(0);
+      if (relRate) relRate.textContent = kRel(Ea_kJ, T_C).toFixed(2) + "×";
+
+      // Update curves
+      var yPeak = yPeakFromEa(Ea_kJ);
+      var d = buildCurve(yPeak);
+      if (useCat){
+        pathCat.classList.remove("hidden");
+        pathUncat.classList.add("hidden");
+        pathCat.setAttribute("d", d);
+      }else{
+        pathCat.classList.add("hidden");
+        pathUncat.classList.remove("hidden");
+        pathUncat.setAttribute("d", d);
+      }
+
+      // Update E_a indicator visibility and geometry
+      if (chkEa && chkEa.checked){
+        eaGroup.style.display = "block";
+        var xPeak = 320; // marker position
+        var yReact = 280;
+        var yTop = yPeak + 0; // small offset if desired
+        eaLine.setAttribute("x1", xPeak);
+        eaLine.setAttribute("x2", xPeak);
+        eaLine.setAttribute("y1", yTop);
+        eaLine.setAttribute("y2", yReact);
+        eaArrowUp.setAttribute("points", `${xPeak},${yTop-10} ${xPeak-6},${yTop+4} ${xPeak+6},${yTop+4}`);
+        eaArrowDn.setAttribute("points", `${xPeak},${yReact+10} ${xPeak-6},${yReact-4} ${xPeak+6},${yReact-4}`);
+        eaText.setAttribute("x", xPeak+8);
+        eaText.setAttribute("y", (yTop + yReact)/2);
+      } else {
+        eaGroup.style.display = "none";
+      }
+
+      // Dot speed increases with temperature
+      var durRef = 2.2; // s at 120C
+      var T = T_C + 273.15, Tref = TrefC + 273.15;
+      var speedFactor = clamp(T/Tref, 0.6, 1.5);
+      dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
     }
-    if (chkEa) chkEa.addEventListener("change", sync);
+
+    // Events
+    if (chkEa)  chkEa.addEventListener("change", sync);
     if (chkCat) chkCat.addEventListener("change", sync);
-    if (chkTemp) chkTemp.addEventListener("change", sync);
+    if (tempSlider) tempSlider.addEventListener("input", sync);
     if (btnReset) btnReset.addEventListener("click", function(){
       if (chkEa) chkEa.checked = true;
       if (chkCat) chkCat.checked = false;
-      if (chkTemp) chkTemp.checked = false;
+      if (tempSlider){ tempSlider.value = TrefC; }
       sync();
     });
 
+    // Init
     sync();
+  })();
+
+  // Osmosis slider behavior
+  (function(){
+    var r = document.getElementById("ecRange");
+    if(!r) return;
+    var ecVal = document.getElementById("ecVal");
+    var tone = document.getElementById("tonicity");
+    var up = document.getElementById("uptake");
+    var arrowsIn = document.getElementById("arrowsIn");
+    var arrowsOut= document.getElementById("arrowsOut");
+    function update(){
+      var v = parseFloat(r.value);
+      if(ecVal) ecVal.textContent = v.toFixed(1);
+      if(v < 1.1){ tone.textContent="hypotonic"; up.textContent="water in"; arrowsIn.style.opacity=1; arrowsOut.style.opacity=.15; }
+      else if(v > 1.9){ tone.textContent="hypertonic"; up.textContent="water out"; arrowsIn.style.opacity=.15; arrowsOut.style.opacity=1; }
+      else { tone.textContent="isotonic"; up.textContent="balanced"; arrowsIn.style.opacity=.8; arrowsOut.style.opacity=.25; }
+    }
+    r.addEventListener("input", update);
+    update();
   })();
 
   // Presenter tools toggle (optional)
@@ -204,26 +315,6 @@ window.addEventListener("DOMContentLoaded", function () {
       if(imgEl.closest(".slide") === slides[i]) fitCurrent();
     });
   });
-
-  // Osmosis slider behavior
-  (function(){
-    var r = document.getElementById("ecRange");
-    if(!r) return;
-    var ecVal = document.getElementById("ecVal");
-    var tone = document.getElementById("tonicity");
-    var up = document.getElementById("uptake");
-    var arrowsIn = document.getElementById("arrowsIn");
-    var arrowsOut= document.getElementById("arrowsOut");
-    function update(){
-      var v = parseFloat(r.value);
-      if(ecVal) ecVal.textContent = v.toFixed(1);
-      if(v < 1.1){ tone.textContent="hypotonic"; up.textContent="water in"; arrowsIn.style.opacity=1; arrowsOut.style.opacity=.15; }
-      else if(v > 1.9){ tone.textContent="hypertonic"; up.textContent="water out"; arrowsIn.style.opacity=.15; arrowsOut.style.opacity=1; }
-      else { tone.textContent="isotonic"; up.textContent="balanced"; arrowsIn.style.opacity=.8; arrowsOut.style.opacity=.25; }
-    }
-    r.addEventListener("input", update);
-    update();
-  })();
 
   // Init
   setProgress();
