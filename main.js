@@ -134,8 +134,6 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // No pan/zoom code needed anymore for the pH slide
-
   // Presenter tools toggle (optional)
   var presenterTools = document.getElementById("presenterTools");
   try {
