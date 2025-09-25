@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="paper">
+  <!-- Subtle progress hint (hidden in presenting mode) -->
   <div class="progress-wrap" aria-hidden="true">
     <div id="progressBar" class="progress-bar"></div>
   </div>
@@ -43,7 +44,7 @@
           <li>For cultivation, the headliner is <strong>osmotic pressure</strong> → water into/out of roots.</li>
         </ul>
         <figure>
-          <img src="assets/figure1.jpg" alt="Phase diagram for colligative properties">
+          <img src="assets/figure1.jpg" alt="Phase diagram showing boiling elevation and freezing depression with solutes">
           <figcaption>How dissolved ions nudge water’s boiling/freezing points</figcaption>
         </figure>
         <details class="more"><summary>More context</summary>
@@ -97,11 +98,13 @@
       </div>
     </section>
 
-    <!-- Slide 4: pH Guide (your infographic, full-screen, zoomable) -->
+    <!-- Slide 4: pH Guide (your infographic, pan/zoom with anchored center) -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>pH Guide — Your Infographic</h2>
-        <div class="pz" data-zoom="1">
+
+        <!-- Anchor center of the pH band: 0–1 coordinates -->
+        <div class="pz" data-zoom="1" data-anchor-x="0.5" data-anchor-y="0.58">
           <div class="pz-viewport" aria-label="Interactive pH infographic viewport">
             <img
               class="pz-img"
@@ -115,6 +118,7 @@
           </div>
           <p class="pz-hint">Scroll or pinch to zoom • drag to pan</p>
         </div>
+
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
@@ -196,6 +200,7 @@
           <p>Zurita-Silva, A., et al. (2017). Roots adapt to salinity via metabolite remodeling. <em>Frontiers in Plant Science</em>.</p>
         </div>
 
+        <!-- Presenter-only link (hidden by default; add ?presenter=1 to show) -->
         <p id="presenterTools" class="presenter-only" hidden>
           Presenter tools: <a href="speaker_notes.md" target="_blank" rel="noopener">Open speaker notes</a>
         </p>
