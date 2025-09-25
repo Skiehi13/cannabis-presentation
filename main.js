@@ -1,23 +1,19 @@
-// Ensure the DOM is fully parsed before wiring events
 window.addEventListener("DOMContentLoaded", function () {
-  var deck = document.getElementById("deck");
+  var deck   = document.getElementById("deck");
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
-  var i = 0;
+  var i = 0; // current index
   var bar = document.getElementById("progressBar");
 
-  // Durations (seconds) from data-duration
   var durations = slides.map(function(s){ return Number(s.getAttribute("data-duration") || 40); });
   var total = durations.reduce(function(a,b){ return a+b; }, 0);
 
-  // ---------- Fit-to-viewport logic ----------
+  // Fit-to-viewport (scale .inner)
   function fitSlide(slide){
     if(!slide || document.body.classList.contains("handout")) return resetSlide(slide);
     var inner = slide.querySelector(".inner");
     if(!inner) return;
-
-    // Reset to natural size
     inner.style.transform = "none";
     inner.style.marginTop = "0";
 
@@ -45,22 +41,47 @@ window.addEventListener("DOMContentLoaded", function () {
   }
   function fitCurrent(){ fitSlide(slides[i]); }
 
-  // ---------- Progress ----------
-  function setProgress() {
+  // Progress
+  function setProgress(){
     var elapsed = durations.slice(0,i).reduce(function(a,b){ return a+b; }, 0);
-    if(bar) bar.style.width = ((elapsed/total)*100) + "%";
+    if (bar) bar.style.width = ((elapsed/total)*100) + "%";
   }
 
+  // Show slide with animated transition
   function show(k){
-    slides[i].classList.remove("current");
-    i = (k + slides.length) % slides.length;
-    slides[i].classList.add("current");
+    if (k === i) return;
+    var prevIdx = i;
+    var nextIdx = (k + slides.length) % slides.length;
+
+    var prev = slides[prevIdx];
+    var next = slides[nextIdx];
+
+    // direction
+    var forward = ( (nextIdx === (prevIdx+1) % slides.length) || (nextIdx > prevIdx && !(prevIdx===slides.length-1 && nextIdx===0)) );
+
+    // prepare prev to leave
+    prev.classList.remove("current","slide-in-right","slide-in-left","slide-out-left","slide-out-right");
+    prev.classList.add("leaving", forward ? "slide-out-left" : "slide-out-right");
+
+    // after its animation ends, fully hide it
+    prev.addEventListener("animationend", function handle(){
+      prev.classList.remove("leaving","slide-out-left","slide-out-right");
+      prev.removeEventListener("animationend", handle);
+    }, {once:true});
+
+    // show next
+    i = nextIdx;
+    next.classList.remove("leaving","slide-out-left","slide-out-right","slide-in-right","slide-in-left");
+    next.classList.add("current", forward ? "slide-in-right" : "slide-in-left");
+
     setProgress();
     fitCurrent();
   }
+
   function next(){ ensurePresenting(); if(!isHandout()) show(i+1); }
   function prev(){ ensurePresenting(); if(!isHandout()) show(i-1); }
 
+  // Keys
   document.addEventListener("keydown", function(e){
     if(e.key==="ArrowRight"||e.key===" "){ next(); }
     if(e.key==="ArrowLeft"){ prev(); }
@@ -74,7 +95,7 @@ window.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Click anywhere on the deck starts presenting + tries fullscreen
+  // Click anywhere to start presenting & try fullscreen
   var started = false;
   function ensurePresenting(){
     if(started) return;
@@ -101,11 +122,9 @@ window.addEventListener("DOMContentLoaded", function () {
     else if (document.exitFullscreen){ document.exitFullscreen(); }
   }
 
-  // ---------- Glossary ----------
+  // Glossary
   var glossary = document.getElementById("glossary");
-  var glossaryBtn = null; // no button now; keyboard (G) opens
   var closeGloss = glossary ? glossary.querySelector(".close") : null;
-
   function toggleGlossary(open){
     if(!glossary) return;
     if(open){ glossary.hidden = false; }
@@ -114,7 +133,7 @@ window.addEventListener("DOMContentLoaded", function () {
   if (closeGloss)  closeGloss.addEventListener("click", function(){ toggleGlossary(false); });
   if (glossary)    glossary.addEventListener("click", function(e){ if(e.target===glossary) toggleGlossary(false); });
 
-  // Inline def buttons still open glossary
+  // Inline def buttons
   var defBtns = document.querySelectorAll(".def");
   for (var d=0; d<defBtns.length; d++){
     defBtns[d].addEventListener("click", function(){
@@ -127,7 +146,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ---------- SIM ----------
+  // SIM
   var ecRange = document.getElementById("ecRange");
   if(ecRange){
     var ecVal = document.getElementById("ecVal");
@@ -152,36 +171,14 @@ window.addEventListener("DOMContentLoaded", function () {
     update();
   }
 
-  // ---------- Quiz ----------
-  var quizzes = document.querySelectorAll(".quiz");
-  for (var q=0; q<quizzes.length; q++){
-    (function(block){
-      var correct = block.getAttribute("data-correct");
-      var fb = block.querySelector(".feedback");
-      var opts = block.querySelectorAll(".opt");
-      for (var k=0; k<opts.length; k++){
-        opts[k].addEventListener("click", function(ev){
-          ev.preventDefault();
-          for (var m=0; m<opts.length; m++){ opts[m].classList.remove("correct","wrong"); }
-          if(this.getAttribute("data-key") === correct){
-            this.classList.add("correct"); if(fb) fb.textContent = "Nice — particle count rules colligative effects.";
-          } else {
-            this.classList.add("wrong"); if(fb) fb.textContent = "Not quite — think number of particles, not identity.";
-          }
-          fitCurrent();
-        });
-      }
-    })(quizzes[q]);
-  }
-
-  // ---------- Presenter tools toggle ----------
+  // Presenter tools (optional link on refs slide)
   var presenterTools = document.getElementById("presenterTools");
   try {
     var qs = new URLSearchParams(location.search);
     if (presenterTools && qs.get("presenter") === "1") presenterTools.hidden = false;
   } catch(e){}
 
-  // ---------- Handout / Print ----------
+  // Handout / Print / Theme
   function isHandout(){ return document.body.classList.contains("handout"); }
   function toggleHandout(){
     var on = document.body.classList.toggle("handout");
@@ -193,8 +190,6 @@ window.addEventListener("DOMContentLoaded", function () {
     if(!wasHandout) document.body.classList.add("handout");
     setTimeout(function(){ window.print(); if(!wasHandout) document.body.classList.remove("handout"); }, 50);
   }
-
-  // ---------- Theme ----------
   var saved = null;
   try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
   if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){
@@ -206,19 +201,16 @@ window.addEventListener("DOMContentLoaded", function () {
     fitCurrent();
   }
 
-  // ---------- Refit triggers ----------
+  // Refit triggers
   window.addEventListener("resize", fitCurrent);
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(fitCurrent);
-  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCurrent);
   document.querySelectorAll(".slide img").forEach(function(img){
     img.addEventListener("load", function(){
       if(img.closest(".slide") === slides[i]) fitCurrent();
     });
   });
 
-  // init
+  // Init
   setProgress();
   fitCurrent();
   if (deck) deck.focus();
