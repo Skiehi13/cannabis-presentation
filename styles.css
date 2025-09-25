@@ -64,7 +64,7 @@ body.paper::before{
 }
 .dark .inner.poster-frame::after{ border-color: rgba(255,255,255,.18); }
 
-/* Showcase slide (pH image uses more of the screen) */
+/* Showcase (pH image fills) */
 .showcase .inner.poster-frame{ padding:4px; border-width:5px; }
 .showcase .inner.poster-frame::after{ display:none; }
 .fullbleed-max{ margin:0; height:100%; }
@@ -141,6 +141,14 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   100% { transform: translateX(480px) translateY(20px); }
 }
 
+/* Molecule 3D viewer */
+.mol3d{ margin-top:.4rem }
+.mol-canvas{ width:100%; height:340px; background:#fff; border:4px solid var(--ink); border-radius:18px; box-shadow:0 6px 0 rgba(0,0,0,.12) }
+.dark .mol-canvas{ background:#0e1418; }
+.mol-controls{ display:flex; gap:1rem; justify-content:center; align-items:center; margin:.4rem 0 }
+.mol-note{ color:var(--muted); font-size:.92rem; margin:0; }
+.tagline{ font-weight:700; margin:.2rem 0 .4rem }
+
 /* References */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
 .presenting .refs .ref-list{ max-height:none; overflow:visible; }
@@ -163,14 +171,13 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
 .glossary-wrap dt{font-family:'Kalam'; font-weight:700}
 
-/* Handout mode */
+/* Handout & Print preserved from earlier... */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
 .handout .slide{ display:block !important; position:static; height:auto; overflow:visible; margin: 0 auto 24px; }
 .handout .inner{ transform:none !important; margin-top:0 !important; }
 .handout .inner.poster-frame::after{ display:none; }
 
-/* Print */
 @media print{
   :root{ print-color-adjust:exact; -webkit-print-color-adjust:exact; }
   body{ background:#fff; color:#000 }
