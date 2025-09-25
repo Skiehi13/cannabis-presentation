@@ -25,7 +25,7 @@ body.paper::before{
 }
 .dark.paper::before{opacity:.15}
 
-/* Progress bar (hidden in presenting mode) */
+/* Progress bar (hidden while presenting) */
 .progress-wrap{height:8px; background:var(--barbg); margin:10px; border-radius:8px; border:1px solid var(--barstroke)}
 .progress-bar{height:8px; width:0%; background:var(--rainbow); border-radius:8px; transition:width .25s ease}
 .presenting .progress-wrap{ display:none !important; }
@@ -34,7 +34,7 @@ body.paper::before{
 #deck{ height:calc(100svh - 50px); padding:14px; outline:none; position:relative; }
 .presenting #deck{ position:fixed; inset:0; padding:0; height:100svh; width:100vw; overflow:hidden; }
 
-/* Only one slide shows (no stacking) */
+/* Only one slide shows */
 .slide{
   display:none;
   position:absolute; inset:0;
@@ -52,7 +52,7 @@ body.paper::before{
 @keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
 @keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
 
-/* Scaled inner content to fit screen */
+/* Fit scaler */
 .inner{ max-width:1100px; margin:0 auto; padding:1.1rem; transform-origin:center top; }
 .center{text-align:center}
 
@@ -81,7 +81,7 @@ img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px
 figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
 
 /* Text */
-h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; color:var(--ink)}
+h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .bullets{list-style:none; padding:0; margin:0 0 1rem 0; font-size:1.08rem}
 .bullets li{margin:.5rem 0; padding-left:1.5rem; position:relative}
 .bullets li::before{
@@ -149,7 +149,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem; c
 .dark .pz-btn{ background:#12171c; }
 .pz-hint{ font-size:.9rem; color:var(--muted); margin:.35rem 0 0; }
 
-/* Handout mode */
+/* Handout */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
 .handout .slide{ display:block !important; position:static; height:auto; overflow:visible; margin: 0 auto 24px; }
