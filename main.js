@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", function () {
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
-  // Force a clean start on slide 0
+  // Start at slide 0
   var i = 0;
   slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
   slides[0].classList.add("current");
@@ -57,10 +57,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
     var forward = (nextIdx > i) || (i === slides.length - 1 && nextIdx === 0);
 
-    // Hide all slides first to prevent stacking
     slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
 
-    // Show only the next one with an enter animation
     i = nextIdx;
     var next = slides[i];
     next.classList.add("current", forward ? "anim-right" : "anim-left");
@@ -137,29 +135,87 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // SIM
-  var ecRange = document.getElementById("ecRange");
-  if(ecRange){
-    var ecVal = document.getElementById("ecVal");
-    var tonicity = document.getElementById("tonicity");
-    var uptake = document.getElementById("uptake");
-    var arrowsIn  = document.getElementById("arrowsIn");
-    var arrowsOut = document.getElementById("arrowsOut");
-    var update = function(){
-      var ec = Number(ecRange.value);
-      ecVal.textContent = ec.toFixed(1);
+  // ---------- Pan/Zoom for the pH infographic ----------
+  var pz = document.querySelector(".pz");
+  if (pz){
+    var viewport = pz.querySelector(".pz-viewport");
+    var img = pz.querySelector(".pz-img");
+    var zoom = 1, minZ = 0.6, maxZ = 3.5;
+    var tx = 0, ty = 0;
+    var dragging = false, lastX = 0, lastY = 0;
 
-      var t = "isotonic", u = "balanced", inAlpha = 0.9, outAlpha = 0.25;
-      if(ec < 1.1){ t = "hypotonic"; u = "water rushes in"; inAlpha = 1; outAlpha = 0.15; }
-      else if(ec > 2.0){ t = "hypertonic"; u = "water leaves cells"; inAlpha = 0.15; outAlpha = 1; }
-      tonicity.textContent = t;
-      uptake.textContent = u;
-      if (arrowsIn)  arrowsIn.setAttribute("opacity", String(inAlpha));
-      if (arrowsOut) arrowsOut.setAttribute("opacity", String(outAlpha));
-      fitCurrent();
-    };
-    ecRange.addEventListener("input", update);
-    update();
+    function apply(){
+      img.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + zoom + ")";
+    }
+    function clamp(){
+      zoom = Math.max(minZ, Math.min(maxZ, zoom));
+    }
+    function zoomAt(px, py, factor){
+      var prev = zoom;
+      zoom *= factor; clamp();
+      // Keep the point under cursor stable
+      var rect = viewport.getBoundingClientRect();
+      var cx = px - rect.left - tx;
+      var cy = py - rect.top  - ty;
+      tx -= (cx/prev - cx/zoom);
+      ty -= (cy/prev - cy/zoom);
+      apply();
+    }
+
+    // Wheel to zoom
+    viewport.addEventListener("wheel", function(e){
+      e.preventDefault();
+      var factor = e.deltaY < 0 ? 1.1 : 0.9;
+      zoomAt(e.clientX, e.clientY, factor);
+    }, {passive:false});
+
+    // Pointer to drag
+    viewport.addEventListener("pointerdown", function(e){
+      dragging = true; lastX = e.clientX; lastY = e.clientY; viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener("pointermove", function(e){
+      if(!dragging) return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      tx += dx; ty += dy; apply();
+    });
+    viewport.addEventListener("pointerup", function(e){ dragging = false; viewport.releasePointerCapture(e.pointerId); });
+    viewport.addEventListener("pointercancel", function(){ dragging = false; });
+
+    // Buttons
+    pz.querySelectorAll(".pz-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var act = this.getAttribute("data-action");
+        if(act==="in"){ zoomAt(viewport.clientWidth/2, viewport.clientHeight/2, 1.15); }
+        if(act==="out"){ zoomAt(viewport.clientWidth/2, viewport.clientHeight/2, 0.87); }
+        if(act==="reset"){ zoom = 1; tx = 0; ty = 0; apply(); }
+      });
+    });
+
+    // Initial fit: center image
+    function fitInfographic(){
+      // natural size
+      var iw = img.naturalWidth || img.width;
+      var ih = img.naturalHeight || img.height;
+      var vw = viewport.clientWidth, vh = viewport.clientHeight;
+      if (iw && ih){
+        var s = Math.min(vw/iw, vh/ih);
+        zoom = Math.max(minZ, Math.min(1, s * 0.98)); // fit but allow zoom-in
+        tx = (vw - iw*zoom)/2;
+        ty = (vh - ih*zoom)/2;
+        apply();
+      } else {
+        // try again after load
+        img.addEventListener("load", fitInfographic, {once:true});
+      }
+    }
+    fitInfographic();
+
+    // Refit on resize
+    window.addEventListener("resize", function(){
+      // Keep current zoom/position but re-center if image is smaller than viewport
+      apply();
+    });
   }
 
   // Presenter link on refs slide (optional)
@@ -195,13 +251,13 @@ window.addEventListener("DOMContentLoaded", function () {
   // Refit triggers
   window.addEventListener("resize", fitCurrent);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCurrent);
-  document.querySelectorAll(".slide img").forEach(function(img){
-    img.addEventListener("load", function(){
-      if(img.closest(".slide") === slides[i]) fitCurrent();
+  document.querySelectorAll(".slide img").forEach(function(imgEl){
+    imgEl.addEventListener("load", function(){
+      if(imgEl.closest(".slide") === slides[i]) fitCurrent();
     });
   });
 
-  // Init pass
+  // Init
   setProgress();
   fitCurrent();
   if (deck) deck.focus();
