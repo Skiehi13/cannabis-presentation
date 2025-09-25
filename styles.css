@@ -25,57 +25,42 @@ body.paper::before{
 }
 .dark.paper::before{opacity:.15}
 
-/* Progress */
+/* Progress bar */
 .progress-wrap{height:8px; background:var(--barbg); margin:10px; border-radius:8px; border:1px solid var(--barstroke)}
 .progress-bar{height:8px; width:0%; background:var(--rainbow); border-radius:8px; transition:width .25s ease}
 .presenting .progress-wrap{ display:none !important; }
 
-/* Deck */
+/* Deck layout */
 #deck{ height:calc(100svh - 50px); padding:14px; outline:none; position:relative; }
 .presenting #deck{ position:fixed; inset:0; padding:0; height:100svh; width:100vw; overflow:hidden; }
 
-/* One slide at a time */
-.slide{
-  display:none;
-  position:absolute; inset:0;
-  height:100%;
-  overflow:hidden;
-  padding:10px;
-  align-items:flex-start; justify-content:center;
-}
+/* Slides */
+.slide{ display:none; position:absolute; inset:0; height:100%; overflow:hidden; padding:10px; align-items:flex-start; justify-content:center; }
 .slide.current{ display:flex; }
 .presenting .slide{ padding:0; }
 
-/* Animations */
+/* Transitions */
 .slide.current.anim-right{ animation: enterRight .45s cubic-bezier(.22,1,.36,1) both; }
 .slide.current.anim-left{  animation: enterLeft  .45s cubic-bezier(.22,1,.36,1) both; }
 @keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
 @keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
 
-/* Inner */
+/* Content frame */
 .inner{ max-width:1100px; margin:0 auto; padding:1.1rem; transform-origin:center top; }
 .center{text-align:center}
-
-/* Poster frame */
 .poster-frame{ background:var(--frame); border:6px solid var(--ink); border-radius:26px; box-shadow: var(--shadow); }
 .inner.poster-frame{ position:relative }
-.inner.poster-frame::after{
-  content:""; position:absolute; inset:10px; border:2px solid rgba(0,0,0,.25); border-radius:20px; pointer-events:none;
-}
+.inner.poster-frame::after{ content:""; position:absolute; inset:10px; border:2px solid rgba(0,0,0,.25); border-radius:20px; pointer-events:none; }
 .dark .inner.poster-frame::after{ border-color: rgba(255,255,255,.18); }
 
-/* Showcase (pH) */
+/* pH showcase */
 .showcase .inner.poster-frame{ padding:4px; border-width:5px; }
 .showcase .inner.poster-frame::after{ display:none; }
 .fullbleed-max{ margin:0; height:100%; }
-.fullbleed-max img{
-  display:block; width:100%;
-  height:min(92vh, 98svh);
-  object-fit:contain; border-radius:18px; background:#fff; border:0; box-shadow:none;
-}
+.fullbleed-max img{ display:block; width:100%; height:min(92vh, 98svh); object-fit:contain; border-radius:18px; background:#fff; border:0; box-shadow:none; }
 .dark .fullbleed-max img{ background:#0e1418; }
 
-/* Text */
+/* Text styles */
 .titlecard h1{ font-family:'Fredoka'; font-weight:700; font-size:2.8rem; line-height:1.05; margin:.2rem 0 .25rem; }
 .titlecard h1::after{ content:""; display:block; height:10px; margin-top:6px; border-radius:6px; background:var(--rainbow); }
 .subtitle{font-family:'Kalam'; font-weight:700; font-size:1.7rem; margin:.2rem 0 .2rem}
@@ -91,7 +76,7 @@ img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px
 .sticker{transform:rotate(-0.8deg)}
 figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
 
-/* Lists */
+/* Headings & bullets */
 h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .minihead{font-family:'Kalam'; margin:.1rem 0 .3rem; font-size:1.3rem}
 .bullets{list-style:none; padding:0; margin:0 0 1rem 0; font-size:1.08rem}
@@ -103,7 +88,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .tag{ padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px; background:#fff; font-weight:700; box-shadow:0 2px 0 rgba(0,0,0,.12) }
 .dark .tag{ background:#0e1418; }
 
-/* Sim viz */
+/* Osmosis viz */
 .sim{margin-top:.5rem}
 .sim label{display:block; font-weight:700; margin-bottom:.25rem}
 .sim input[type=range]{width:100%}
@@ -111,7 +96,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Reaction Coordinates */
+/* Reaction coordinates */
 .rc-controls{display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; align-items:center; margin:.4rem 0 .5rem}
 .rc-controls label{font-weight:700}
 .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
@@ -129,24 +114,31 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .ea-arrow{fill:#222}
 .ea-text{font-family:'Kalam'; font-size:20px; fill:#222}
 .dot{fill:#ff8a00; opacity:.9; animation: climb var(--dotDur,2.2s) linear infinite}
-@keyframes climb{
-  0%   { transform: translateX(0px) translateY(0px); }
-  50%  { transform: translateX(220px) translateY(-160px); }
-  100% { transform: translateX(480px) translateY(20px); }
-}
+@keyframes climb{ 0%{transform:translateX(0) translateY(0)} 50%{transform:translateX(220px) translateY(-160px)} 100%{transform:translateX(480px) translateY(20px)} }
 
 /* Molecule viewers */
 .mol3d{margin-top:.5rem}
 .viewer{width:100%; height:min(48vh, 420px); border:4px solid var(--ink); border-radius:16px; background:linear-gradient(180deg,#ffffff,#f3f0e8)}
 .dark .viewer{background:linear-gradient(180deg,#0e1418,#0a0f13)}
-.viewer-controls{display:flex; gap:.6rem; justify-content:center; align-items:center; margin:.4rem auto}
+.viewer-toolbar{display:flex; gap:.8rem; justify-content:center; align-items:center; margin:.2rem auto .5rem}
+.viewer-toolbar label{font-weight:700}
 .viz-note{color:var(--muted); font-size:.9rem}
+
+/* Property table */
+.prop-table{ width:100%; border-collapse:separate; border-spacing:0; margin:.4rem 0; }
+.prop-table th, .prop-table td{ border:3px solid var(--ink); padding:.35rem .5rem; text-align:left; }
+.prop-table thead th{ background:#fff; font-family:'Kalam'; }
+.prop-table tr:first-child th:first-child{ border-top-left-radius:12px; }
+.prop-table tr:first-child th:last-child{ border-top-right-radius:12px; }
+.prop-table tr:last-child td:first-child{ border-bottom-left-radius:12px; }
+.prop-table tr:last-child td:last-child{ border-bottom-right-radius:12px; }
+.dark .prop-table thead th{ background:#12171c; }
 
 /* References */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
 .presenting .refs .ref-list{ max-height:none; overflow:visible; }
 
-/* Footer */
+/* Footer hint */
 .help{ position:fixed; left:0; right:0; bottom:0; padding:.35rem .8rem; background:#fff; font-size:.9rem; text-align:center; border-top:3px solid var(--ink) }
 .dark .help{ background:#12171c; }
 .presenting .help{ display:none !important; }
