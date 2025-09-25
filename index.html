@@ -10,14 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="paper">
-  <!-- slim progress (hidden in presenting mode) -->
   <div class="progress-wrap" aria-hidden="true">
     <div id="progressBar" class="progress-bar"></div>
   </div>
 
   <main id="deck" tabindex="0" aria-live="polite">
 
-    <!-- Slide 0: Title -->
+    <!-- 0 — Title -->
     <section class="slide" data-duration="25">
       <div class="inner poster-frame titlecard center">
         <h1>Stoney Science</h1>
@@ -34,7 +33,7 @@
       </div>
     </section>
 
-    <!-- Slide 1: Colligative basics -->
+    <!-- 1 — Colligative basics -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>Colligative Properties: what &amp; why growers care</h2>
@@ -54,7 +53,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: Osmosis in roots -->
+    <!-- 2 — Osmosis in roots -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame two-up center">
         <div>
@@ -78,7 +77,7 @@
       </div>
     </section>
 
-    <!-- Slide 3: Hydro systems & OP -->
+    <!-- 3 — Hydro systems & OP -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>Hydroponics = managing solution strength</h2>
@@ -98,8 +97,8 @@
       </div>
     </section>
 
-    <!-- Slide 4: PH GUIDE — SHOWCASE (no chrome, fills frame) -->
-    <section class="slide showcase" data-duration="55">
+    <!-- 4 — pH infographic (full-screen showcase) -->
+    <section class="slide showcase" data-duration="45">
       <div class="inner poster-frame bare">
         <figure class="fullbleed-max">
           <img
@@ -109,7 +108,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: pH Quick Hits -->
+    <!-- 5 — pH quick hits -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
         <h2>pH quick hits for cultivators</h2>
@@ -117,15 +116,14 @@
           <li>pH sets what nutrients are available; off-range pH can “lock out” key ions.</li>
           <li><strong>Targets (typical):</strong> hydro 5.5–6.5 • coco 5.8–6.3 • soil 6.2–7.0.</li>
           <li>Adjust slowly: acids (to lower) or bases (to raise). Log changes and re-check after mixing.</li>
-          <li>Symptoms: high pH → Fe/Mn lockout (interveinal chlorosis); low pH → Ca/Mg issues, tip burn.</li>
-          <li>Measure well: fresh calibration, temperature-aware probes, rinse between readings.</li>
+          <li>Symptoms: high pH → Fe/Mn lockout; low pH → Ca/Mg issues, tip burn.</li>
+          <li>Measure well: fresh calibration, temp-aware probes, rinse between readings.</li>
         </ul>
-        <details class="more"><summary>Tip</summary>Make pH moves after you set EC — nutrients can shift pH.</details>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
 
-    <!-- Slide 6: Interactive — OP sweet spot -->
+    <!-- 6 — Interactive: OP sweet spot -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>Find the sweet spot</h2>
@@ -160,45 +158,140 @@
       </div>
     </section>
 
-    <!-- Slide 7: References -->
+    <!-- 7 — Reaction Coordinates (from Kinetics slide 2; no heading) -->
+    <section class="slide" data-duration="45">
+      <div class="inner poster-frame center">
+        <ul class="bullets">
+          <li><strong>Model reaction:</strong> CH₃Br + Nu⁻ → CH₃Nu + Br⁻ (S<sub>N</sub>2).</li>
+          <li>Use it to picture <em>activation energy</em> (E<sub>a</sub>), <em>transition state</em>, and energy profile along the reaction path.</li>
+          <li><em>Takeaway for growers:</em> anything that lowers E<sub>a</sub> (catalysts, surfaces) or boosts molecular energy (heat) speeds transformations. </li>
+        </ul>
+        <details class="more"><summary>Why S<sub>N</sub>2?</summary>Simple one-step pathway with a single energy peak—great for visualizing how catalysts or temperature change the barrier.</details>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- 8 — THCA Decarboxylation basics (from Kinetics slide 5) -->
+    <section class="slide" data-duration="55">
+      <div class="inner poster-frame center">
+        <h2>THCA → THC + CO₂ (decarboxylation)</h2>
+        <ul class="bullets">
+          <li><strong>E<sub>a</sub>:</strong> ~25–30 kcal·mol⁻¹. <strong>Optimal:</strong> ~110–130 °C.</li>
+          <li><strong>Goal:</strong> maximize THC while preserving terpenes.</li>
+        </ul>
+        <h3 class="mini">Process optimization</h3>
+        <ul class="bullets">
+          <li>Temperature control to avoid terpene loss.</li>
+          <li>Dial in time for complete conversion (no overbake).</li>
+          <li>Use inert atmosphere to limit oxidation.</li>
+        </ul>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- 9 — Interactive Reaction Coordinate (from Kinetics slide 6 + interactivity) -->
+    <section class="slide" data-duration="60">
+      <div class="inner poster-frame center">
+        <h2>Reaction coordinate — play with the barrier</h2>
+
+        <div class="rc-controls">
+          <label><input type="checkbox" id="rcCatalyst"> Catalyst lowers barrier</label>
+          <label><input type="checkbox" id="rcEa" checked> Show E<sub>a</sub></label>
+          <label class="temp">
+            Temperature
+            <input type="range" id="rcTemp" min="80" max="180" step="5" value="120">
+            <span id="rcTempVal">120 °C</span>
+          </label>
+        </div>
+
+        <svg id="rcViz" class="rc-viz" viewBox="0 0 600 360" role="img"
+             aria-label="Reaction coordinate diagram with adjustable catalyst and temperature">
+          <!-- Axes -->
+          <line x1="60" y1="30" x2="60" y2="320" stroke="#222" stroke-width="3"/>
+          <line x1="60" y1="320" x2="560" y2="320" stroke="#222" stroke-width="3"/>
+          <text x="20" y="28" class="rc-label">Energy</text>
+          <text x="510" y="350" class="rc-label">Reaction progress →</text>
+
+          <!-- Reactants & Products baselines -->
+          <line id="rcReactants" x1="60" y1="280" x2="560" y2="280" stroke="transparent"/>
+          <line id="rcProducts"  x1="60" y1="260" x2="560" y2="260" stroke="transparent"/>
+
+          <!-- Baseline path (no catalyst) -->
+          <path id="rcBase" class="rc-path base"
+                d="M60,280 C210,280 260,120 320,120 C380,120 430,260 560,260"/>
+
+          <!-- Catalyst path (lower peak) -->
+          <path id="rcCat" class="rc-path cat"
+                d="M60,280 C210,280 260,160 320,160 C380,160 430,260 560,260" opacity="0"/>
+
+          <!-- Ea arrow (from reactants to TS) -->
+          <g id="rcEaArrow" class="rc-ea">
+            <line x1="320" y1="120" x2="320" y2="280" />
+            <polygon points="320,110 314,122 326,122"/>
+            <text x="330" y="200" class="rc-label">E<tspan baseline-shift="sub">a</tspan></text>
+          </g>
+
+          <!-- Temperature tail (simple illustrative fill right of Ea) -->
+          <rect id="rcTail" x="320" y="35" width="240" height="245" class="rc-tail" opacity=".25"/>
+        </svg>
+
+        <div class="readout rc-readout">
+          <span>Temp: <strong id="rcRateT">120 °C</strong></span>
+          <span>Relative rate vs. 110 °C: <strong id="rcRateVal">1.0×</strong></span>
+        </div>
+
+        <p class="sim-note">Higher temperature ⇒ more molecules with enough energy to surmount the barrier. A catalyst lowers that barrier without changing ΔG.</p>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- 10 — References (existing + Kinetics slide 7) -->
     <section class="slide" data-duration="40">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
         <div class="ref-list">
+          <!-- (existing list from your deck) -->
           <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15. https://doi.org/10.1186/s13007-024-01265-5</p>
-          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638. https://doi.org/10.1371/journal.pone.0302638</p>
-          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537. https://doi.org/10.1104/pp.114.246124</p>
+          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638.</p>
+          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537.</p>
           <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
-          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality: An evaluation of the effects of ecological water regeneration in greenhouse cultivation. <em>GSRBPS, 4</em>(2), 156–170.</p>
-          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). Rooted in therapeutics: Comprehensive analyses of <em>Cannabis sativa</em> root extracts reveals potent antioxidant, anti-inflammatory, and bactericidal properties. <em>Frontiers in Pharmacology, 15</em>, 1465136.</p>
-          <p>Grossmann, G., Guo, W. J., Ehrhardt, D. W., Frommer, W. B., Sit, R. V., Quake, S. R., &amp; Meier, M. (2015). The divining root: Moisture-driven responses of roots at the micro- and macro-scale. <em>PNAS</em>.</p>
+          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality: An evaluation of ecological water regeneration in greenhouse cultivation. <em>GSRBPS, 4</em>(2), 156–170.</p>
+          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). <em>Frontiers in Pharmacology</em>, 15, 1465136.</p>
+          <p>Grossmann, G., et al. (2015). The divining root. <em>PNAS</em>.</p>
           <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system. <em>Plants, 12</em>(3), 493.</p>
-          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). ML to remove ion interference in nutrient solutions. <em>arXiv</em>:1907.10794.</p>
-          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204.</p>
-          <p>Nosalewicz, A., et al. (2024). Understanding root growth under water deficits. <em>Frontiers in Plant Science</em>.</p>
-          <p>Park, K. S., et al. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
+          <p>Kim, H. J., et al. (2019). ML to remove ion interference in nutrient solutions. <em>arXiv</em>:1907.10794.</p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Indoor agriculture water management. <em>Sustainability, 14</em>(16), 10204.</p>
+          <p>Nosalewicz, A., et al. (2024). Root growth under water deficits. <em>Frontiers in Plant Science</em>.</p>
+          <p>Park, K. S., et al. (2021). Dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
           <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>.</p>
           <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in roots. <em>Soft Matter, 21</em>(3), 485–497.</p>
           <p>Saloner, A., &amp; Bernstein, N. (2024). Factors affecting chemical composition of cannabis extracts. <em>Frontiers in Plant Science</em>.</p>
           <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source matters in medical cannabis. <em>Frontiers in Plant Science</em>.</p>
           <p>Singh, H., et al. (2022). Silicon improves uptake under stress. <em>CSSPA, 53</em>(16), 2089–2108.</p>
           <p>Zhao, C., et al. (2022). Root osmotic sensing to systemic responses. <em>Plant Physiology</em>.</p>
-          <p>Zurita-Silva, A., et al. (2017). Roots adapt to salinity via metabolite remodeling. <em>Frontiers in Plant Science</em>.</p>
+
+          <!-- (added from Kinetics slide 7) -->
+          <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>. University Science Books.</p>
+          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins’ Physical Chemistry</em> (11th ed.). Oxford University Press.</p>
+          <p>Bruice, P. Y. (2020). <em>Organic Chemistry</em> (8th ed.). Pearson.</p>
+          <p>Clayden, J., Greeves, N., &amp; Warren, S. (2012). <em>Organic Chemistry</em> (2nd ed.). Oxford University Press.</p>
+          <p>Lowry, T. H., &amp; Richardson, K. S. (2021). <em>Mechanism and Theory in Organic Chemistry</em> (3rd ed.). Harper &amp; Row.</p>
+          <p>Lu, H. C., &amp; Mackie, K. (2016). The endogenous cannabinoid system. <em>Biological Psychiatry, 79</em>(7), 516–525. https://doi.org/10.1016/j.biopsych.2015.07.028</p>
+          <p>Russo, E. B. (2011). Taming THC: Phytocannabinoid-terpenoid entourage effects. <em>Br. J. Pharmacol., 163</em>(7), 1344–1364. https://doi.org/10.1111/j.1476-5381.2011.01238.x</p>
+          <p>Smith, M. B. (2020). <em>March’s Advanced Organic Chemistry</em> (8th ed.). Wiley.</p>
         </div>
 
         <!-- presenter-only link (add ?presenter=1 to show) -->
         <p id="presenterTools" class="presenter-only" hidden>
           Presenter tools: <a href="speaker_notes.md" target="_blank" rel="noopener">Open speaker notes</a>
         </p>
-
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
-
   </main>
 
   <footer class="help">
-    <p>Keys: ← / → navigate • 📖 glossary (G) • F fullscreen • D dark • H handout • P print • Space = next</p>
+    <p>Keys: ←/→ navigate • 📖 glossary (G) • F fullscreen • D dark • H handout • P print • Space = next</p>
   </footer>
 
   <!-- Glossary modal -->
