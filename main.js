@@ -1,4 +1,4 @@
-// Run after DOM is fully parsed to avoid nulls
+// Ensure the DOM is fully parsed before wiring events
 window.addEventListener("DOMContentLoaded", function () {
   // --- slide state ---
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
@@ -34,9 +34,9 @@ window.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("keydown", function(e){
     if(e.key==="ArrowRight"||e.key===" ") next();
     if(e.key==="ArrowLeft") prev();
-    if(e.key.toLowerCase()==="f") toggleFS();
-    if(e.key.toLowerCase()==="t") toggleTimer();
-    if(e.key.toLowerCase()==="g") toggleGlossary(true);
+    if(e.key && e.key.toLowerCase()==="f") toggleFS();
+    if(e.key && e.key.toLowerCase()==="t") toggleTimer();
+    if(e.key && e.key.toLowerCase()==="g") toggleGlossary(true);
   });
 
   if (prevBtn) prevBtn.onclick = prev;
@@ -138,6 +138,19 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     })(quizzes[q]);
   }
+
+  // --- Presenter tools: reveal notes if ?presenter=1 or Alt+S ---
+  var presenterTools = document.getElementById("presenterTools");
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (presenterTools && qs.get("presenter") === "1") presenterTools.hidden = false;
+  } catch(e){ /* ignore older browsers */ }
+
+  document.addEventListener("keydown", function(e){
+    if (e.altKey && e.key && e.key.toLowerCase() === "s" && presenterTools){
+      presenterTools.hidden = !presenterTools.hidden;
+    }
+  });
 
   // init
   setProgress();
