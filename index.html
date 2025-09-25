@@ -10,23 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="paper">
-  <header class="topbar poster-frame">
-    <div class="brand">
-      <span class="leaf">🌿</span>
-      <span class="brand-text">Stoney Science</span>
-    </div>
-    <div class="controls">
-      <button id="prevBtn" type="button" title="Prev (←)">◀</button>
-      <button id="nextBtn" type="button" title="Next (→)">▶</button>
-      <button id="glossaryBtn" type="button" class="icon" title="Glossary (G)" aria-haspopup="dialog" aria-controls="glossary" aria-expanded="false">📖</button>
-      <button id="fsToggle" type="button" title="Fullscreen (F)">Fullscreen</button>
-      <button id="handoutToggle" type="button" title="Handout View (H)" aria-pressed="false">Handout</button>
-      <button id="printBtn" type="button" title="Print Handout (P)">Print</button>
-      <button id="themeToggle" type="button" title="Dark/Light (D)" aria-pressed="false">🌙</button>
-      <span id="clock" aria-live="polite">00:00</span>
-      <button id="timerToggle" type="button" title="Start/Pause Timer (T)">Timer</button>
-    </div>
-  </header>
+  <!-- no topbar -->
 
   <div class="progress-wrap" aria-hidden="true">
     <div id="progressBar" class="progress-bar"></div>
@@ -130,16 +114,13 @@
             <span>Uptake: <strong id="uptake">balanced</strong></span>
           </div>
 
-          <!-- Schematic: cell with arrows that flip direction/size -->
           <svg id="osmoticViz" viewBox="0 0 300 140" class="viz" role="img" aria-label="Water movement across a root cell">
             <rect x="10" y="10" width="280" height="120" rx="16" ry="16" fill="#ffffff" stroke="#222" stroke-width="3"/>
             <rect x="110" y="25" width="80" height="90" rx="12" ry="12" fill="#eaf7ff" stroke="#222" stroke-width="3"/>
-            <!-- arrows left (into cell) -->
             <g id="arrowsIn" fill="#2f7d32">
               <polygon points="80,45 100,45 100,40 115,50 100,60 100,55 80,55"/>
               <polygon points="80,75 100,75 100,70 115,80 100,90 100,85 80,85"/>
             </g>
-            <!-- arrows right (out of cell) -->
             <g id="arrowsOut" fill="#c62828" opacity="0.25">
               <polygon points="205,45 185,45 185,40 170,50 185,60 185,55 205,55"/>
               <polygon points="205,75 185,75 185,70 170,80 185,90 185,85 205,85"/>
@@ -157,7 +138,6 @@
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>Quick check</h2>
-
         <div class="quiz" data-correct="b">
           <p class="q">Q1. Colligative properties mostly depend on…</p>
           <button class="opt" data-key="a">A. The chemical identity of the solute</button>
@@ -165,7 +145,6 @@
           <button class="opt" data-key="c">C. The color of the solution</button>
           <p class="feedback" aria-live="polite"></p>
         </div>
-
         <div class="quiz" data-correct="c">
           <p class="q">Q2. If your nutrient solution is too concentrated, roots most likely…</p>
           <button class="opt" data-key="a">A. Take up more water</button>
@@ -220,7 +199,7 @@
   </main>
 
   <footer class="help">
-    <p>Keys: ← / → navigate • 📖 glossary (G) • T timer • F fullscreen • D dark • H handout • P print • Space = next</p>
+    <p>Keys: ← / → navigate • 📖 glossary (G) • F fullscreen • D dark • H handout • P print • Space = next</p>
   </footer>
 
   <!-- Glossary modal -->
