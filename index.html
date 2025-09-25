@@ -117,10 +117,9 @@
           <li>pH sets what nutrients are available; off-range pH can “lock out” key ions.</li>
           <li><strong>Targets (typical):</strong> hydro 5.5–6.5 • coco 5.8–6.3 • soil 6.2–7.0.</li>
           <li>Adjust slowly: acids (to lower) or bases (to raise). Log changes and re-check after mixing.</li>
-          <li>Symptoms: high pH → Fe/Mn lockout (interveinal chlorosis); low pH → Ca/Mg issues, tip burn.</li>
+          <li>Symptoms: high pH → Fe/Mn lockout; low pH → Ca/Mg issues, tip burn.</li>
           <li>Measure well: fresh calibration, temperature-aware probes, rinse between readings.</li>
         </ul>
-        <details class="more"><summary>Tip</summary>Make pH moves after you set EC — nutrients can shift pH.</details>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
@@ -162,10 +161,10 @@
 
     <!-- ——— PART 3: Reaction Coordinates (Cannabis-only) ——— -->
 
-    <!-- RC Slide A: What is a reaction coordinate?  -->
+    <!-- RC Slide A: What is a reaction coordinate? (cannabis context) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame center">
-        <h2>Reaction coordinates — what they show</h2>
+        <h2>Reaction Coordinates</h2>
         <ul class="bullets">
           <li><strong>The idea:</strong> Imagine a hill between “before” and “after.” The path across that hill is the <em>reaction coordinate</em>.</li>
           <li><strong>The hump:</strong> The highest point is the <em>transition state</em>. The hill’s height is the <em>activation energy (E<sub>a</sub>)</em>.</li>
@@ -200,7 +199,7 @@
       </div>
     </section>
 
-    <!-- RC Slide C: Interactive THCA diagram -->
+    <!-- RC Slide C: Interactive THCA diagram (temp + “matrix assist”) -->
     <section class="slide" data-duration="50">
       <div class="inner poster-frame center">
         <h2>Reaction Coordinate — THCA decarb</h2>
@@ -245,7 +244,7 @@
             <text id="eaText" x="328" y="210" class="ea-text">Eₐ</text>
           </g>
 
-          <!-- Temperature effect: animated “molecules” -->
+          <!-- Temperature effect dots -->
           <g id="tempDots">
             <circle class="dot" cx="120" cy="300" r="5"/>
             <circle class="dot" cx="140" cy="300" r="5" style="animation-delay:.25s"/>
@@ -253,7 +252,7 @@
             <circle class="dot" cx="180" cy="300" r="5" style="animation-delay:.75s"/>
           </g>
 
-          <!-- Terpene caution marker -->
+          <!-- Terpene caution -->
           <g id="terpCaution" class="hidden">
             <polygon points="580,80 560,120 600,120" fill="#ff9800"/>
             <text x="560" y="140" class="axis" style="fill:#ff9800;font-weight:700">Terpene caution</text>
@@ -265,92 +264,80 @@
       </div>
     </section>
 
-    <!-- ——— PART 4: Model Molecule Structures (THC & CBD) ——— -->
+    <!-- ——— PART 4: Modeling Molecules (THC & CBD only) ——— -->
 
-    <!-- Slide: THC -->
+    <!-- Slide THC -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
         <div>
-          <img src="assets/thc.jpg" alt="THC 2D structure">
+          <img src="assets/thc.jpg" alt="THC 2D structure" />
         </div>
         <div>
           <h2>(−)-Δ9-trans-Tetrahydrocannabinol</h2>
-          <p class="tagline">Molecular formula: <strong>C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></strong></p>
           <ul class="bullets">
-            <li>Key features: phenolic –OH, terpene backbone, cyclic ether</li>
-            <li>Very low water solubility; prefers oils/fats</li>
-            <li>Molar mass ≈ 314.46 g·mol⁻¹</li>
+            <li><strong>Molecular formula:</strong> C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></li>
+            <li>Hydrophobic core with phenolic –OH; volatile/oxidation sensitive when heated</li>
+            <li>Forms via decarboxylation of THCA (removal of CO₂)</li>
           </ul>
-
           <div class="mol3d">
-            <div id="thc3d" class="mol-canvas" aria-label="THC schematic 3D model"></div>
-            <div class="mol-controls">
-              <label><input type="checkbox" id="thcSpin" checked> Spin</label>
-              <button class="btn" id="thcReset">Reset view</button>
+            <div id="viewer-thc" class="viewer" aria-label="THC 3D model" role="img"></div>
+            <div class="viewer-controls">
+              <button class="btn" data-reset="viewer-thc">Reset view</button>
+              <label><input type="checkbox" data-style="viewer-thc" checked> Ball &amp; stick</label>
             </div>
-            <p class="mol-note">Schematic ball-and-stick for teaching (not exact geometry).</p>
+            <p class="viz-note">Schematic 3D model (illustrative).</p>
           </div>
+          <div class="happy">HAPPY GROWING!</div>
         </div>
-        <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
 
-    <!-- Slide: CBD -->
+    <!-- Slide CBD -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
         <div>
-          <img src="assets/cbd.jpg" alt="CBD 2D structure">
+          <img src="assets/cbd.jpg" alt="CBD 2D structure" />
         </div>
         <div>
           <h2>(−)-trans-Cannabidiol</h2>
-          <p class="tagline">Molecular formula: <strong>C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></strong></p>
           <ul class="bullets">
-            <li>Key features: two phenolic –OH groups, flexible backbone</li>
-            <li>Very low water solubility; prefers oils/fats</li>
-            <li>Molar mass ≈ 314.46 g·mol⁻¹</li>
+            <li><strong>Molecular formula:</strong> C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></li>
+            <li>Two phenolic –OH groups; different ring connectivity from THC</li>
+            <li>Distinct receptor interactions vs. THC</li>
           </ul>
-
           <div class="mol3d">
-            <div id="cbd3d" class="mol-canvas" aria-label="CBD schematic 3D model"></div>
-            <div class="mol-controls">
-              <label><input type="checkbox" id="cbdSpin" checked> Spin</label>
-              <button class="btn" id="cbdReset">Reset view</button>
+            <div id="viewer-cbd" class="viewer" aria-label="CBD 3D model" role="img"></div>
+            <div class="viewer-controls">
+              <button class="btn" data-reset="viewer-cbd">Reset view</button>
+              <label><input type="checkbox" data-style="viewer-cbd" checked> Ball &amp; stick</label>
             </div>
-            <p class="mol-note">Schematic ball-and-stick for teaching (not exact geometry).</p>
+            <p class="viz-note">Schematic 3D model (illustrative).</p>
           </div>
+          <div class="happy">HAPPY GROWING!</div>
         </div>
-        <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
 
-    <!-- References -->
+    <!-- References (merged & updated) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
         <div class="ref-list">
-          <!-- From Parts 1–2 -->
-          <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15. https://doi.org/10.1186/s13007-024-01265-5</p>
-          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638. https://doi.org/10.1371/journal.pone.0302638</p>
-          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537. https://doi.org/10.1104/pp.114.246124</p>
-          <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
-          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality: An evaluation of the effects of ecological water regeneration in greenhouse cultivation. <em>GSRBPS, 4</em>(2), 156–170.</p>
-          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). Rooted in therapeutics: Comprehensive analyses of <em>Cannabis sativa</em> root extracts reveals potent antioxidant, anti-inflammatory, and bactericidal properties. <em>Frontiers in Pharmacology, 15</em>, 1465136.</p>
-          <p>Grossmann, G., et al. (2015). The divining root: Moisture-driven responses of roots at the micro- and macro-scale. <em>PNAS</em>.</p>
-          <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system. <em>Plants, 12</em>(3), 493.</p>
-          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204.</p>
-          <p>Nosalewicz, A., et al. (2024). Understanding root growth under water deficits. <em>Frontiers in Plant Science</em>.</p>
-          <p>Park, K. S., et al. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
-          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>.</p>
-          <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in roots. <em>Soft Matter, 21</em>(3), 485–497.</p>
-          <p>Saloner, A., &amp; Bernstein, N. (2024). Factors affecting chemical composition of cannabis extracts. <em>Frontiers in Plant Science</em>.</p>
-          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source matters in medical cannabis. <em>Frontiers in Plant Science</em>.</p>
-          <p>Singh, H., et al. (2022). Silicon improves uptake under stress. <em>CSSPA, 53</em>(16), 2089–2108.</p>
-          <p>Zhao, C., et al. (2022). Root osmotic sensing to systemic responses. <em>Plant Physiology</em>.</p>
+          <!-- Colligative / pH / Roots / Hydro (previous) -->
+          <p>Azoulay-Shemer, T., et al. (2024). Optimizing cannabis cultivation. <em>Plant Methods, 20</em>(1), 1–15.</p>
+          <p>Bamsey, M., et al. (2024). Nutrient management for micro hydroponics. <em>PLOS ONE, 19</em>(5), e0302638.</p>
+          <p>Barberon, M. (2014). Radial transport of nutrients. <em>Plant Physiology, 166</em>(2), 528–537.</p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Indoor ag water/nutrient mgmt. <em>Sustainability, 14</em>(16), 10204.</p>
+          <p>Park, K. S., et al. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science</em>.</p>
+          <p>Saloner, A., &amp; Bernstein, N. (2024). Factors affecting cannabis extract composition. <em>Frontiers in Plant Science</em>.</p>
 
-          <!-- Reaction coordinates / phys org -->
+          <!-- Reaction coordinates / physical chem -->
+          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins’ Physical Chemistry</em> (11th ed.). OUP.</p>
           <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>. University Science Books.</p>
-          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins' Physical Chemistry</em> (11th ed.). Oxford University Press.</p>
-          <p>Smith, M. B. (2020). <em>March's Advanced Organic Chemistry</em> (8th ed.). Wiley.</p>
+
+          <!-- Molecule structures -->
+          <p>PubChem Compound Summary for CID 2978 (Δ<sup>9</sup>-THC) &amp; CID 644019 (CBD). National Center for Biotechnology Information.</p>
+          <p>ElSohly, M. A., &amp; Gul, W. (2014). Constituents of Cannabis sativa. In <em>Handbook of Cannabis</em>. OUP.</p>
         </div>
 
         <!-- presenter-only link (add ?presenter=1 to show) -->
@@ -388,9 +375,9 @@
     </div>
   </div>
 
-  <!-- Three.js (for the simple 3D viewers) -->
-  <script type="module" src="https://unpkg.com/three@0.158.0/build/three.module.js"></script>
-  <!-- Main app -->
-  <script type="module" src="main.js"></script>
+  <!-- Three.js for 3D molecule viewers -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
