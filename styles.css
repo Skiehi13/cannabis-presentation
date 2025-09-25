@@ -64,6 +64,22 @@ body.paper::before{
 }
 .dark .inner.poster-frame::after{ border-color: rgba(255,255,255,.18); }
 
+/* Showcase slide (use more of the screen) */
+.showcase .inner.poster-frame{ padding:4px; border-width:5px; }
+.showcase .inner.poster-frame::after{ display:none; } /* reclaim space */
+.fullbleed-max{ margin:0; height:100%; }
+.fullbleed-max img{
+  display:block;
+  width:100%;
+  height:min(92vh, 98svh); /* BIG: almost the whole screen */
+  object-fit:contain;       /* center automatically */
+  border-radius:18px;
+  background:#fff;
+  border:0;                 /* no extra border; frame provides it */
+  box-shadow:none;
+}
+.dark .fullbleed-max img{ background:#0e1418; }
+
 /* Title */
 .titlecard h1{ font-family:'Fredoka'; font-weight:700; font-size:2.8rem; line-height:1.05; margin:.2rem 0 .25rem; }
 .titlecard h1::after{ content:""; display:block; height:10px; margin-top:6px; border-radius:6px; background:var(--rainbow); }
@@ -79,20 +95,6 @@ img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px
 .dark img{ background:#0e1418; }
 .sticker{transform:rotate(-0.8deg)}
 figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
-
-/* pH infographic: full-slide feel (no zoom) */
-.fullbleed{ margin:.2rem 0 .2rem; }
-.fullbleed img{
-  display:block;
-  width:100%;
-  height:min(72vh, 82svh);   /* big, but leaves room for title + footer */
-  object-fit:contain;        /* keep proportions, center automatically */
-  border-radius:18px;
-  background:#fff;
-  border:4px solid var(--ink);
-  box-shadow: 0 6px 0 rgba(0,0,0,.12);
-}
-.dark .fullbleed img{ background:#0e1418; }
 
 /* Text lists */
 h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
