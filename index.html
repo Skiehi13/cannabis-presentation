@@ -162,10 +162,10 @@
 
     <!-- ——— PART 3: Reaction Coordinates (Cannabis-only) ——— -->
 
-    <!-- RC Slide A: What is a reaction coordinate? (plain English + cannabis context) -->
+    <!-- RC Slide A: What is a reaction coordinate?  -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame center">
-        <h2>Reaction coordinates — plain English</h2>
+        <h2>Reaction coordinates — what they show</h2>
         <ul class="bullets">
           <li><strong>The idea:</strong> Imagine a hill between “before” and “after.” The path across that hill is the <em>reaction coordinate</em>.</li>
           <li><strong>The hump:</strong> The highest point is the <em>transition state</em>. The hill’s height is the <em>activation energy (E<sub>a</sub>)</em>.</li>
@@ -200,7 +200,7 @@
       </div>
     </section>
 
-    <!-- RC Slide C: Interactive THCA diagram (temp + “matrix assist”) -->
+    <!-- RC Slide C: Interactive THCA diagram -->
     <section class="slide" data-duration="50">
       <div class="inner poster-frame center">
         <h2>Reaction Coordinate — THCA decarb</h2>
@@ -237,7 +237,7 @@
           <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,140 460,320 620,240" />
           <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,180 460,300 620,240" />
 
-          <!-- E_a indicator (position updated by JS) -->
+          <!-- E_a indicator -->
           <g id="eaGroup">
             <line id="eaLine" x1="320" y1="150" x2="320" y2="280" class="ea-line"/>
             <polygon id="eaArrowUp"   points="320,140 314,154 326,154" class="ea-arrow"/>
@@ -253,7 +253,7 @@
             <circle class="dot" cx="180" cy="300" r="5" style="animation-delay:.75s"/>
           </g>
 
-          <!-- Terpene caution marker (shown at high T) -->
+          <!-- Terpene caution marker -->
           <g id="terpCaution" class="hidden">
             <polygon points="580,80 560,120 600,120" fill="#ff9800"/>
             <text x="560" y="140" class="axis" style="fill:#ff9800;font-weight:700">Terpene caution</text>
@@ -265,7 +265,65 @@
       </div>
     </section>
 
-    <!-- Slide 10: References (merged) -->
+    <!-- ——— PART 4: Model Molecule Structures (THC & CBD) ——— -->
+
+    <!-- Slide: THC -->
+    <section class="slide" data-duration="45">
+      <div class="inner poster-frame two-up center">
+        <div>
+          <img src="assets/thc.jpg" alt="THC 2D structure">
+        </div>
+        <div>
+          <h2>(−)-Δ9-trans-Tetrahydrocannabinol</h2>
+          <p class="tagline">Molecular formula: <strong>C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></strong></p>
+          <ul class="bullets">
+            <li>Key features: phenolic –OH, terpene backbone, cyclic ether</li>
+            <li>Very low water solubility; prefers oils/fats</li>
+            <li>Molar mass ≈ 314.46 g·mol⁻¹</li>
+          </ul>
+
+          <div class="mol3d">
+            <div id="thc3d" class="mol-canvas" aria-label="THC schematic 3D model"></div>
+            <div class="mol-controls">
+              <label><input type="checkbox" id="thcSpin" checked> Spin</label>
+              <button class="btn" id="thcReset">Reset view</button>
+            </div>
+            <p class="mol-note">Schematic ball-and-stick for teaching (not exact geometry).</p>
+          </div>
+        </div>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- Slide: CBD -->
+    <section class="slide" data-duration="45">
+      <div class="inner poster-frame two-up center">
+        <div>
+          <img src="assets/cbd.jpg" alt="CBD 2D structure">
+        </div>
+        <div>
+          <h2>(−)-trans-Cannabidiol</h2>
+          <p class="tagline">Molecular formula: <strong>C<sub>21</sub>H<sub>30</sub>O<sub>2</sub></strong></p>
+          <ul class="bullets">
+            <li>Key features: two phenolic –OH groups, flexible backbone</li>
+            <li>Very low water solubility; prefers oils/fats</li>
+            <li>Molar mass ≈ 314.46 g·mol⁻¹</li>
+          </ul>
+
+          <div class="mol3d">
+            <div id="cbd3d" class="mol-canvas" aria-label="CBD schematic 3D model"></div>
+            <div class="mol-controls">
+              <label><input type="checkbox" id="cbdSpin" checked> Spin</label>
+              <button class="btn" id="cbdReset">Reset view</button>
+            </div>
+            <p class="mol-note">Schematic ball-and-stick for teaching (not exact geometry).</p>
+          </div>
+        </div>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- References -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
@@ -279,7 +337,6 @@
           <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). Rooted in therapeutics: Comprehensive analyses of <em>Cannabis sativa</em> root extracts reveals potent antioxidant, anti-inflammatory, and bactericidal properties. <em>Frontiers in Pharmacology, 15</em>, 1465136.</p>
           <p>Grossmann, G., et al. (2015). The divining root: Moisture-driven responses of roots at the micro- and macro-scale. <em>PNAS</em>.</p>
           <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system. <em>Plants, 12</em>(3), 493.</p>
-          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). ML to remove ion interference in nutrient solutions. <em>arXiv</em>:1907.10794.</p>
           <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204.</p>
           <p>Nosalewicz, A., et al. (2024). Understanding root growth under water deficits. <em>Frontiers in Plant Science</em>.</p>
           <p>Park, K. S., et al. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
@@ -290,7 +347,7 @@
           <p>Singh, H., et al. (2022). Silicon improves uptake under stress. <em>CSSPA, 53</em>(16), 2089–2108.</p>
           <p>Zhao, C., et al. (2022). Root osmotic sensing to systemic responses. <em>Plant Physiology</em>.</p>
 
-          <!-- Reaction Coordinates / Physical Chemistry refs -->
+          <!-- Reaction coordinates / phys org -->
           <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>. University Science Books.</p>
           <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins' Physical Chemistry</em> (11th ed.). Oxford University Press.</p>
           <p>Smith, M. B. (2020). <em>March's Advanced Organic Chemistry</em> (8th ed.). Wiley.</p>
@@ -331,6 +388,9 @@
     </div>
   </div>
 
-  <script src="main.js"></script>
+  <!-- Three.js (for the simple 3D viewers) -->
+  <script type="module" src="https://unpkg.com/three@0.158.0/build/three.module.js"></script>
+  <!-- Main app -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
