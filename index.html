@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-scheme="auto">
 <head>
   <meta charset="utf-8" />
   <title>Stoney Science — Chemistry for Cannabis Cultivators</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark">
   <link href="styles.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
@@ -19,6 +20,9 @@
       <button id="nextBtn" type="button" title="Next (→)">▶</button>
       <button id="glossaryBtn" type="button" class="icon" title="Glossary (G)" aria-haspopup="dialog" aria-controls="glossary" aria-expanded="false">📖</button>
       <button id="fsToggle" type="button" title="Fullscreen (F)">Fullscreen</button>
+      <button id="handoutToggle" type="button" title="Handout View (H)" aria-pressed="false">Handout</button>
+      <button id="printBtn" type="button" title="Print Handout (P)">Print</button>
+      <button id="themeToggle" type="button" title="Dark/Light (D)" aria-pressed="false">🌙</button>
       <span id="clock" aria-live="polite">00:00</span>
       <button id="timerToggle" type="button" title="Start/Pause Timer (T)">Timer</button>
     </div>
@@ -216,7 +220,7 @@
   </main>
 
   <footer class="help">
-    <p>Keys: ← / → to navigate • 📖 = glossary (or press G) • T = timer • F = fullscreen • Space = next</p>
+    <p>Keys: ← / → navigate • 📖 glossary (G) • T timer • F fullscreen • D dark • H handout • P print • Space = next</p>
   </footer>
 
   <!-- Glossary modal -->
