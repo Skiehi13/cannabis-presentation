@@ -25,7 +25,7 @@ body.paper::before{
 }
 .dark.paper::before{opacity:.15}
 
-/* Progress bar (hidden while presenting) */
+/* Progress bar (hidden in presenting mode) */
 .progress-wrap{height:8px; background:var(--barbg); margin:10px; border-radius:8px; border:1px solid var(--barstroke)}
 .progress-bar{height:8px; width:0%; background:var(--rainbow); border-radius:8px; transition:width .25s ease}
 .presenting .progress-wrap{ display:none !important; }
@@ -34,7 +34,7 @@ body.paper::before{
 #deck{ height:calc(100svh - 50px); padding:14px; outline:none; position:relative; }
 .presenting #deck{ position:fixed; inset:0; padding:0; height:100svh; width:100vw; overflow:hidden; }
 
-/* Only one slide shows */
+/* One slide at a time */
 .slide{
   display:none;
   position:absolute; inset:0;
@@ -52,7 +52,7 @@ body.paper::before{
 @keyframes enterRight{ from{opacity:0; transform:translateX(36px)} to{opacity:1; transform:none} }
 @keyframes enterLeft { from{opacity:0; transform:translateX(-36px)} to{opacity:1; transform:none} }
 
-/* Fit scaler */
+/* Inner scaling block */
 .inner{ max-width:1100px; margin:0 auto; padding:1.1rem; transform-origin:center top; }
 .center{text-align:center}
 
@@ -80,7 +80,21 @@ img{max-width:100%; height:auto; border-radius:18px; background:#fff; border:4px
 .sticker{transform:rotate(-0.8deg)}
 figcaption{font-size:.9rem; color:var(--muted); margin-top:.35rem}
 
-/* Text */
+/* pH infographic: full-slide feel (no zoom) */
+.fullbleed{ margin:.2rem 0 .2rem; }
+.fullbleed img{
+  display:block;
+  width:100%;
+  height:min(72vh, 82svh);   /* big, but leaves room for title + footer */
+  object-fit:contain;        /* keep proportions, center automatically */
+  border-radius:18px;
+  background:#fff;
+  border:4px solid var(--ink);
+  box-shadow: 0 6px 0 rgba(0,0,0,.12);
+}
+.dark .fullbleed img{ background:#0e1418; }
+
+/* Text lists */
 h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .bullets{list-style:none; padding:0; margin:0 0 1rem 0; font-size:1.08rem}
 .bullets li{margin:.5rem 0; padding-left:1.5rem; position:relative}
@@ -123,33 +137,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
 .glossary-wrap dt{font-family:'Kalam'; font-weight:700}
 
-/* ----- pH infographic pan/zoom ----- */
-.pz{ position:relative; margin:.4rem auto 0; max-width:100%; }
-.pz-viewport{
-  height:min(68vh, 78svh);
-  border:4px solid var(--ink);
-  border-radius:18px;
-  overflow:hidden;
-  background:#fff;
-  touch-action: none;
-  box-shadow: 0 6px 0 rgba(0,0,0,.12);
-}
-.dark .pz-viewport{ background:#0e1418; }
-.pz-img{
-  user-select:none; -webkit-user-drag:none; pointer-events:none;
-  transform-origin: 0 0;
-}
-.pz-controls{
-  position:absolute; right:.6rem; bottom:.6rem; display:flex; gap:.35rem;
-}
-.pz-btn{
-  border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.25rem .55rem; font-weight:700; cursor:pointer;
-  box-shadow: 0 3px 0 rgba(0,0,0,.12);
-}
-.dark .pz-btn{ background:#12171c; }
-.pz-hint{ font-size:.9rem; color:var(--muted); margin:.35rem 0 0; }
-
-/* Handout */
+/* Handout mode */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
 .handout .slide{ display:block !important; position:static; height:auto; overflow:visible; margin: 0 auto 24px; }
