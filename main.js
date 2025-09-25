@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", function () {
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
-  // Start at slide 0; no stacking
+  // Start clean
   var i = 0;
   slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
   slides[0].classList.add("current");
@@ -17,7 +17,6 @@ window.addEventListener("DOMContentLoaded", function () {
     if (bar) bar.style.width = ((elapsed/total)*100) + "%";
   }
 
-  // Fit-to-viewport scaler for each slide's .inner
   function fitSlide(slide){
     if(!slide || document.body.classList.contains("handout")) return resetSlide(slide);
     var inner = slide.querySelector(".inner");
@@ -50,11 +49,9 @@ window.addEventListener("DOMContentLoaded", function () {
   }
   function fitCurrent(){ fitSlide(slides[i]); }
 
-  // Show a specific slide
   function show(k){
     var nextIdx = (k + slides.length) % slides.length;
     if (nextIdx === i) return;
-
     var forward = (nextIdx > i) || (i === slides.length - 1 && nextIdx === 0);
 
     slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
@@ -70,7 +67,6 @@ window.addEventListener("DOMContentLoaded", function () {
   function next(){ ensurePresenting(); if(!isHandout()) show(i+1); }
   function prev(){ ensurePresenting(); if(!isHandout()) show(i-1); }
 
-  // Keys
   document.addEventListener("keydown", function(e){
     if(e.key==="ArrowRight"||e.key===" "){ next(); }
     if(e.key==="ArrowLeft"){ prev(); }
@@ -79,12 +75,8 @@ window.addEventListener("DOMContentLoaded", function () {
     if(e.key && e.key.toLowerCase()==="h"){ toggleHandout(); }
     if(e.key && e.key.toLowerCase()==="p"){ doPrint(); }
     if(e.key && e.key.toLowerCase()==="d"){ toggleTheme(); }
-    if (e.altKey && e.key && e.key.toLowerCase() === "s" && presenterTools){
-      presenterTools.hidden = !presenterTools.hidden; fitCurrent();
-    }
   });
 
-  // Click to enter presenting mode & try fullscreen
   var started = false;
   function ensurePresenting(){
     if(started) return;
@@ -114,14 +106,11 @@ window.addEventListener("DOMContentLoaded", function () {
   // Glossary modal
   var glossary = document.getElementById("glossary");
   var closeGloss = glossary ? glossary.querySelector(".close") : null;
-  function toggleGlossary(open){
-    if(!glossary) return;
-    glossary.hidden = !open;
-  }
+  function toggleGlossary(open){ if(glossary) glossary.hidden = !open; }
   if (closeGloss)  closeGloss.addEventListener("click", function(){ toggleGlossary(false); });
   if (glossary)    glossary.addEventListener("click", function(e){ if(e.target===glossary) toggleGlossary(false); });
 
-  // Inline def buttons
+  // Inline def buttons open glossary
   var defBtns = document.querySelectorAll(".def");
   for (var d=0; d<defBtns.length; d++){
     defBtns[d].addEventListener("click", function(){
@@ -133,117 +122,6 @@ window.addEventListener("DOMContentLoaded", function () {
       }, 50);
     });
   }
-
-  // -------- Reaction Coordinates (THCA) interactivity --------
-  (function(){
-    var svg = document.getElementById("rcDiagram");
-    if(!svg) return;
-
-    // Controls
-    var chkEa = document.getElementById("rcEa");
-    var chkCat = document.getElementById("rcCatalyst");
-    var tempSlider = document.getElementById("rcTemp");
-    var tempVal = document.getElementById("rcTempVal");
-    var btnReset = document.getElementById("rcReset");
-
-    // Readouts
-    var eaVal = document.getElementById("rcEaVal");
-    var relRate = document.getElementById("rcRelRate");
-
-    // SVG elems
-    var pathUncat = document.getElementById("curve-uncat");
-    var pathCat   = document.getElementById("curve-cat");
-    var eaGroup   = document.getElementById("eaGroup");
-    var eaLine    = document.getElementById("eaLine");
-    var eaArrowUp = document.getElementById("eaArrowUp");
-    var eaArrowDn = document.getElementById("eaArrowDown");
-    var eaText    = document.getElementById("eaText");
-    var dots      = document.getElementById("tempDots");
-    var terpWarn  = document.getElementById("terpCaution");
-
-    // Constants
-    var Ea_ref_kJ = 120;             // baseline THCA decarb E_a
-    var catalystFactor = 0.70;       // ~30% lower E_a with matrix/solvent assist (illustrative)
-    var TrefC = 120, R = 8.314;      // reference temp and gas constant
-
-    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
-    function kRel(Ea_kJ, T_C){
-      var T = T_C + 273.15, Tref = TrefC + 273.15;
-      var Ea = Ea_kJ * 1000; // J/mol
-      var exponent = -Ea/R * (1/T - 1/Tref);
-      return Math.exp(exponent); // k(T)/k(Tref)
-    }
-
-    // Map E_a to peak Y position (lower E_a => lower hump)
-    function yPeakFromEa(Ea_kJ){
-      var EaMin = 70, EaMax = 140;            // kJ/mol range for mapping
-      var yMax = 160, yMin = 90;              // px on SVG (y small = higher peak)
-      var t = clamp((Ea_kJ - EaMin)/(EaMax - EaMin), 0, 1);
-      return yMax - t * (yMax - yMin);        // 160 → 90 as Ea increases
-    }
-
-    function buildCurve(yPeak){
-      var x0=80,  y0=280;
-      var x3=620, y3=240;
-      var x1=220, x2=460;
-      var y1 = (y0 + yPeak)*0.45;
-      var y2 = (y3 + yPeak)*0.55 + 40;
-      return `M ${x0},${y0} C ${x1},${y1} ${x2},${y2} ${x3},${y3}`;
-    }
-
-    function sync(){
-      var useCat = !!(chkCat && chkCat.checked);
-      var T_C = tempSlider ? Number(tempSlider.value) : TrefC;
-      var Ea_kJ = useCat ? Ea_ref_kJ * catalystFactor : Ea_ref_kJ;
-
-      if (tempVal) tempVal.textContent = T_C.toFixed(0) + " °C";
-      if (eaVal) eaVal.textContent = Ea_kJ.toFixed(0);
-      if (relRate) relRate.textContent = kRel(Ea_kJ, T_C).toFixed(2) + "×";
-
-      var yPeak = yPeakFromEa(Ea_kJ);
-      var d = buildCurve(yPeak);
-      if (useCat){
-        pathCat.classList.remove("hidden");
-        pathUncat.classList.add("hidden");
-        pathCat.setAttribute("d", d);
-      }else{
-        pathCat.classList.add("hidden");
-        pathUncat.classList.remove("hidden");
-        pathUncat.setAttribute("d", d);
-      }
-
-      if (chkEa && chkEa.checked){
-        eaGroup.style.display = "block";
-        var xPeak = 320, yReact = 280, yTop = yPeak;
-        eaLine.setAttribute("x1", xPeak); eaLine.setAttribute("x2", xPeak);
-        eaLine.setAttribute("y1", yTop);  eaLine.setAttribute("y2", yReact);
-        eaArrowUp.setAttribute("points", `${xPeak},${yTop-10} ${xPeak-6},${yTop+4} ${xPeak+6},${yTop+4}`);
-        eaArrowDn.setAttribute("points", `${xPeak},${yReact+10} ${xPeak-6},${yReact-4} ${xPeak+6},${yReact-4}`);
-        eaText.setAttribute("x", xPeak+8); eaText.setAttribute("y", (yTop + yReact)/2);
-      } else {
-        eaGroup.style.display = "none";
-      }
-
-      var durRef = 2.2;
-      var T = T_C + 273.15, Tref = TrefC + 273.15;
-      var speedFactor = clamp(T/Tref, 0.6, 1.5);
-      dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
-
-      if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
-    }
-
-    if (chkEa)  chkEa.addEventListener("change", sync);
-    if (chkCat) chkCat.addEventListener("change", sync);
-    if (tempSlider) tempSlider.addEventListener("input", sync);
-    if (btnReset) btnReset.addEventListener("click", function(){
-      if (chkEa) chkEa.checked = true;
-      if (chkCat) chkCat.checked = false;
-      if (tempSlider){ tempSlider.value = TrefC; }
-      sync();
-    });
-
-    sync();
-  })();
 
   // Osmosis slider behavior
   (function(){
@@ -265,43 +143,132 @@ window.addEventListener("DOMContentLoaded", function () {
     update();
   })();
 
-  // Presenter tools toggle (optional)
-  var presenterTools = document.getElementById("presenterTools");
-  try {
-    var qs = new URLSearchParams(location.search);
-    if (presenterTools && qs.get("presenter") === "1") presenterTools.hidden = false;
-  } catch(e){}
+  // -------- Reaction Coordinates (THCA) interactivity --------
+  (function(){
+    var svg = document.getElementById("rcDiagram");
+    if(!svg) return;
 
-  // Handout / Print / Theme
+    var chkEa = document.getElementById("rcEa");
+    var chkCat = document.getElementById("rcCatalyst");
+    var tempSlider = document.getElementById("rcTemp");
+    var tempVal = document.getElementById("rcTempVal");
+    var btnReset = document.getElementById("rcReset");
+
+    var eaVal = document.getElementById("rcEaVal");
+    var relRate = document.getElementById("rcRelRate");
+
+    var pathUncat = document.getElementById("curve-uncat");
+    var pathCat   = document.getElementById("curve-cat");
+    var eaGroup   = document.getElementById("eaGroup");
+    var eaLine    = document.getElementById("eaLine");
+    var eaArrowUp = document.getElementById("eaArrowUp");
+    var eaArrowDn = document.getElementById("eaArrowDown");
+    var eaText    = document.getElementById("eaText");
+    var dots      = document.getElementById("tempDots");
+    var terpWarn  = document.getElementById("terpCaution");
+
+    var Ea_ref_kJ = 120;
+    var catalystFactor = 0.70;
+    var TrefC = 120, R = 8.314;
+
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function kRel(Ea_kJ, T_C){
+      var T = T_C + 273.15, Tref = TrefC + 273.15;
+      var Ea = Ea_kJ * 1000;
+      var exponent = -Ea/R * (1/T - 1/Tref);
+      return Math.exp(exponent);
+    }
+    function yPeakFromEa(Ea_kJ){
+      var EaMin = 70, EaMax = 140;
+      var yMax = 160, yMin = 90;
+      var t = clamp((Ea_kJ - EaMin)/(EaMax - EaMin), 0, 1);
+      return yMax - t * (yMax - yMin);
+    }
+    function buildCurve(yPeak){
+      var x0=80,y0=280,x3=620,y3=240,x1=220,x2=460;
+      var y1=(y0+yPeak)*0.45, y2=(y3+yPeak)*0.55+40;
+      return `M ${x0},${y0} C ${x1},${y1} ${x2},${y2} ${x3},${y3}`;
+    }
+    function sync(){
+      var useCat = !!(chkCat && chkCat.checked);
+      var T_C = tempSlider ? Number(tempSlider.value) : TrefC;
+      var Ea_kJ = useCat ? Ea_ref_kJ * catalystFactor : Ea_ref_kJ;
+
+      if (tempVal) tempVal.textContent = T_C.toFixed(0) + " °C";
+      if (eaVal) eaVal.textContent = Ea_kJ.toFixed(0);
+      if (relRate) relRate.textContent = kRel(Ea_kJ, T_C).toFixed(2) + "×";
+
+      var yPeak = yPeakFromEa(Ea_kJ);
+      var d = buildCurve(yPeak);
+      if (useCat){ pathCat.classList.remove("hidden"); pathUncat.classList.add("hidden"); pathCat.setAttribute("d", d); }
+      else { pathCat.classList.add("hidden"); pathUncat.classList.remove("hidden"); pathUncat.setAttribute("d", d); }
+
+      if (chkEa && chkEa.checked){
+        eaGroup.style.display="block";
+        var xPeak=320, yReact=280, yTop=yPeak+0;
+        eaLine.setAttribute("x1",xPeak); eaLine.setAttribute("x2",xPeak);
+        eaLine.setAttribute("y1",yTop);  eaLine.setAttribute("y2",yReact);
+        eaArrowUp.setAttribute("points", `${xPeak},${yTop-10} ${xPeak-6},${yTop+4} ${xPeak+6},${yTop+4}`);
+        eaArrowDn.setAttribute("points", `${xPeak},${yReact+10} ${xPeak-6},${yReact-4} ${xPeak+6},${yReact-4}`);
+        eaText.setAttribute("x",xPeak+8); eaText.setAttribute("y",(yTop+yReact)/2);
+      } else { eaGroup.style.display="none"; }
+
+      var durRef=2.2; var T=T_C+273.15, Tref=TrefC+273.15;
+      var speedFactor = clamp(T/Tref, 0.6, 1.5);
+      if (dots) dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
+
+      if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
+    }
+    if (chkEa)  chkEa.addEventListener("change", sync);
+    if (chkCat) chkCat.addEventListener("change", sync);
+    if (tempSlider) tempSlider.addEventListener("input", sync);
+    if (btnReset) btnReset.addEventListener("click", function(){
+      if (chkEa) chkEa.checked = true;
+      if (chkCat) chkCat.checked = false;
+      if (tempSlider){ tempSlider.value = TrefC; }
+      sync();
+    });
+    sync();
+  })();
+
+  // Theme + utilities
   function isHandout(){ return document.body.classList.contains("handout"); }
-  function toggleHandout(){
-    var on = document.body.classList.toggle("handout");
-    if(on){ slides.forEach(resetSlide); }
-    else { fitCurrent(); }
-  }
-  function doPrint(){
-    var wasHandout = isHandout();
-    if(!wasHandout) document.body.classList.add("handout");
-    setTimeout(function(){ window.print(); if(!wasHandout) document.body.classList.remove("handout"); }, 50);
-  }
-  var saved = null;
-  try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
-  if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){
-    document.body.classList.add("dark");
-  }
-  function toggleTheme(){
-    var dark = document.body.classList.toggle("dark");
-    try { localStorage.setItem("stoneyTheme", dark ? "dark" : "light"); } catch(e){}
-    fitCurrent();
+  function toggleHandout(){ var on = document.body.classList.toggle("handout"); if(on){ slides.forEach(resetSlide); } else { fitCurrent(); } }
+  function doPrint(){ var was = isHandout(); if(!was) document.body.classList.add("handout"); setTimeout(function(){ window.print(); if(!was) document.body.classList.remove("handout"); }, 50); }
+  var saved = null; try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
+  if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){ document.body.classList.add("dark"); }
+  function toggleTheme(){ var dark = document.body.classList.toggle("dark"); try { localStorage.setItem("stoneyTheme", dark ? "dark" : "light"); } catch(e){} fitCurrent(); }
+
+  window.addEventListener("resize", fitCurrent);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCurrent);
+  document.querySelectorAll(".slide img").forEach(function(imgEl){
+    imgEl.addEventListener("load", function(){ if(imgEl.closest(".slide") === slides[i]) fitCurrent(); });
+  });
+
+  setProgress(); fitCurrent(); if (deck) deck.focus();
+
+  // ---------- Simple schematic 3D viewers (Ball-and-Stick / Spacefill) ----------
+  function vec(x,y,z){ return new THREE.Vector3(x,y,z); }
+
+  function addAtom(scene, pos, element, style){
+    var colors = { C:0x555555, O:0xdd3333, H:0xffffff };
+    var base = { C:0.22, O:0.20, H:0.12 };
+    var scale = (style==='spacefill') ? 1.9 : 1.0;  // bigger for spacefill
+    var radius = (base[element]||0.2) * scale;
+
+    var geom = new THREE.SphereGeometry(radius, 24, 24);
+    var mat  = new THREE.MeshStandardMaterial({color:colors[element]||0x888888, metalness:0.1, roughness:0.5});
+    var mesh = new THREE.Mesh(geom, mat);
+    mesh.position.copy(pos);
+    scene.add(mesh);
   }
 
-  // ------------- Simple 3D molecule viewers (schematic) -------------
-  // Utilities
-  function addBond(scene, a, b, color){
+  function addBond(scene, a, b, visible){
+    if (!visible) return;
     var dir = new THREE.Vector3().subVectors(b,a);
     var len = dir.length();
     var geom = new THREE.CylinderGeometry(0.06,0.06,len,16);
-    var mat  = new THREE.MeshStandardMaterial({color: color||0x777777});
+    var mat  = new THREE.MeshStandardMaterial({color:0x777777});
     var mesh = new THREE.Mesh(geom, mat);
     var mid = new THREE.Vector3().addVectors(a,b).multiplyScalar(0.5);
     mesh.position.copy(mid);
@@ -310,77 +277,33 @@ window.addEventListener("DOMContentLoaded", function () {
     mesh.quaternion.setFromAxisAngle(axis.normalize(), ang);
     scene.add(mesh);
   }
-  function addAtom(scene, pos, element){
-    var colors = { C:0x555555, O:0xdd3333, H:0xffffff };
-    var radii  = { C:0.22, O:0.20, H:0.12 };
-    var geom = new THREE.SphereGeometry(radii[element]||0.2, 24, 24);
-    var mat  = new THREE.MeshStandardMaterial({color:colors[element]||0x888888, metalness:0.1, roughness:0.5});
-    var mesh = new THREE.Mesh(geom, mat);
-    mesh.position.copy(pos);
-    scene.add(mesh);
-  }
-  function vec(x,y,z){ return new THREE.Vector3(x,y,z); }
 
-  // Very lightweight, schematic coordinates (not crystallographic)
-  // Ring: hexagon in XY plane; chain: zig-zag; oxygen positions off ring
   function thcData(){
-    // roughly scaled so molecule spans ~3 units
     var atoms = [
-      {el:'C', p:vec(-1.2, 0.7, 0)},  // aromatic ring
-      {el:'C', p:vec( 0.0, 1.1, 0)},
-      {el:'C', p:vec( 1.1, 0.3, 0)},
-      {el:'C', p:vec( 0.9,-0.9, 0)},
-      {el:'C', p:vec(-0.3,-1.3, 0)},
-      {el:'C', p:vec(-1.4,-0.5, 0)},
-      {el:'O', p:vec(-0.6, 1.8, 0.1)}, // phenolic OH
-      {el:'O', p:vec(-0.9,-2.1, 0)},   // ether O link
-      // terpene ring (schematic)
-      {el:'C', p:vec(-1.8,-0.1, 0.9)},
-      {el:'C', p:vec(-2.6, 0.6, 0.2)},
-      {el:'C', p:vec(-2.4,-0.8,-0.5)},
-      // pentyl chain (to the right)
-      {el:'C', p:vec( 2.2, 0.7, 0)},
-      {el:'C', p:vec( 3.4, 0.1, 0.1)},
-      {el:'C', p:vec( 4.6, 0.7, 0)},
-      {el:'C', p:vec( 5.8, 0.1, -0.1)},
-      {el:'C', p:vec( 7.0, 0.7, 0)}
+      {el:'C', p:vec(-1.2, 0.7, 0)}, {el:'C', p:vec( 0.0, 1.1, 0)}, {el:'C', p:vec( 1.1, 0.3, 0)},
+      {el:'C', p:vec( 0.9,-0.9, 0)}, {el:'C', p:vec(-0.3,-1.3, 0)}, {el:'C', p:vec(-1.4,-0.5, 0)},
+      {el:'O', p:vec(-0.6, 1.8, 0.1)}, {el:'O', p:vec(-0.9,-2.1, 0)},
+      {el:'C', p:vec(-1.8,-0.1, 0.9)}, {el:'C', p:vec(-2.6, 0.6, 0.2)}, {el:'C', p:vec(-2.4,-0.8,-0.5)},
+      {el:'C', p:vec( 2.2, 0.7, 0)}, {el:'C', p:vec( 3.4, 0.1, 0.1)}, {el:'C', p:vec( 4.6, 0.7, 0)},
+      {el:'C', p:vec( 5.8, 0.1,-0.1)}, {el:'C', p:vec( 7.0, 0.7, 0)}
     ];
-    var bonds = [
-      [0,1],[1,2],[2,3],[3,4],[4,5],[5,0], // ring
-      [1,6], [4,7], [5,8],[8,9],[8,10],    // O/terp links
-      [2,11],[11,12],[12,13],[13,14],[14,15]
-    ];
+    var bonds = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[1,6],[4,7],[5,8],[8,9],[8,10],[2,11],[11,12],[12,13],[13,14],[14,15]];
     return {atoms,bonds};
   }
   function cbdData(){
     var atoms = [
-      {el:'C', p:vec(-1.2, 0.7, 0)},
-      {el:'C', p:vec( 0.0, 1.1, 0)},
-      {el:'C', p:vec( 1.1, 0.3, 0)},
-      {el:'C', p:vec( 0.9,-0.9, 0)},
-      {el:'C', p:vec(-0.3,-1.3, 0)},
-      {el:'C', p:vec(-1.4,-0.5, 0)},
-      {el:'O', p:vec(-0.6, 1.8, 0.1)}, // phenolic OH
-      {el:'O', p:vec(-1.8,-1.9, 0.1)}, // second phenolic OH
-      // open terpene ring position (schematic)
-      {el:'C', p:vec( 1.8,-1.6, 0.6)},
-      {el:'C', p:vec( 2.6,-0.6, 0.2)},
-      // pentyl chain
-      {el:'C', p:vec( 2.2, 0.7, 0)},
-      {el:'C', p:vec( 3.4, 0.1, 0.1)},
-      {el:'C', p:vec( 4.6, 0.7, 0)},
-      {el:'C', p:vec( 5.8, 0.1, -0.1)},
-      {el:'C', p:vec( 7.0, 0.7, 0)}
+      {el:'C', p:vec(-1.2, 0.7, 0)}, {el:'C', p:vec( 0.0, 1.1, 0)}, {el:'C', p:vec( 1.1, 0.3, 0)},
+      {el:'C', p:vec( 0.9,-0.9, 0)}, {el:'C', p:vec(-0.3,-1.3, 0)}, {el:'C', p:vec(-1.4,-0.5, 0)},
+      {el:'O', p:vec(-0.6, 1.8, 0.1)}, {el:'O', p:vec(-1.8,-1.9, 0.1)},
+      {el:'C', p:vec( 1.8,-1.6, 0.6)}, {el:'C', p:vec( 2.6,-0.6, 0.2)},
+      {el:'C', p:vec( 2.2, 0.7, 0)}, {el:'C', p:vec( 3.4, 0.1, 0.1)}, {el:'C', p:vec( 4.6, 0.7, 0)},
+      {el:'C', p:vec( 5.8, 0.1,-0.1)}, {el:'C', p:vec( 7.0, 0.7, 0)}
     ];
-    var bonds = [
-      [0,1],[1,2],[2,3],[3,4],[4,5],[5,0],
-      [1,6],[5,7],[3,8],[8,9],
-      [2,10],[10,11],[11,12],[12,13],[13,14]
-    ];
+    var bonds = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[1,6],[5,7],[3,8],[8,9],[2,10],[10,11],[11,12],[12,13],[13,14]];
     return {atoms,bonds};
   }
 
-  function buildViewer(containerId, dataFn){
+  function buildViewer(containerId, dataFn, style){
     var el = document.getElementById(containerId);
     if(!el || !window.THREE) return;
 
@@ -409,20 +332,20 @@ window.addEventListener("DOMContentLoaded", function () {
       while(group.children.length) group.remove(group.children[0]);
       var data = dataFn();
 
-      // atoms
-      data.atoms.forEach(function(a){
-        addAtom(group, a.p, a.el);
-      });
-      // bonds
-      data.bonds.forEach(function(idx){
-        addBond(group, data.atoms[idx[0]].p, data.atoms[idx[1]].p, 0x777777);
-      });
+      var showBonds = (style === 'ballstick'); // hide bonds for spacefill
+      data.atoms.forEach(function(a){ addAtom(group, a.p, a.el, style); });
+      data.bonds.forEach(function(idx){ addBond(group, data.atoms[idx[0]].p, data.atoms[idx[1]].p, showBonds); });
     }
     populate();
 
     function reset(){
       controls.reset();
       cam.position.set(0,0,6);
+    }
+
+    function setStyle(next){
+      style = next;
+      populate();
     }
 
     function onResize(){
@@ -432,10 +355,6 @@ window.addEventListener("DOMContentLoaded", function () {
     }
     window.addEventListener("resize", onResize);
 
-    // hook up buttons
-    var resetBtn = document.querySelector('.viewer-controls .btn[data-reset="'+containerId+'"]');
-    if(resetBtn) resetBtn.addEventListener("click", reset);
-
     function animate(){
       requestAnimationFrame(animate);
       controls.update();
@@ -443,56 +362,22 @@ window.addEventListener("DOMContentLoaded", function () {
     }
     animate();
 
-    return {reset, populate};
+    return {reset, setStyle};
   }
 
-  // Build THC & CBD viewers
-  buildViewer("viewer-thc", thcData);
-  buildViewer("viewer-cbd", cbdData);
-
-  // Presenter tools / theme
-  var presenterTools = document.getElementById("presenterTools");
-  try {
-    var qs = new URLSearchParams(location.search);
-    if (presenterTools && qs.get("presenter") === "1") presenterTools.hidden = false;
-  } catch(e){}
-
-  function isHandout(){ return document.body.classList.contains("handout"); }
-  function toggleHandout(){
-    var on = document.body.classList.toggle("handout");
-    if(on){ slides.forEach(resetSlide); }
-    else { fitCurrent(); }
-  }
-  function doPrint(){
-    var wasHandout = isHandout();
-    if(!wasHandout) document.body.classList.add("handout");
-    setTimeout(function(){ window.print(); if(!wasHandout) document.body.classList.remove("handout"); }, 50);
-  }
-  var saved = null;
-  try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
-  if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){
-    document.body.classList.add("dark");
-  }
-  function toggleTheme(){
-    var dark = document.body.classList.toggle("dark");
-    try { localStorage.setItem("stoneyTheme", dark ? "dark" : "light"); } catch(e){}
-    fitCurrent();
-  }
-
-  // Refit triggers
-  window.addEventListener("resize", fitCurrent);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCurrent);
-  document.querySelectorAll(".slide img").forEach(function(imgEl){
-    imgEl.addEventListener("load", function(){
-      if(imgEl.closest(".slide") === slides[i]) fitCurrent();
-    });
+  // THC viewer + radio style toggle
+  var thcViewer = buildViewer("viewer-thc", thcData, 'ballstick');
+  document.querySelectorAll("input[name='thcStyle']").forEach(function(r){
+    r.addEventListener("change", function(){ if (this.checked) thcViewer.setStyle(this.value); });
   });
+  var btnTHCReset = document.querySelector(".btn[data-reset='viewer-thc']");
+  if(btnTHCReset) btnTHCReset.addEventListener("click", function(){ thcViewer.reset(); });
 
-  // Init
-  setProgress();
-  fitCurrent();
-  if (deck) deck.focus();
-
-  // expose some helpers (debug)
-  window._stoney = { next, prev };
+  // CBD viewer + radio style toggle
+  var cbdViewer = buildViewer("viewer-cbd", cbdData, 'ballstick');
+  document.querySelectorAll("input[name='cbdStyle']").forEach(function(r){
+    r.addEventListener("change", function(){ if (this.checked) cbdViewer.setStyle(this.value); });
+  });
+  var btnCBDReset = document.querySelector(".btn[data-reset='viewer-cbd']");
+  if(btnCBDReset) btnCBDReset.addEventListener("click", function(){ cbdViewer.reset(); });
 });
