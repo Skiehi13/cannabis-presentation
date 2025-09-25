@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="paper">
-  <!-- Subtle progress hint (hidden in presenting mode) -->
   <div class="progress-wrap" aria-hidden="true">
     <div id="progressBar" class="progress-bar"></div>
   </div>
@@ -44,7 +43,7 @@
           <li>For cultivation, the headliner is <strong>osmotic pressure</strong> → water into/out of roots.</li>
         </ul>
         <figure>
-          <img src="assets/figure1.jpg" alt="Phase diagram showing boiling elevation and freezing depression with solutes">
+          <img src="assets/figure1.jpg" alt="Phase diagram for colligative properties">
           <figcaption>How dissolved ions nudge water’s boiling/freezing points</figcaption>
         </figure>
         <details class="more"><summary>More context</summary>
@@ -98,13 +97,13 @@
       </div>
     </section>
 
-    <!-- Slide 4: pH Guide (your infographic, pan/zoom with anchored center) -->
+    <!-- Slide 4: pH Guide (cropped, anchored at exact center) -->
     <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>pH Guide — Your Infographic</h2>
 
-        <!-- Anchor center of the pH band: 0–1 coordinates -->
-        <div class="pz" data-zoom="1" data-anchor-x="0.5" data-anchor-y="0.58">
+        <!-- Center-on-image anchor -->
+        <div class="pz" data-zoom="1" data-anchor-x="0.5" data-anchor-y="0.5">
           <div class="pz-viewport" aria-label="Interactive pH infographic viewport">
             <img
               class="pz-img"
@@ -200,7 +199,6 @@
           <p>Zurita-Silva, A., et al. (2017). Roots adapt to salinity via metabolite remodeling. <em>Frontiers in Plant Science</em>.</p>
         </div>
 
-        <!-- Presenter-only link (hidden by default; add ?presenter=1 to show) -->
         <p id="presenterTools" class="presenter-only" hidden>
           Presenter tools: <a href="speaker_notes.md" target="_blank" rel="noopener">Open speaker notes</a>
         </p>
@@ -223,16 +221,12 @@
       <dl>
         <dt id="g-colligative">Colligative properties</dt>
         <dd>Water behavior changes caused simply by how many particles are dissolved (not which kind).</dd>
-
         <dt id="g-op">Osmotic pressure</dt>
         <dd>The pressure needed to stop water from moving toward a stronger solution across a membrane.</dd>
-
         <dt id="g-vpl">Vapor pressure lowering</dt>
         <dd>Dissolved particles make it harder for water to evaporate.</dd>
-
         <dt id="g-bpe">Boiling point elevation</dt>
         <dd>More particles → water boils at a slightly higher temperature.</dd>
-
         <dt id="g-fpd">Freezing point depression</dt>
         <dd>More particles → water freezes at a slightly lower temperature.</dd>
       </dl>
