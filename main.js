@@ -53,7 +53,6 @@ window.addEventListener("DOMContentLoaded", function () {
     next.classList.add("current", forward ? "anim-right" : "anim-left");
     setProgress();
     fitCurrent();
-    // if we just navigated to a slide with a viewer that isn't initialized yet, init now:
     initMolViewersOnSlide(next);
   }
 
@@ -202,7 +201,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
       var durRef=2.2; var T=T_C+273.15, Tref=TrefC+273.15;
       var speedFactor = clamp(T/Tref, 0.6, 1.5);
-      dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
+      if (dots) dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
 
       if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
     }
@@ -218,81 +217,100 @@ window.addEventListener("DOMContentLoaded", function () {
     sync();
   })();
 
-  // ---------- 3Dmol.js viewers loading LOCAL MOL files ----------
-  // we lazily init on the slide that contains the toolbar/viewer
-  var inited = {};
+  // ---------- Robust 3Dmol loader with CDN fallback ----------
+  function ensure3Dmol(cb){
+    if (window.$3Dmol) { cb(); return; }
+    // Try primary CDN
+    var s = document.createElement('script');
+    s.src = "https://3dmol.csb.pitt.edu/build/3Dmol-min.js";
+    s.async = true;
+    s.onload = function(){ cb(); };
+    s.onerror = function(){
+      // Fallback to unpkg
+      var f = document.createElement('script');
+      f.src = "https://unpkg.com/3dmol/build/3Dmol-min.js";
+      f.async = true;
+      f.onload = function(){ cb(); };
+      f.onerror = function(){
+        console.error("Failed to load 3Dmol from both CDNs.");
+        // Put a user-visible message in any viewers:
+        document.querySelectorAll(".viewer").forEach(function(v){
+          v.innerHTML = '<div class="viz-note">3D viewer library could not be loaded. Check network/CDN restrictions.</div>';
+        });
+      };
+      document.head.appendChild(f);
+    };
+    document.head.appendChild(s);
+  }
 
+  var inited = {};
   function initMolViewersOnSlide(slideEl){
     if(!slideEl) return;
-    slideEl.querySelectorAll(".viewer-toolbar").forEach(function(tb){
-      var vid = tb.getAttribute("data-viewer");
-      var url = tb.getAttribute("data-url"); // e.g., assets/559095.mol or assets/15266.mol
-      if(!vid || !url) return;
-      if(inited[vid]) return; // already initialized
+    var toolbars = slideEl.querySelectorAll(".viewer-toolbar");
+    if(!toolbars.length) return;
 
-      var container = document.getElementById(vid);
-      if(!container){ return; }
+    ensure3Dmol(function(){
+      toolbars.forEach(function(tb){
+        var vid = tb.getAttribute("data-viewer");
+        var url = tb.getAttribute("data-url");
+        if(!vid || !url) return;
+        if(inited[vid]) return;
 
-      // Create viewer
-      var bg = document.body.classList.contains('dark') ? '#12171c' : '#ffffff';
-      var viewer = $3Dmol.createViewer(container, { backgroundColor: bg });
+        var container = document.getElementById(vid);
+        if(!container){ return; }
 
-      // Load MOL text and render
-      fetch(url)
-        .then(function(r){ if(!r.ok) throw new Error('Failed to fetch '+url); return r.text(); })
-        .then(function(mol){
-          viewer.addModel(mol, 'mol');
-          setStyle(viewer, 'stick'); // default ball-and-stick
-          viewer.zoomTo();
-          viewer.render();
-        })
-        .catch(function(err){
-          container.innerHTML = '<div class="viz-note">Could not load '+url+'<br>'+String(err)+'</div>';
-          console.error(err);
+        var bg = document.body.classList.contains('dark') ? '#12171c' : '#ffffff';
+        var viewer = $3Dmol.createViewer(container, { backgroundColor: bg });
+
+        fetch(url)
+          .then(function(r){
+            if(!r.ok){ throw new Error('HTTP '+r.status+' for '+url); }
+            return r.text();
+          })
+          .then(function(mol){
+            viewer.addModel(mol, 'mol');
+            setStyle(viewer, 'stick'); // default
+            viewer.zoomTo();
+            viewer.render();
+          })
+          .catch(function(err){
+            console.error(err);
+            container.innerHTML = '<div class="viz-note">Could not load <code>'+url+'</code><br>'+String(err)+'</div>';
+          });
+
+        // Style toggles
+        tb.addEventListener('change', function(ev){
+          var t = ev.target;
+          if(!(t instanceof HTMLInputElement)) return;
+          if(t.name.endsWith('Style') && t.checked){
+            setStyle(viewer, t.value);
+            viewer.zoomTo(); viewer.render();
+          }
+        });
+        // Buttons
+        tb.addEventListener('click', function(ev){
+          var btn = ev.target;
+          if(!(btn instanceof HTMLElement)) return;
+          var act = btn.getAttribute('data-action');
+          if(act==='reset'){ viewer.zoomTo(); viewer.render(); }
+          if(act==='spin'){ var spinning = viewer.spin(); viewer.spin(!spinning); }
         });
 
-      // Wire controls in this toolbar
-      tb.addEventListener('change', function(ev){
-        var t = ev.target;
-        if(!(t instanceof HTMLInputElement)) return;
-        if(t.name.endsWith('Style') && t.checked){
-          var mode = t.value; // 'stick' or 'sphere'
-          setStyle(viewer, mode);
-          viewer.zoomTo();
-          viewer.render();
-        }
+        inited[vid] = true;
       });
-      tb.addEventListener('click', function(ev){
-        var btn = ev.target;
-        if(!(btn instanceof HTMLElement)) return;
-        var act = btn.getAttribute('data-action');
-        if(act==='reset'){
-          viewer.zoomTo();
-          viewer.render();
-        }
-        if(act==='spin'){
-          // toggle spin around y-axis
-          var spinning = viewer.spin();
-          viewer.spin(!spinning);
-        }
-      });
-
-      inited[vid] = true;
     });
   }
 
   function setStyle(viewer, mode){
-    // Clear and apply new style
     viewer.setStyle({}, {}); // clear
     if(mode === 'sphere'){
       viewer.setStyle({}, {sphere:{scale:0.28}});
     } else {
-      // 'stick' (ball-and-stick look)
       viewer.setStyle({}, {stick:{radius:0.2}, sphere:{scale:0.22}});
     }
   }
 
-  // Initialize any viewers on the first slide (if present) and refit
+  // Init viewers that might be on the first visible slide
   initMolViewersOnSlide(slides[i]);
 
   // Theme / handout utilities
