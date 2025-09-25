@@ -134,6 +134,38 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // RC diagram interactivity
+  (function(){
+    var svg = document.getElementById("rcDiagram");
+    if(!svg) return;
+
+    var chkEa = document.getElementById("rcEa");
+    var chkCat = document.getElementById("rcCatalyst");
+    var chkTemp = document.getElementById("rcTemp");
+    var btnReset = document.getElementById("rcReset");
+
+    var cat = document.getElementById("curve-cat");
+    var ea = document.getElementById("eaGroup");
+    var dots = document.getElementById("tempDots");
+
+    function sync(){
+      ea.style.display   = chkEa && chkEa.checked ? "block" : "none";
+      cat.classList.toggle("hidden", !(chkCat && chkCat.checked));
+      dots.classList.toggle("hidden", !(chkTemp && chkTemp.checked));
+    }
+    if (chkEa) chkEa.addEventListener("change", sync);
+    if (chkCat) chkCat.addEventListener("change", sync);
+    if (chkTemp) chkTemp.addEventListener("change", sync);
+    if (btnReset) btnReset.addEventListener("click", function(){
+      if (chkEa) chkEa.checked = true;
+      if (chkCat) chkCat.checked = false;
+      if (chkTemp) chkTemp.checked = false;
+      sync();
+    });
+
+    sync();
+  })();
+
   // Presenter tools toggle (optional)
   var presenterTools = document.getElementById("presenterTools");
   try {
@@ -172,6 +204,26 @@ window.addEventListener("DOMContentLoaded", function () {
       if(imgEl.closest(".slide") === slides[i]) fitCurrent();
     });
   });
+
+  // Osmosis slider behavior
+  (function(){
+    var r = document.getElementById("ecRange");
+    if(!r) return;
+    var ecVal = document.getElementById("ecVal");
+    var tone = document.getElementById("tonicity");
+    var up = document.getElementById("uptake");
+    var arrowsIn = document.getElementById("arrowsIn");
+    var arrowsOut= document.getElementById("arrowsOut");
+    function update(){
+      var v = parseFloat(r.value);
+      if(ecVal) ecVal.textContent = v.toFixed(1);
+      if(v < 1.1){ tone.textContent="hypotonic"; up.textContent="water in"; arrowsIn.style.opacity=1; arrowsOut.style.opacity=.15; }
+      else if(v > 1.9){ tone.textContent="hypertonic"; up.textContent="water out"; arrowsIn.style.opacity=.15; arrowsOut.style.opacity=1; }
+      else { tone.textContent="isotonic"; up.textContent="balanced"; arrowsIn.style.opacity=.8; arrowsOut.style.opacity=.25; }
+    }
+    r.addEventListener("input", update);
+    update();
+  })();
 
   // Init
   setProgress();
