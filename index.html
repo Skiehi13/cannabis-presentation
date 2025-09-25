@@ -8,13 +8,12 @@
   <link href="styles.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-  <!-- 3Dmol.js for 3D molecule viewers -->
-  <script src="https://3dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
 </head>
 <body class="paper">
   <div class="progress-wrap" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
 
   <main id="deck" tabindex="0" aria-live="polite">
+
     <!-- Title -->
     <section class="slide" data-duration="20">
       <div class="inner poster-frame titlecard center">
@@ -259,13 +258,14 @@
 
           <div class="mol3d">
             <div class="viewer-toolbar" data-viewer="viewer-thc" data-url="assets/559095.mol">
-              <!-- If you find 15266.mol is THC instead, just swap the data-url to assets/15266.mol -->
               <label><input type="radio" name="thcStyle" value="stick" checked> Ball-and-Stick</label>
               <label><input type="radio" name="thcStyle" value="sphere"> Spacefill</label>
               <button class="btn" data-action="spin">Spin</button>
               <button class="btn" data-action="reset">Reset</button>
             </div>
-            <div id="viewer-thc" class="viewer" aria-label="THC 3D model" role="img"></div>
+            <div id="viewer-thc" class="viewer" aria-label="THC 3D model" role="img">
+              <noscript><div class="viz-note">Enable JavaScript to see the 3D model.</div></noscript>
+            </div>
             <p class="viz-note">Loaded from local MOL with 3Dmol.js.</p>
           </div>
 
@@ -299,13 +299,14 @@
 
           <div class="mol3d">
             <div class="viewer-toolbar" data-viewer="viewer-cbd" data-url="assets/15266.mol">
-              <!-- If you discover this one is THC, swap URLs between the two toolbars -->
               <label><input type="radio" name="cbdStyle" value="stick" checked> Ball-and-Stick</label>
               <label><input type="radio" name="cbdStyle" value="sphere"> Spacefill</label>
               <button class="btn" data-action="spin">Spin</button>
               <button class="btn" data-action="reset">Reset</button>
             </div>
-            <div id="viewer-cbd" class="viewer" aria-label="CBD 3D model" role="img"></div>
+            <div id="viewer-cbd" class="viewer" aria-label="CBD 3D model" role="img">
+              <noscript><div class="viz-note">Enable JavaScript to see the 3D model.</div></noscript>
+            </div>
             <p class="viz-note">Loaded from local MOL with 3Dmol.js.</p>
           </div>
 
@@ -314,19 +315,45 @@
       </div>
     </section>
 
-    <!-- References (unchanged from your last pass; keep or expand as needed) -->
+    <!-- REFERENCES (expanded) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
         <div class="ref-list">
-          <p>PubChem Compound records (local MOLs): loaded with 3Dmol.js.</p>
-          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins’ Physical Chemistry</em>. OUP.</p>
-          <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>.</p>
-          <!-- …keep your larger list from earlier here … -->
+          <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient in vitro system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15.</p>
+          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638.</p>
+          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537.</p>
+          <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
+          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality… <em>Research in Biological and Pharmaceutical Sciences, 4</em>(2), 156–170.</p>
+          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). <em>Frontiers in Pharmacology, 15</em>, 1465136.</p>
+          <p>Grossmann, G., Guo, W. J., Ehrhardt, D. W., Frommer, W. B., Sit, R. V., … Meier, M. (2016). The divining root: Moisture-driven responses of roots. <em>PNAS</em>.</p>
+          <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system. <em>Plants, 12</em>(3), 493.</p>
+          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). ML to remove ion interference in nutrient solutions. <em>arXiv:1907.10794</em>.</p>
+          <p>Mattoteia, D., Bagatta, M., Piazza, S., Torrini, L., Brighenti, V., … Caprioli, G. (2021). <em>Molecules, 26</em>(16), 4889.</p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204.</p>
+          <p>Nosalewicz, A., Siecińska, J., Kondracka, A., &amp; Nosalewicz, M. (2024). Understanding root growth under water deficits. <em>Frontiers in Plant Science</em>.</p>
+          <p>Park, K. S., Bechu, A., Chambon, C., Grard, T., Guilbert, A., … Nugegoda, D. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
+          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv:1203.0206</em>.</p>
+          <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in roots. <em>Soft Matter, 21</em>(3), 485–497.</p>
+          <p>Potin, S., Garry, G., Bourdeaux, E., Leborgne, C., Lequart-Pillon, T., … Marchand, P. (2024). Environmental impacts in cannabis cultivation. <em>Frontiers in Plant Science, 15</em>, 1322824.</p>
+          <p>Pourakbar, L., Khosh-Khui, M., &amp; Shahsavari, N. (2023). Controlled environment systems. <em>Canadian Journal of Plant Science, 103</em>(6), 671–684.</p>
+          <p>Rahmawati, Y., Ridlo, Z. R., &amp; Wardani, S. (2023). Colligative properties learning. <em>EduLearn, 17</em>(4), 543–551.</p>
+          <p>Saloner, A., &amp; Bernstein, N. (2024). Chemical composition of cannabis extracts. <em>Frontiers in Plant Science</em>.</p>
+          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source &amp; cannabis. <em>Frontiers in Plant Science</em>.</p>
+          <p>Singh, H., et al. (2022). Silicon improves uptake under stress. <em>CSSPA, 53</em>(16), 2089–2108.</p>
+          <p>Zhao, C., et al. (2022). Root osmotic sensing to systemic responses. <em>Plant Physiology</em>.</p>
+
+          <p><strong>Image credits:</strong> Colligative properties diagram; indoor hydroponic photos; osmosis/root diagrams; ebb-and-flow &amp; NFT technical illustrations. (From your project files.)</p>
+
+          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins’ Physical Chemistry</em>. Oxford University Press.</p>
+          <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>. University Science Books.</p>
+          <p>PubChem Compound Summary for Δ<sup>9</sup>-THC (CID 2978) &amp; CBD (CID 644019). NCBI.</p>
+          <p>3Dmol.js (MIT License) — molecular visualization library.</p>
         </div>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
+
   </main>
 
   <footer class="help">
