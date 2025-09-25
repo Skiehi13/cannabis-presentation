@@ -159,10 +159,11 @@ window.addEventListener("DOMContentLoaded", function () {
     var eaArrowDn = document.getElementById("eaArrowDown");
     var eaText    = document.getElementById("eaText");
     var dots      = document.getElementById("tempDots");
+    var terpWarn  = document.getElementById("terpCaution");
 
     // Constants
     var Ea_ref_kJ = 120;             // baseline THCA decarb E_a
-    var catalystFactor = 0.70;       // 30% lower E_a with "catalyst" toggle (illustrative)
+    var catalystFactor = 0.70;       // ~30% lower E_a with matrix/solvent assist (illustrative)
     var TrefC = 120, R = 8.314;      // reference temp and gas constant
 
     function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
@@ -222,7 +223,7 @@ window.addEventListener("DOMContentLoaded", function () {
         eaGroup.style.display = "block";
         var xPeak = 320; // marker position
         var yReact = 280;
-        var yTop = yPeak + 0; // small offset if desired
+        var yTop = yPeak + 0;
         eaLine.setAttribute("x1", xPeak);
         eaLine.setAttribute("x2", xPeak);
         eaLine.setAttribute("y1", yTop);
@@ -240,6 +241,9 @@ window.addEventListener("DOMContentLoaded", function () {
       var T = T_C + 273.15, Tref = TrefC + 273.15;
       var speedFactor = clamp(T/Tref, 0.6, 1.5);
       dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
+
+      // Terpene caution badge above ~130 °C
+      if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
     }
 
     // Events
