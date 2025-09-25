@@ -3,17 +3,26 @@ window.addEventListener("DOMContentLoaded", function () {
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   if (!slides.length) return;
 
-  var i = 0; // current index
-  var bar = document.getElementById("progressBar");
+  // Force a clean start on slide 0
+  var i = 0;
+  slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
+  slides[0].classList.add("current");
 
+  var bar = document.getElementById("progressBar");
   var durations = slides.map(function(s){ return Number(s.getAttribute("data-duration") || 40); });
   var total = durations.reduce(function(a,b){ return a+b; }, 0);
 
-  // Fit-to-viewport (scale .inner)
+  function setProgress(){
+    var elapsed = durations.slice(0,i).reduce(function(a,b){ return a+b; }, 0);
+    if (bar) bar.style.width = ((elapsed/total)*100) + "%";
+  }
+
+  // Fit-to-viewport (scale the .inner)
   function fitSlide(slide){
     if(!slide || document.body.classList.contains("handout")) return resetSlide(slide);
     var inner = slide.querySelector(".inner");
     if(!inner) return;
+
     inner.style.transform = "none";
     inner.style.marginTop = "0";
 
@@ -41,38 +50,20 @@ window.addEventListener("DOMContentLoaded", function () {
   }
   function fitCurrent(){ fitSlide(slides[i]); }
 
-  // Progress
-  function setProgress(){
-    var elapsed = durations.slice(0,i).reduce(function(a,b){ return a+b; }, 0);
-    if (bar) bar.style.width = ((elapsed/total)*100) + "%";
-  }
-
-  // Show slide with animated transition
+  // Show a specific slide (only one visible)
   function show(k){
-    if (k === i) return;
-    var prevIdx = i;
     var nextIdx = (k + slides.length) % slides.length;
+    if (nextIdx === i) return;
 
-    var prev = slides[prevIdx];
-    var next = slides[nextIdx];
+    var forward = (nextIdx > i) || (i === slides.length - 1 && nextIdx === 0);
 
-    // direction
-    var forward = ( (nextIdx === (prevIdx+1) % slides.length) || (nextIdx > prevIdx && !(prevIdx===slides.length-1 && nextIdx===0)) );
+    // Hide all slides first to prevent stacking
+    slides.forEach(function(s){ s.classList.remove("current","anim-left","anim-right"); });
 
-    // prepare prev to leave
-    prev.classList.remove("current","slide-in-right","slide-in-left","slide-out-left","slide-out-right");
-    prev.classList.add("leaving", forward ? "slide-out-left" : "slide-out-right");
-
-    // after its animation ends, fully hide it
-    prev.addEventListener("animationend", function handle(){
-      prev.classList.remove("leaving","slide-out-left","slide-out-right");
-      prev.removeEventListener("animationend", handle);
-    }, {once:true});
-
-    // show next
+    // Show only the next one with an enter animation
     i = nextIdx;
-    next.classList.remove("leaving","slide-out-left","slide-out-right","slide-in-right","slide-in-left");
-    next.classList.add("current", forward ? "slide-in-right" : "slide-in-left");
+    var next = slides[i];
+    next.classList.add("current", forward ? "anim-right" : "anim-left");
 
     setProgress();
     fitCurrent();
@@ -133,7 +124,7 @@ window.addEventListener("DOMContentLoaded", function () {
   if (closeGloss)  closeGloss.addEventListener("click", function(){ toggleGlossary(false); });
   if (glossary)    glossary.addEventListener("click", function(e){ if(e.target===glossary) toggleGlossary(false); });
 
-  // Inline def buttons
+  // Inline def buttons → open glossary and scroll to term
   var defBtns = document.querySelectorAll(".def");
   for (var d=0; d<defBtns.length; d++){
     defBtns[d].addEventListener("click", function(){
@@ -171,7 +162,7 @@ window.addEventListener("DOMContentLoaded", function () {
     update();
   }
 
-  // Presenter tools (optional link on refs slide)
+  // Presenter link on refs slide (optional)
   var presenterTools = document.getElementById("presenterTools");
   try {
     var qs = new URLSearchParams(location.search);
@@ -210,7 +201,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Init
+  // Init pass
   setProgress();
   fitCurrent();
   if (deck) deck.focus();
