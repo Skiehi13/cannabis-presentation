@@ -13,9 +13,47 @@ window.addEventListener("DOMContentLoaded", function () {
   var clock   = document.getElementById("clock");
   var bar     = document.getElementById("progressBar");
 
+  var handoutToggle = document.getElementById("handoutToggle");
+  var printBtn      = document.getElementById("printBtn");
+  var themeToggle   = document.getElementById("themeToggle");
+
   // Durations (seconds) from data-duration
   var durations = slides.map(function(s){ return Number(s.getAttribute("data-duration") || 40); });
   var total = durations.reduce(function(a,b){ return a+b; }, 0);
+
+  // --- scale-to-fit helpers ---
+  function fitSlide(slide){
+    if(!slide || document.body.classList.contains("handout")) return resetSlide(slide);
+    var inner = slide.querySelector(".inner");
+    if(!inner) return;
+
+    // Reset first to get natural size
+    inner.style.transform = "none";
+    inner.style.marginTop = "0";
+
+    var pad = 12; // breathing room
+    var availW = slide.clientWidth - pad*2;
+    var availH = slide.clientHeight - pad*2;
+
+    var rect = inner.getBoundingClientRect();
+    var scale = Math.min(availW / rect.width, availH / rect.height);
+
+    // Allow mild upscaling; cap to avoid fuzzy edges
+    scale = Math.max(0.5, Math.min(scale, 1.25));
+
+    inner.style.transformOrigin = "center top";
+    inner.style.transform = "scale(" + scale + ")";
+
+    // center vertically when scaled down
+    var newH = rect.height * scale;
+    var y = (availH - newH) / 2;
+    inner.style.marginTop = y > 0 ? (y + "px") : "0";
+  }
+  function resetSlide(slide){
+    var inner = slide && slide.querySelector(".inner");
+    if(inner){ inner.style.transform = "none"; inner.style.marginTop = "0"; }
+  }
+  function fitCurrent(){ fitSlide(slides[i]); }
 
   function setProgress() {
     var elapsed = durations.slice(0,i).reduce(function(a,b){ return a+b; }, 0);
@@ -27,24 +65,55 @@ window.addEventListener("DOMContentLoaded", function () {
     i = (k + slides.length) % slides.length;
     slides[i].classList.add("current");
     setProgress();
+    // ensure images loaded -> fit
+    fitCurrent();
   }
-  function next(){ show(i+1); }
-  function prev(){ show(i-1); }
+  function next(){ ensureStarted(); if(!isHandout()) show(i+1); }
+  function prev(){ ensureStarted(); if(!isHandout()) show(i-1); }
 
   document.addEventListener("keydown", function(e){
-    if(e.key==="ArrowRight"||e.key===" ") next();
-    if(e.key==="ArrowLeft") prev();
-    if(e.key && e.key.toLowerCase()==="f") toggleFS();
-    if(e.key && e.key.toLowerCase()==="t") toggleTimer();
-    if(e.key && e.key.toLowerCase()==="g") toggleGlossary(true);
+    if(e.key==="ArrowRight"||e.key===" "){ next(); }
+    if(e.key==="ArrowLeft"){ prev(); }
+    if(e.key && e.key.toLowerCase()==="f"){ toggleFS(); }
+    if(e.key && e.key.toLowerCase()==="t"){ toggleTimer(); }
+    if(e.key && e.key.toLowerCase()==="g"){ toggleGlossary(true); }
+    if(e.key && e.key.toLowerCase()==="h"){ toggleHandout(); }
+    if(e.key && e.key.toLowerCase()==="p"){ doPrint(); }
+    if(e.key && e.key.toLowerCase()==="d"){ toggleTheme(); }
   });
 
   if (prevBtn) prevBtn.onclick = prev;
   if (nextBtn) nextBtn.onclick = next;
-  if (fsBtn)   fsBtn.onclick   = toggleFS;
+  if (fsBtn)   fsBtn.onclick   = function(){ ensureStarted(); toggleFS(); };
   if (timerBtn)timerBtn.onclick= toggleTimer;
+  if (handoutToggle) handoutToggle.onclick = toggleHandout;
+  if (printBtn)      printBtn.onclick      = doPrint;
+  if (themeToggle)   themeToggle.onclick   = toggleTheme;
 
-  // --- fullscreen ---
+  // Click anywhere on the deck starts presenting (requests fullscreen) once
+  var started = false;
+  function ensureStarted(){
+    if(started) return;
+    started = true;
+    document.body.classList.add("presenting");
+    // try to enter fullscreen (requires user gesture; this is called from a click/keypress)
+    try{
+      if(!document.fullscreenElement && document.documentElement.requestFullscreen){
+        document.documentElement.requestFullscreen().catch(function(){ /* ignore */ });
+      }
+    }catch(e){}
+    fitCurrent();
+  }
+  document.getElementById("deck").addEventListener("click", function(){ ensureStarted(); });
+
+  // Fullscreen change toggles 'presenting' chrome
+  document.addEventListener("fullscreenchange", function(){
+    if(document.fullscreenElement){ document.body.classList.add("presenting"); }
+    else { document.body.classList.remove("presenting"); }
+    fitCurrent();
+  });
+
+  // --- fullscreen toggle ---
   function toggleFS(){
     var el = document.documentElement;
     if(!document.fullscreenElement && el.requestFullscreen){ el.requestFullscreen(); }
@@ -113,6 +182,8 @@ window.addEventListener("DOMContentLoaded", function () {
       uptake.textContent = u;
       if (arrowsIn)  arrowsIn.setAttribute("opacity", String(inAlpha));
       if (arrowsOut) arrowsOut.setAttribute("opacity", String(outAlpha));
+      // refit in case labels wrap
+      fitCurrent();
     };
     ecRange.addEventListener("input", update);
     update();
@@ -134,6 +205,7 @@ window.addEventListener("DOMContentLoaded", function () {
           } else {
             this.classList.add("wrong"); if(fb) fb.textContent = "Not quite — think number of particles, not identity.";
           }
+          fitCurrent(); // feedback line height might change
         });
       }
     })(quizzes[q]);
@@ -149,11 +221,59 @@ window.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("keydown", function(e){
     if (e.altKey && e.key && e.key.toLowerCase() === "s" && presenterTools){
       presenterTools.hidden = !presenterTools.hidden;
+      fitCurrent();
     }
+  });
+
+  // --- Handout view ---
+  function isHandout(){ return document.body.classList.contains("handout"); }
+  function toggleHandout(){
+    var on = document.body.classList.toggle("handout");
+    if(handoutToggle) handoutToggle.setAttribute("aria-pressed", on ? "true" : "false");
+    // Reset transforms in handout; refit when leaving
+    if(on){
+      slides.forEach(resetSlide);
+    } else {
+      fitCurrent();
+    }
+  }
+
+  // --- Print helper ---
+  function doPrint(){
+    var wasHandout = isHandout();
+    if(!wasHandout) document.body.classList.add("handout");
+    setTimeout(function(){ window.print(); if(!wasHandout) document.body.classList.remove("handout"); }, 50);
+  }
+
+  // --- Theme toggle (light/dark) ---
+  var saved = null;
+  try { saved = localStorage.getItem("stoneyTheme"); } catch(e){}
+  if(saved === "dark" || (saved===null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)){
+    document.body.classList.add("dark");
+    if(themeToggle) themeToggle.textContent = "☀️";
+    if(themeToggle) themeToggle.setAttribute("aria-pressed","true");
+  }
+  function toggleTheme(){
+    var dark = document.body.classList.toggle("dark");
+    if(themeToggle){
+      themeToggle.textContent = dark ? "☀️" : "🌙";
+      themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+    }
+    try { localStorage.setItem("stoneyTheme", dark ? "dark" : "light"); } catch(e){}
+    fitCurrent();
+  }
+
+  // Refit on resize and when images load
+  window.addEventListener("resize", fitCurrent);
+  document.querySelectorAll(".slide img").forEach(function(img){
+    img.addEventListener("load", function(){
+      if(img.closest(".slide") === slides[i]) fitCurrent();
+    });
   });
 
   // init
   setProgress();
+  fitCurrent();
   var deck = document.getElementById("deck");
   if (deck) deck.focus();
 });
