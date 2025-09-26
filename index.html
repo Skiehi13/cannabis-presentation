@@ -145,43 +145,72 @@
       </div>
     </section>
 
-    <!-- Reaction coordinates intro -->
-    <section class="slide" data-duration="35">
+    <!-- ▼▼▼ KINETICS (Combined slide replaces prior two) ▼▼▼ -->
+    <section class="slide" id="kinetics-combined" data-duration="40">
       <div class="inner poster-frame center">
-        <h2>Reaction Coordinates</h2>
-        <ul class="bullets">
-          <li><strong>Idea:</strong> A hill between “before” and “after.” The path is the <em>reaction coordinate</em>.</li>
-          <li><strong>Hump:</strong> Highest point = <em>transition state</em>. Height = <em>E<sub>a</sub></em>.</li>
-          <li><strong>Grower angle:</strong> <strong>THCA → THC + CO₂</strong> needs heat to clear the hump—too low = slow; too high = terpene loss.</li>
-        </ul>
-        <div class="happy">HAPPY GROWING!</div>
-      </div>
-    </section>
-
-    <!-- THCA specifics -->
-    <section class="slide" data-duration="40">
-      <div class="inner poster-frame center">
-        <h2>THCA → THC + CO₂ (Decarboxylation)</h2>
+        <h2>Kinetics — Model & External Factors (Combined)</h2>
         <div class="two-up">
           <div>
+            <h3 class="minihead">Reaction Coordinate & Activation Energy</h3>
             <ul class="bullets">
-              <li><strong>Baseline E<sub>a</sub>:</strong> ~120 kJ·mol⁻¹</li>
-              <li><strong>Practical window:</strong> ~110–130 °C balances conversion vs. terpenes</li>
-              <li><strong>Environment helps:</strong> oil/solvent matrix &amp; even heating can effectively lower the barrier</li>
+              <li>Transition state sits at the energy maximum; height is <em>E<sub>a</sub></em>.</li>
+              <li>Temperature raises molecular energy; more molecules surpass <em>E<sub>a</sub></em> (Arrhenius).</li>
+              <li>Catalysts lower effective <em>E<sub>a</sub></em> without changing ΔG.</li>
             </ul>
           </div>
           <div>
-            <h3 class="minihead">Grower cues</h3>
+            <h3 class="minihead">Applied to Cannabis</h3>
             <ul class="bullets">
-              <li>Gentle ramp to temp; avoid hot spots</li>
-              <li>Closed/inert setups limit oxidation</li>
-              <li>Measure cannabinoids/terpenes to tune</li>
+              <li><strong>THCA → THC + CO₂</strong> requires heat; too low = slow conversion, too high = terpene loss.</li>
+              <li>Practical window ~110–130 °C balances conversion and aroma preservation.</li>
+              <li>Even heating and appropriate matrices (oil/solvent) improve outcomes.</li>
             </ul>
           </div>
         </div>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
+
+    <!-- New: Interactive THCA → THC decarboxylation -->
+    <section class="slide" id="decarb-slide" data-duration="50">
+      <div class="inner poster-frame" id="decarbWrap">
+        <h2>THCA → THC + CO₂ — Interactive Decarboxylation</h2>
+
+        <div class="decarb-controls">
+          <label>Temp:
+            <input type="range" id="decT" min="90" max="160" value="120" step="1">
+            <span id="decTVal" class="tag">120 °C</span>
+          </label>
+          <label>Time:
+            <input type="range" id="decTime" min="1" max="120" value="30" step="1">
+            <span id="decTimeVal" class="tag">30 min</span>
+          </label>
+        </div>
+
+        <div class="decarb-readouts">
+          <div>Conversion (THCA→THC): <strong id="decConv">—</strong></div>
+          <div>Est. Terpene Loss: <strong id="decTerp">—</strong></div>
+        </div>
+
+        <svg class="decarb-svg rc-svg" viewBox="0 0 700 320" role="img" aria-label="Decarboxylation reaction coordinate (schematic)">
+          <line x1="70" y1="280" x2="650" y2="280" class="baseline" />
+          <text x="20" y="285" class="axis">Reactants (THCA)</text>
+          <text x="560" y="235" class="axis">Products (THC + CO₂)</text>
+          <path id="decCurve" class="curve uncat" d="M 80,280 C 220,120 460,180 620,240" />
+        </svg>
+
+        <div id="decWarn" class="decarb-warn hidden">
+          Caution: ≥130 °C can accelerate decarb but risks terpene loss—use gentle heat and appropriate time.
+        </div>
+
+        <figure class="sim-note">
+          <figcaption>
+            Notes: Arrhenius-like relative model with E<sub>a</sub> ~25–30 kcal·mol⁻¹; classroom illustration of temperature–time tradeoffs for cannabis processing.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+    <!-- ▲▲▲ End kinetics updates ▲▲▲ -->
 
     <!-- MODEL MOLECULES — THC (image + table only) -->
     <section class="slide" data-duration="45">
@@ -235,11 +264,12 @@
       </div>
     </section>
 
-    <!-- REFERENCES (kept the same) -->
+    <!-- REFERENCES (original kept; kinetics APA 7 appended) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
         <div class="ref-list">
+          <!-- Your original references (unchanged) -->
           <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient in vitro system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15.</p>
           <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638.</p>
           <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537.</p>
@@ -269,6 +299,20 @@
           <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern Physical Organic Chemistry</em>. University Science Books.</p>
           <p>PubChem Compound Summary for Δ<sup>9</sup>-THC (CID 2978) &amp; CBD (CID 644019). NCBI.</p>
           <p>3Dmol.js (MIT License) — molecular visualization library.</p>
+
+          <!-- New: APA-7 additions from your Kinetics presentation (Slide 7) -->
+          <hr>
+          <h3 class="minihead">Kinetics references (APA 7)</h3>
+          <ol>
+            <li>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <i>Modern physical organic chemistry</i>. University Science Books.</li>
+            <li>Atkins, P., &amp; de Paula, J. (2018). <i>Atkins’ physical chemistry</i> (11th ed.). Oxford University Press.</li>
+            <li>Bruice, P. Y. (2020). <i>Organic chemistry</i> (8th ed.). Pearson Education.</li>
+            <li>Clayden, J., Greeves, N., &amp; Warren, S. (2012). <i>Organic chemistry</i> (2nd ed.). Oxford University Press.</li>
+            <li>Lowry, T. H., &amp; Richardson, K. S. (2021). <i>Mechanism and theory in organic chemistry</i> (3rd ed.). Harper &amp; Row.</li>
+            <li>Lu, H. C., &amp; Mackie, K. (2016). An introduction to the endogenous cannabinoid system. <i>Biological Psychiatry, 79</i>(7), 516–525. https://doi.org/10.1016/j.biopsych.2015.07.028</li>
+            <li>Russo, E. B. (2011). Taming THC: Potential cannabis synergy and phytocannabinoid-terpenoid entourage effects. <i>British Journal of Pharmacology, 163</i>(7), 1344–1364. https://doi.org/10.1111/j.1476-5381.2011.01238.x</li>
+            <li>Smith, M. B. (2020). <i>March’s advanced organic chemistry: Reactions, mechanisms, and structure</i> (8th ed.). Wiley.</li>
+          </ol>
         </div>
         <div class="happy">HAPPY GROWING!</div>
       </div>
