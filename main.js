@@ -250,4 +250,74 @@ window.addEventListener("DOMContentLoaded", function () {
   setProgress();
   fitCurrent();
   if (deck) deck.focus();
+
+  // === NEW: Decarboxylation interactive (THCA → THC + CO2) ===
+  (function(){
+    var wrap = document.getElementById("decarbWrap");
+    if(!wrap) return;
+
+    var tSlider = document.getElementById("decT");
+    var tOut    = document.getElementById("decTVal");
+    var timeS   = document.getElementById("decTime");
+    var timeOut = document.getElementById("decTimeVal");
+    var convOut = document.getElementById("decConv");
+    var terpOut = document.getElementById("decTerp");
+    var curve   = document.getElementById("decCurve");
+    var warn    = document.getElementById("decWarn");
+
+    // Arrhenius-like relative model; centered around literature (Ea ~ 25–30 kcal/mol)
+    var Ea_kJ = 28 * 4.184; // 28 kcal/mol to kJ/mol
+    var R = 8.314;
+    var TrefC = 120;
+    var TrefK = TrefC + 273.15;
+    var Aref = 0.12; // tuned for smooth classroom behavior
+
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function kAt(T_C){
+      var T = T_C + 273.15;
+      var EaJ = Ea_kJ * 1000;
+      var exponent = -EaJ/R * (1/T - 1/TrefK);
+      return Aref * Math.exp(exponent); // relative to 120 °C baseline
+    }
+    function conversionPct(T_C, minutes){
+      var k = kAt(T_C);
+      var t = minutes;
+      var frac = 1 - Math.exp(-k * (t/10)); // tame growth vs minutes
+      return Math.max(0, Math.min(100, frac*100));
+    }
+    function terpLossPct(T_C, minutes){
+      // heuristic: terpene loss increases with temp & time; steeper above ~130 °C
+      var base = Math.max(0, (T_C - 115)) * 0.25;
+      var timeFactor = Math.log1p(minutes) * 1.2;
+      return Math.max(0, Math.min(100, base * timeFactor * 0.25));
+    }
+    function update(){
+      var T = Number(tSlider ? tSlider.value : 120);
+      var mins = Number(timeS ? timeS.value : 30);
+
+      if(tOut) tOut.textContent   = T.toFixed(0) + " °C";
+      if(timeOut) timeOut.textContent = mins.toFixed(0) + " min";
+
+      var conv = conversionPct(T, mins);
+      var terp = terpLossPct(T, mins);
+
+      if(convOut) convOut.textContent = conv.toFixed(0) + "%";
+      if(terpOut) terpOut.textContent = Math.round(terp) + "%";
+
+      if(warn) warn.classList.toggle("hidden", T < 130);
+
+      if(curve){
+        // lower peak (faster) at higher T; slight right-side drop shift
+        var yPeak = 160 - Math.min(60, (T-90)*0.6);
+        var x0=80,y0=280,x3=620,y3=240,x1=220,x2=460;
+        var y1=(y0+yPeak)*0.45, y2=(y3+yPeak)*0.55 + (120-T)*0.15;
+        var d = `M ${x0},${y0} C ${x1},${y1} ${x2},${y2} ${x3},${y3}`;
+        curve.setAttribute("d", d);
+      }
+    }
+
+    if(tSlider) tSlider.addEventListener("input", update);
+    if(timeS)   timeS.addEventListener("input", update);
+    update();
+  })();
 });
