@@ -134,7 +134,7 @@ window.addEventListener("DOMContentLoaded", function () {
     update();
   })();
 
-  // Reaction Coordinates interactivity
+  // Reaction Coordinates interactivity (kept for other slides if present)
   (function(){
     var svg = document.getElementById("rcDiagram");
     if(!svg) return;
@@ -188,19 +188,9 @@ window.addEventListener("DOMContentLoaded", function () {
       if (useCat){ pathCat.classList.remove("hidden"); pathUncat.classList.add("hidden"); pathCat.setAttribute("d", d); }
       else { pathCat.classList.add("hidden"); pathUncat.classList.remove("hidden"); pathUncat.setAttribute("d", d); }
 
-      if (chkEa && chkEa.checked){
-        eaGroup.style.display="block";
-        var xPeak=320, yReact=280, yTop=yPeak;
-        eaLine.setAttribute("x1",xPeak); eaLine.setAttribute("x2",xPeak);
-        eaLine.setAttribute("y1",yTop);  eaLine.setAttribute("y2",yReact);
-        eaArrowUp.setAttribute("points", `${xPeak},${yTop-10} ${xPeak-6},${yTop+4} ${xPeak+6},${yTop+4}`);
-        eaArrowDn.setAttribute("points", `${xPeak},${yReact+10} ${xPeak-6},${yReact-4} ${xPeak+6},${yReact-4}`);
-        eaText.setAttribute("x",xPeak+8); eaText.setAttribute("y",(yTop+yReact)/2);
-      } else { eaGroup.style.display="none"; }
-
       var durRef=2.2; var T=T_C+273.15, Tref=TrefC+273.15;
-      var speedFactor = clamp(T/Tref, 0.6, 1.5);
-      if (dots) dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
+      var speedFactor = Math.max(0.6, Math.min(1.5, T/Tref));
+      if (dots) dots.style.setProperty("--dotDur", (2.2 / speedFactor).toFixed(2) + "s");
 
       if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
     }
@@ -251,73 +241,245 @@ window.addEventListener("DOMContentLoaded", function () {
   fitCurrent();
   if (deck) deck.focus();
 
-  // === NEW: Decarboxylation interactive (THCA → THC + CO2) ===
+  // === NEW: Decarb Lab (fun interactive) ===
   (function(){
-    var wrap = document.getElementById("decarbWrap");
+    var wrap = document.getElementById("labWrap");
     if(!wrap) return;
 
-    var tSlider = document.getElementById("decT");
-    var tOut    = document.getElementById("decTVal");
-    var timeS   = document.getElementById("decTime");
-    var timeOut = document.getElementById("decTimeVal");
-    var convOut = document.getElementById("decConv");
-    var terpOut = document.getElementById("decTerp");
-    var curve   = document.getElementById("decCurve");
-    var warn    = document.getElementById("decWarn");
+    var tSlider = document.getElementById("labTemp");
+    var tOut    = document.getElementById("labTempVal");
+    var timeS   = document.getElementById("labTime");
+    var timeOut = document.getElementById("labTimeVal");
+    var catChk  = document.getElementById("labCatalyst");
+    var matrix  = document.getElementById("labMatrix");
 
-    // Arrhenius-like relative model; centered around literature (Ea ~ 25–30 kcal/mol)
-    var Ea_kJ = 28 * 4.184; // 28 kcal/mol to kJ/mol
+    var btnPlay = document.getElementById("labPlay");
+    var btnPause= document.getElementById("labPause");
+    var btnReset= document.getElementById("labReset");
+    var presets = document.querySelectorAll(".preset");
+
+    var kOut = document.getElementById("labK");
+    var convOut = document.getElementById("labConv");
+    var terpOut = document.getElementById("labTerp");
+    var warn = document.getElementById("labWarn");
+
+    var svg = document.getElementById("labSVG");
+    var barrier = document.getElementById("labBarrier");
+    var particlesG = document.getElementById("labParticles");
+    var convBar = document.getElementById("labConvBar");
+
     var R = 8.314;
-    var TrefC = 120;
-    var TrefK = TrefC + 273.15;
-    var Aref = 0.12; // tuned for smooth classroom behavior
+    // Base Ea (kJ/mol); matrix and catalyst will scale it down
+    var EaBase = 120; // ~25–30 kcal/mol
+    var catalystFactor = 0.75; // 25% drop with catalyst
+    var matrixFactorMap = { air: 1.00, oil: 0.90, ethanol: 0.85 };
 
+    var running = false;
+    var simTime = 0; // simulated minutes elapsed while playing
+    var lastTS = null;
+
+    // particle system
+    var N = 28; // number of dots
+    var particles = [];
+
+    function rand(min,max){ return Math.random()*(max-min)+min; }
     function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
-    function kAt(T_C){
-      var T = T_C + 273.15;
-      var EaJ = Ea_kJ * 1000;
-      var exponent = -EaJ/R * (1/T - 1/TrefK);
-      return Aref * Math.exp(exponent); // relative to 120 °C baseline
-    }
-    function conversionPct(T_C, minutes){
-      var k = kAt(T_C);
-      var t = minutes;
-      var frac = 1 - Math.exp(-k * (t/10)); // tame growth vs minutes
-      return Math.max(0, Math.min(100, frac*100));
-    }
-    function terpLossPct(T_C, minutes){
-      // heuristic: terpene loss increases with temp & time; steeper above ~130 °C
-      var base = Math.max(0, (T_C - 115)) * 0.25;
-      var timeFactor = Math.log1p(minutes) * 1.2;
-      return Math.max(0, Math.min(100, base * timeFactor * 0.25));
-    }
-    function update(){
-      var T = Number(tSlider ? tSlider.value : 120);
-      var mins = Number(timeS ? timeS.value : 30);
 
-      if(tOut) tOut.textContent   = T.toFixed(0) + " °C";
-      if(timeOut) timeOut.textContent = mins.toFixed(0) + " min";
-
-      var conv = conversionPct(T, mins);
-      var terp = terpLossPct(T, mins);
-
-      if(convOut) convOut.textContent = conv.toFixed(0) + "%";
-      if(terpOut) terpOut.textContent = Math.round(terp) + "%";
-
-      if(warn) warn.classList.toggle("hidden", T < 130);
-
-      if(curve){
-        // lower peak (faster) at higher T; slight right-side drop shift
-        var yPeak = 160 - Math.min(60, (T-90)*0.6);
-        var x0=80,y0=280,x3=620,y3=240,x1=220,x2=460;
-        var y1=(y0+yPeak)*0.45, y2=(y3+yPeak)*0.55 + (120-T)*0.15;
-        var d = `M ${x0},${y0} C ${x1},${y1} ${x2},${y2} ${x3},${y3}`;
-        curve.setAttribute("d", d);
+    function initParticles(){
+      particles = [];
+      particlesG.innerHTML = "";
+      for (var n=0; n<N; n++){
+        var cx = rand(80,230);
+        var cy = rand(260,295);
+        var dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
+        dot.setAttribute("r", 6);
+        dot.setAttribute("cx", cx);
+        dot.setAttribute("cy", cy);
+        dot.setAttribute("fill", ["#7b61ff","#76a9fa","#ff8a00","#2f7d32"][n%4]);
+        dot.setAttribute("stroke", "#222");
+        dot.setAttribute("stroke-width","2");
+        particlesG.appendChild(dot);
+        particles.push({el:dot, x:cx, y:cy, state:"reactant"});
       }
     }
 
-    if(tSlider) tSlider.addEventListener("input", update);
-    if(timeS)   timeS.addEventListener("input", update);
-    update();
+    function state(){
+      var T = Number(tSlider.value);
+      var minsTarget = Number(timeS.value);
+      var useCat = !!catChk.checked;
+      var mtx = matrix.value;
+
+      var Ea = EaBase * (useCat ? catalystFactor : 1.0) * (matrixFactorMap[mtx] || 1.0); // kJ/mol
+      var TrefC = 120, TrefK = TrefC + 273.15;
+      var T_K = T + 273.15;
+
+      var EaJ = Ea*1000;
+      // Relative rate constant normalized around 120 °C, EaBase without modifiers
+      var kRef = Math.exp( -(EaBase*1000)/R * (1/TrefK - 1/TrefK) ); // = 1
+      var kRel = Math.exp( -EaJ/R * (1/T_K - 1/TrefK) ); // relative to 120°C
+      // Slight amplification so changes are visible
+      var kScaled = Math.pow(kRel, 1.0);
+
+      return { T, minsTarget, useCat, mtx, Ea, kScaled };
+    }
+
+    function terpLossPct(T, minutes){
+      // terp loss grows with T and time; accelerate above 130°C
+      var base = Math.max(0, T - 115) * 0.28;
+      var accel = T >= 130 ? 1.7 : 1.0;
+      var timeFactor = Math.log1p(minutes) * 1.15;
+      return clamp(base * accel * timeFactor * 0.25, 0, 100);
+    }
+
+    function conversionPct(kScaled, minutes){
+      // simple pseudo-first-order feel: fraction = 1 - e^(-k * t/10)
+      var frac = 1 - Math.exp(-kScaled * (minutes/10));
+      return clamp(frac*100, 0, 100);
+    }
+
+    function morphBarrier(Ea){
+      // Lower Ea → lower peak
+      var peakY = 170 + (Ea - 80) * 0.6; // map Ea 80–140 to y ~170–206
+      peakY = clamp(peakY, 120, 210);
+      var d = `M 250,300 C 360,${peakY} 460,${peakY+40} 510,300`;
+      barrier.setAttribute("d", d);
+    }
+
+    function hopProbability(kScaled){
+      // probability per second that an individual particle attempts/finishes a hop
+      return clamp(0.05 * kScaled, 0.01, 0.45);
+    }
+
+    function tick(dtSec){
+      // advance simulated time if playing
+      if (running){
+        // scale sim time so 1 real sec ≈ 3 simulated min (feels snappy)
+        simTime += dtSec * 3;
+      }
+
+      var S = state();
+      if (tOut) tOut.textContent = S.T.toFixed(0) + " °C";
+      if (timeOut) timeOut.textContent = Math.round(S.minsTarget) + " min";
+      if (warn) warn.classList.toggle("hidden", S.T < 130);
+
+      morphBarrier(S.Ea);
+
+      // live metrics based on current simTime but capped at target minutes
+      var minsUsed = running ? Math.min(simTime, S.minsTarget) : S.minsTarget;
+      var conv = conversionPct(S.kScaled, minsUsed);
+      var terp = terpLossPct(S.T, minsUsed);
+
+      if (kOut) kOut.textContent = S.kScaled.toFixed(2) + "×";
+      if (convOut) convOut.textContent = conv.toFixed(0) + "%";
+      if (terpOut) terpOut.textContent = Math.round(terp) + "%";
+      if (convBar) convBar.setAttribute("width", 6.6 * conv); // 0..660 px
+
+      // particle animation: random walks + hops with probability
+      var pHop = hopProbability(S.kScaled) * dtSec; // per-frame prob
+      particles.forEach(function(p){
+        // jitter
+        p.x += rand(-8,8) * dtSec * 6;
+        p.y += rand(-4,4) * dtSec * 6;
+        // keep inside world bounds
+        p.x = clamp(p.x, 60, 700);
+        p.y = clamp(p.y, 220, 305);
+
+        if (p.state === "reactant" && p.x < 250){
+          // drift toward barrier
+          p.x += rand(10,30) * dtSec * (1 + S.kScaled*0.3);
+        }
+
+        if (p.state === "reactant" && p.x >= 250 && Math.random() < pHop){
+          // attempt hop: chance also boosted a bit by temp
+          var bonus = (S.T - 100) * 0.002;
+          if (Math.random() < 0.5 + bonus){
+            // success: jump over crest to product side
+            p.x = rand(520,680);
+            p.y = rand(250,290);
+            p.state = "product";
+          } else {
+            // bounce back
+            p.x = rand(200,240);
+            p.y = rand(250,300);
+          }
+        }
+
+        // gentle drift on product side
+        if (p.state === "product"){
+          p.x += rand(-6, 6) * dtSec * 5;
+          p.y += rand(-3, 3) * dtSec * 5;
+          p.x = clamp(p.x, 520, 700);
+        }
+
+        p.el.setAttribute("cx", p.x);
+        p.el.setAttribute("cy", p.y);
+      });
+    }
+
+    function loop(ts){
+      if (lastTS == null) lastTS = ts;
+      var dt = (ts - lastTS) / 1000;
+      lastTS = ts;
+      tick(dt);
+      requestAnimationFrame(loop);
+    }
+
+    function applyPreset(name){
+      if (name === "slow"){
+        tSlider.value = 110;
+        timeS.value = 60;
+        catChk.checked = false;
+        matrix.value = "oil";
+      } else if (name === "balanced"){
+        tSlider.value = 120;
+        timeS.value = 40;
+        catChk.checked = true;
+        matrix.value = "oil";
+      } else if (name === "toasty"){
+        tSlider.value = 140;
+        timeS.value = 20;
+        catChk.checked = true;
+        matrix.value = "ethanol";
+      }
+      simTime = 0;
+      lastTS = null;
+      updateStatic();
+    }
+
+    function updateStatic(){
+      var S = state();
+      morphBarrier(S.Ea);
+      if (tOut) tOut.textContent = S.T.toFixed(0) + " °C";
+      if (timeOut) timeOut.textContent = Math.round(S.minsTarget) + " min";
+      if (warn) warn.classList.toggle("hidden", S.T < 130);
+
+      var conv = conversionPct(S.kScaled, S.minsTarget);
+      var terp = terpLossPct(S.T, S.minsTarget);
+      if (kOut) kOut.textContent = S.kScaled.toFixed(2) + "×";
+      if (convOut) convOut.textContent = conv.toFixed(0) + "%";
+      if (terpOut) terpOut.textContent = Math.round(terp) + "%";
+      if (convBar) convBar.setAttribute("width", 6.6 * conv);
+    }
+
+    // wire events
+    [tSlider, timeS, catChk, matrix].forEach(function(el){
+      if(!el) return;
+      el.addEventListener("input", function(){
+        simTime = 0; // whenever a control changes, reset sim clock for clarity
+        updateStatic();
+      });
+    });
+
+    if (btnPlay) btnPlay.addEventListener("click", function(){ running = true; });
+    if (btnPause) btnPause.addEventListener("click", function(){ running = false; });
+    if (btnReset) btnReset.addEventListener("click", function(){
+      running = false; simTime = 0; lastTS = null; initParticles(); updateStatic();
+    });
+    presets.forEach(function(b){ b.addEventListener("click", function(){ applyPreset(this.dataset.preset); }); });
+
+    // boot
+    initParticles();
+    updateStatic();
+    requestAnimationFrame(loop);
   })();
 });
