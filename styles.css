@@ -88,7 +88,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .tag{ padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px; background:#fff; font-weight:700; box-shadow:0 2px 0 rgba(0,0,0,.12) }
 .dark .tag{ background:#0e1418; }
 
-/* Osmosis & general sim */
+/* Osmosis viz */
 .sim{margin-top:.5rem}
 .sim label{display:block; font-weight:700; margin-bottom:.25rem}
 .sim input[type=range]{width:100%}
@@ -96,7 +96,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Reaction coordinates (shared) */
+/* Reaction coordinates */
 .rc-controls{display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; align-items:center; margin:.4rem 0 .5rem}
 .rc-controls label{font-weight:700}
 .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
@@ -164,7 +164,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   .inner.poster-frame::after{ display:none; }
 }
 
-/* === Decarb Lab & extra sims (match theme) === */
+/* Decarb Lab & extra sims */
 .lab-grid{display:grid; grid-template-columns:1fr 2fr; gap:1rem; align-items:start}
 .lab-controls label{display:block; font-weight:700; margin:.45rem 0 .2rem}
 .lab-controls input[type=range], .lab-controls select{width:100%}
