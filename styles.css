@@ -86,7 +86,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232f7d32' d='M12 2c-1.4 3.7-4.7 6.1-8.7 6.6C5 11.8 8.2 14.3 12 22c3.8-7.7 7-10.2 8.7-13.4C16.7 8.1 13.4 5.7 12 2z'/></svg>") no-repeat center/contain;
 }
 .tag{ padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px; background:#fff; font-weight:700; box-shadow:0 2px 0 rgba(0,0,0,.12) }
-.dark .tag{ background:#0e141c; }
+.dark .tag{ background:#12171c; }
 
 /* Osmosis viz */
 .sim{margin-top:.5rem}
@@ -180,5 +180,21 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   .inner.poster-frame::after{ display:none; }
 }
 
-/* Hide any lingering Decarb Lab section if it exists */
-#decarb-lab, section[data-feature="decarb-lab"]{ display:none !important; }
+/* === Decarb Lab === */
+.lab-controls{
+  display:grid; grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:.8rem; align-items:end; margin:.4rem 0 .6rem;
+}
+.lab-control label{display:block; font-weight:700; margin-bottom:.25rem}
+.lab-readout{margin-top:.15rem; font-weight:700}
+.lab-buttons{display:flex; gap:.5rem; justify-content:center}
+.lab-counters{display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:.5rem 0}
+.chip{display:inline-block; background:#fff; border:3px solid var(--ink); border-radius:999px; padding:.15rem .6rem; box-shadow:0 2px 0 rgba(0,0,0,.12); font-weight:700}
+.dark .chip{background:#12171c}
+
+.lab-stage-wrap{position:relative; max-width:920px; margin:.4rem auto; border-radius:22px; overflow:hidden; border:6px solid var(--ink); background:var(--frame); box-shadow: var(--shadow)}
+#labCanvas{display:block; width:100%; height:auto; background:linear-gradient(#eef6ff, #ffffff)}
+.lab-label{position:absolute; top:8px; font-family:'Kalam'; font-weight:700; padding:.1rem .5rem; border:3px solid var(--ink); border-radius:12px; background:#fff}
+.dark .lab-label{background:#12171c}
+.lab-label.left{left:8px}
+.lab-label.right{right:8px}
