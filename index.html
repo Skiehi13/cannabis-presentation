@@ -13,7 +13,6 @@
   <div class="progress-wrap" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
 
   <main id="deck" tabindex="0" aria-live="polite">
-
     <!-- Title -->
     <section class="slide" data-duration="30">
       <div class="inner poster-frame titlecard center">
@@ -101,7 +100,7 @@
       </div>
     </section>
 
-    <!-- Osmosis in roots -->
+    <!-- Osmosis -->
     <section class="slide" data-duration="40">
       <div class="inner poster-frame two-up center">
         <div>
@@ -142,7 +141,7 @@
       </div>
     </section>
 
-    <!-- pH infographic (image) -->
+    <!-- pH infographic -->
     <section class="slide showcase" data-duration="25">
       <div class="inner poster-frame bare">
         <figure class="fullbleed-max">
@@ -151,7 +150,7 @@
       </div>
     </section>
 
-    <!-- NEW: Interactive — pH Simulator -->
+    <!-- Interactive pH simulator -->
     <section class="slide" data-duration="60">
       <div class="inner poster-frame center">
         <h2>Interactive: pH & Nutrient Availability</h2>
@@ -194,7 +193,7 @@
       </div>
     </section>
 
-    <!-- Kinetics intro (combined context) -->
+    <!-- Kinetics — model and applied -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
         <h2>Kinetics — Model & External Factors</h2>
@@ -220,7 +219,7 @@
       </div>
     </section>
 
-    <!-- NEW: Reaction Coordinate interactive -->
+    <!-- Reaction coordinate interactive -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
         <h2>Interactive: Reaction Coordinate (Decarb)</h2>
@@ -240,9 +239,7 @@
           <text x="600" y="290" class="axis">THC + CO₂</text>
           <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,160 460,180 620,240"/>
           <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,160 460,180 620,240"/>
-          <g id="tempDots">
-            <circle class="dot" cx="110" cy="280" r="6"/>
-          </g>
+          <g id="tempDots"><circle class="dot" cx="110" cy="280" r="6"/></g>
           <g id="eaGroup">
             <line id="eaLine" class="ea-line" x1="320" y1="160" x2="320" y2="280"/>
             <polygon id="eaArrowUp"   class="ea-arrow" points="320,150 314,164 326,164"/>
@@ -255,11 +252,10 @@
       </div>
     </section>
 
-    <!-- NEW / UPGRADED: Decarb Lab (accurate Arrhenius) -->
+    <!-- Decarb Lab -->
     <section class="slide" id="decarb-lab" data-duration="60">
       <div class="inner poster-frame" id="labWrap">
         <h2>Decarb Lab — Make THCA Hop the Hump</h2>
-
         <div class="lab-grid">
           <div class="lab-controls">
             <div class="preset-row">
@@ -267,22 +263,18 @@
               <button class="btn preset" data-preset="balanced">Balanced</button>
               <button class="btn preset" data-preset="toasty">Fast &amp; Toasty</button>
             </div>
-
             <label>Temperature
               <input type="range" id="labTemp" min="90" max="160" value="120" step="1" />
               <span class="tag" id="labTempVal">120 °C</span>
             </label>
-
             <label>Time
               <input type="range" id="labTime" min="1" max="120" value="40" step="1" />
               <span class="tag" id="labTimeVal">40 min</span>
             </label>
-
             <label class="toggle">
               <input type="checkbox" id="labCatalyst" />
               <span>Use catalyst (Ea↓)</span>
             </label>
-
             <label>Matrix
               <select id="labMatrix">
                 <option value="air">Air / Dry Flower</option>
@@ -290,20 +282,17 @@
                 <option value="ethanol">Ethanol</option>
               </select>
             </label>
-
             <div class="play-row">
               <button class="btn" id="labPlay">▶ Play</button>
               <button class="btn" id="labPause">⏸ Pause</button>
               <button class="btn" id="labReset">↺ Reset</button>
             </div>
-
             <div class="readouts">
               <div>k (1/min): <strong id="labK">—</strong></div>
               <div>Half-life: <strong id="labT12">—</strong></div>
               <div>Conversion: <strong id="labConv">—</strong></div>
               <div>Est. terpene loss: <strong id="labTerp">—</strong></div>
             </div>
-
             <div id="labWarn" class="lab-warn hidden">Heads up: ≥130 °C speeds decarb but can roast terps.</div>
           </div>
 
@@ -328,12 +317,10 @@
       </div>
     </section>
 
-    <!-- MODEL MOLECULES — THC -->
+    <!-- Model molecules — THC -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
-        <div>
-          <img src="assets/thc.jpg" alt="THC model structure" />
-        </div>
+        <div><img src="assets/thc.jpg" alt="THC model structure" /></div>
         <div>
           <h2>(−)-Δ9-trans-Tetrahydrocannabinol</h2>
           <ul class="bullets">
@@ -354,12 +341,10 @@
       </div>
     </section>
 
-    <!-- MODEL MOLECULES — CBD -->
+    <!-- Model molecules — CBD -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame two-up center">
-        <div>
-          <img src="assets/cbd.jpg" alt="CBD model structure" />
-        </div>
+        <div><img src="assets/cbd.jpg" alt="CBD model structure" /></div>
         <div>
           <h2>(−)-trans-Cannabidiol</h2>
           <ul class="bullets">
@@ -380,59 +365,80 @@
       </div>
     </section>
 
-    <!-- REFERENCES (consolidated) -->
+    <!-- REFERENCES (1/2) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
-        <h2>REFERENCES</h2>
+        <h2>References (1/2)</h2>
         <div class="ref-list">
-          <ol>
-            <li>Azoulay-Shemer, T., et al. (2024). <i>Plant Methods</i>.</li>
-            <li>Bamsey, M., et al. (2024). <i>PLOS ONE</i>.</li>
-            <li>Barberon, M. (2014). <i>Plant Physiology</i>.</li>
-            <li>Chandra, S., et al. (2024). <i>JART</i>.</li>
-            <li>Chowdhury, M., et al. (2023). <i>RBPS</i>.</li>
-            <li>Friedman, D., et al. (2024). <i>Frontiers in Pharmacology</i>.</li>
-            <li>Grossmann, G., et al. (2016). <i>PNAS</i>.</li>
-            <li>Hesami, M., et al. (2023). <i>Plants</i>.</li>
-            <li>Kim, H. J., et al. (2019). <i>arXiv</i>.</li>
-            <li>Mattoteia, D., et al. (2021). <i>Molecules</i>.</li>
-            <li>Nguyen, N. T., et al. (2022). <i>Sustainability</i>.</li>
-            <li>Nosalewicz, A., et al. (2024). <i>Frontiers in Plant Science</i>.</li>
-            <li>Park, K. S., et al. (2021). <i>Frontiers in Plant Science</i>.</li>
-            <li>Pollack, G. H. (2012). <i>arXiv</i>.</li>
-            <li>Postma, J. A., & Lynch, J. P. (2025). <i>Soft Matter</i>.</li>
-            <li>Potin, S., et al. (2024). <i>Frontiers in Plant Science</i>.</li>
-            <li>Pourakbar, L., et al. (2023). <i>CJPS</i>.</li>
-            <li>Rahmawati, Y., et al. (2023). <i>EduLearn</i>.</li>
-            <li>Saloner, A., & Bernstein, N. (2024). <i>Frontiers in Plant Science</i>.</li>
-            <li>Saloner, A., Sacks, M. M., & Bernstein, N. (2022). <i>Frontiers in Plant Science</i>.</li>
-            <li>Singh, H., et al. (2022). <i>CSSPA</i>.</li>
-            <li>Zhao, C., et al. (2022). <i>Plant Physiology</i>.</li>
-            <li>Atkins & de Paula (2018). <i>Atkins’ Physical Chemistry</i>. OUP.</li>
-            <li>Anslyn & Dougherty (2017). <i>Modern Physical Organic Chemistry</i>. USB.</li>
-            <li>PubChem summaries for Δ⁹-THC (CID 2978) & CBD (CID 644019).</li>
-            <li>3Dmol.js (MIT) — molecular visualization library.</li>
-          </ol>
+          <p>Anslyn, E. V., &amp; Dougherty, D. A. (2017). <em>Modern physical organic chemistry</em>. University Science Books.</p>
+          <p>Atkins, P., &amp; de Paula, J. (2018). <em>Atkins’ physical chemistry</em> (11th ed.). Oxford University Press.</p>
+          <p>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O. R., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient <em>in vitro</em> system for flowering induction. <em>Plant Methods, 20</em>(1), 1–15.</p>
+          <p>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system for microscale smart hydroponic system. <em>PLOS ONE, 19</em>(5), e0302638.</p>
+          <p>Barberon, M. (2014). Radial transport of nutrients: The plant root as a polarized epithelium. <em>Plant Physiology, 166</em>(2), 528–537.</p>
+          <p>Chandra, S., Lata, H., Khan, I. A., &amp; ElSohly, M. A. (2024). Monitoring environmental factors associated with indoor growth chambers and greenhouses for cannabis cultivation. <em>Journal of Applied Research in Technology, 22</em>(3), 234–248.</p>
+          <p>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., &amp; Chung, S. O. (2023). Maximizing medical cannabis growth and quality. <em>Research in Biological and Pharmaceutical Sciences, 4</em>(2), 156–170.</p>
+          <p>Friedman, D., Luyckx, K., Terwagne, M., Vanderpoorten, A., Baudoin, J. P., &amp; Stroobants, A. (2024). [Article title]. <em>Frontiers in Pharmacology, 15</em>, 1465136. <!-- add article title/doi if available --></p>
+          <p>Grossmann, G., Guo, W. J., Ehrhardt, D. W., Frommer, W. B., Sit, R. V., … Meier, M. (2016). The divining root: Moisture-driven responses of roots. <em>Proceedings of the National Academy of Sciences</em>. <!-- add volume/issue/pages/doi --></p>
+          <p>Hesami, M., Pepe, M., Baiton, A., &amp; Jones, A. M. P. (2023). The <em>Cannabis</em> plant as a complex system. <em>Plants, 12</em>(3), 493.</p>
+          <p>Kim, H. J., Kim, D. W., Kim, W. K., Cho, W. J., &amp; Kang, C. I. (2019). Machine learning to remove ion interference in nutrient solutions. <em>arXiv</em>:1907.10794.</p>
+          <p>Mattoteia, D., Bagatta, M., Piazza, S., Torrini, L., Brighenti, V., … Caprioli, G. (2021). [Article title]. <em>Molecules, 26</em>(16), 4889. <!-- add full title/doi --></p>
+          <p>Nguyen, N. T., McInturf, S. A., &amp; Mendoza-Cózatl, D. G. (2022). Principles of nutrient and water management for indoor agriculture. <em>Sustainability, 14</em>(16), 10204.</p>
         </div>
         <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
 
+    <!-- REFERENCES (2/2) -->
+    <section class="slide" data-duration="35">
+      <div class="inner poster-frame refs center">
+        <h2>References (2/2)</h2>
+        <div class="ref-list">
+          <p>Nosalewicz, A., Siecińska, J., Kondracka, A., &amp; Nosalewicz, M. (2024). Understanding root growth under water deficits. <em>Frontiers in Plant Science</em>. <!-- add volume/article/doi --></p>
+          <p>Park, K. S., Bechu, A., Chambon, C., Grard, T., Guilbert, A., … Nugegoda, D. (2021). Nutrient dosing framework for urban hydroponics. <em>Frontiers in Plant Science, 12</em>, 768717.</p>
+          <p>Pollack, G. H. (2012). Self-generation of colligative properties at hydrophilic surfaces. <em>arXiv</em>:1203.0206.</p>
+          <p>Postma, J. A., &amp; Lynch, J. P. (2025). Flow environment affects nutrient transport in roots. <em>Soft Matter, 21</em>(3), 485–497.</p>
+          <p>Potin, S., Garry, G., Bourdeaux, E., Leborgne, C., Lequart-Pillon, T., … Marchand, P. (2024). Environmental impacts in cannabis cultivation. <em>Frontiers in Plant Science, 15</em>, 1322824.</p>
+          <p>Pourakbar, L., Khosh-Khui, M., &amp; Shahsavari, N. (2023). Controlled environment systems. <em>Canadian Journal of Plant Science, 103</em>(6), 671–684.</p>
+          <p>Rahmawati, Y., Ridlo, Z. R., &amp; Wardani, S. (2023). Colligative properties learning. <em>EduLearn, 17</em>(4), 543–551.</p>
+          <p>Saloner, A., &amp; Bernstein, N. (2024). Chemical composition of cannabis extracts. <em>Frontiers in Plant Science</em>. <!-- add volume/article/doi --></p>
+          <p>Saloner, A., Sacks, M. M., &amp; Bernstein, N. (2022). Nitrogen source and cannabis. <em>Frontiers in Plant Science</em>. <!-- add volume/article/doi --></p>
+          <p>Singh, H., et al. (2022). Silicon improves uptake under stress. <em>[Journal full name]</em>, <em>53</em>(16), 2089–2108. <!-- confirm journal name & doi --></p>
+          <p>Zhao, C., et al. (2022). Root osmotic sensing to systemic responses. <em>Plant Physiology</em>. <!-- add volume/issue/pages --></p>
+          <p>National Center for Biotechnology Information. (n.d.). PubChem compound summaries for Δ<sup>9</sup>-THC (CID 2978) &amp; CBD (CID 644019). https://pubchem.ncbi.nlm.nih.gov</p>
+          <p>3Dmol.js. (n.d.). <em>3D molecular visualization with WebGL</em>. https://3dmol.csb.pitt.edu</p>
+        </div>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
   </main>
 
   <footer class="help">
     <p>Keys: ← / → navigate • 📖 glossary (G) • F fullscreen • D dark • H handout • P print • Space = next</p>
   </footer>
 
-  <!-- Glossary modal (expanded) -->
+  <!-- Glossary modal (FULL list: originals + new) -->
   <div id="glossary" class="modal" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle" hidden>
     <div class="glossary-wrap poster-frame">
       <button class="close" aria-label="Close glossary">✖</button>
       <h3 id="glossaryTitle">Glossary</h3>
       <dl>
+        <!-- originals -->
         <dt id="g-colligative">Colligative properties</dt>
         <dd>Water behavior changes caused by how many particles are dissolved—<em>not</em> which kind.</dd>
 
+        <dt id="g-vpl">Vapor pressure lowering</dt>
+        <dd>Dissolved particles make it harder for water to evaporate.</dd>
+
+        <dt id="g-bpe">Boiling point elevation</dt>
+        <dd>More particles → water boils at a slightly higher temperature.</dd>
+
+        <dt id="g-fpd">Freezing point depression</dt>
+        <dd>More particles → water freezes at a lower temperature than 0 °C.</dd>
+
+        <dt id="g-op">Osmotic pressure</dt>
+        <dd>Pressure needed to stop water from moving toward a stronger solution across a membrane.</dd>
+
+        <!-- new + requested -->
         <dt id="g-solutes">Solutes</dt>
         <dd>Stuff dissolved in a liquid (like salts or sugars). More solute = bigger colligative effects.</dd>
 
