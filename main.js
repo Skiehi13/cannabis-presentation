@@ -7,7 +7,6 @@
    - pH Nutrient Availability simulator (0–14 range, starts balanced)
    - Reaction Coordinate (mini) — relative rate & Ea visuals
    - Decarb Lab (Canvas): THCA -> THC + CO2 with Arrhenius rate
-   - Reference auto-sort & de-duplicate
 */
 
 window.addEventListener("DOMContentLoaded", function () {
@@ -343,39 +342,6 @@ window.addEventListener("DOMContentLoaded", function () {
     if (tempSlider) tempSlider.value = TrefC;
     if (chkCat) chkCat.checked = false;
     sync();
-  })();
-
-  // ---------------------------------------------------
-  // Auto-sort & de-duplicate References (if multiple lists)
-  // ---------------------------------------------------
-  (function () {
-    var refSlides = Array.prototype.slice.call(document.querySelectorAll(".slide .refs .ref-list"));
-    if (!refSlides.length) return;
-
-    var entries = [];
-    refSlides.forEach(function (list) {
-      Array.prototype.slice.call(list.querySelectorAll("p")).forEach(function (p) {
-        var html = p.innerHTML.trim();
-        var text = p.textContent.trim().replace(/\s+/g, " ").replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
-        if (!text) return;
-        entries.push({ html: html, key: text.toLowerCase() });
-      });
-    });
-
-    var seen = new Set();
-    var deduped = [];
-    entries.forEach(function (e) { if (!seen.has(e.key)) { seen.add(e.key); deduped.push(e); } });
-
-    deduped.sort(function (a, b) { return a.key < b.key ? -1 : a.key > b.key ? 1 : 0; });
-
-    var half = Math.ceil(deduped.length / 2);
-    var chunks = [deduped.slice(0, half), deduped.slice(half)];
-
-    refSlides.forEach(function (list, idx) {
-      var chunk = chunks[idx] || [];
-      var html = chunk.map(function (e) { return "<p>" + e.html + "</p>"; }).join("");
-      list.innerHTML = html || "<p><em>No references listed.</em></p>";
-    });
   })();
 
   // ---------------------
