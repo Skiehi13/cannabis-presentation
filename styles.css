@@ -96,7 +96,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Reaction coordinates */
+/* Reaction coordinates (legacy block still used for styles) */
 .rc-controls{display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; align-items:center; margin:.4rem 0 .5rem}
 .rc-controls label{font-weight:700}
 .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
@@ -164,7 +164,22 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   .inner.poster-frame::after{ display:none; }
 }
 
-/* === NEW: Decarboxylation slide helpers (match your theme) === */
+/* === New: Decarb Lab layout (matches theme) === */
+.lab-grid{display:grid; grid-template-columns:1fr 2fr; gap:1rem; align-items:start}
+.lab-controls label{display:block; font-weight:700; margin:.45rem 0 .2rem}
+.lab-controls input[type=range], .lab-controls select{width:100%}
+.lab-controls .toggle{display:flex; gap:.5rem; align-items:center; user-select:none}
+.preset-row,.play-row{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.35rem}
+.readouts{display:grid; grid-template-columns:1fr; gap:.25rem; margin-top:.25rem; font-weight:700}
+.lab-warn{margin-top:.35rem; font-weight:700; color:#b45309}
+.lab-svg{width:100%; height:auto; display:block; margin:.2rem auto}
+.conv-bar-bg{fill:#ddd; stroke:#222; stroke-width:3}
+.dark .conv-bar-bg{fill:#222}
+.conv-bar-fg{fill:#2f7d32; filter: drop-shadow(0 2px 0 rgba(0,0,0,.12))}
+.legend{margin-top:.35rem; font-size:.95rem; color:var(--muted)}
+.dot.demo{display:inline-block; width:12px; height:12px; border-radius:50%; background:#7b61ff; border:2px solid #222; vertical-align:middle; margin-right:.4rem}
+
+/* Decarb helpers reused */
 .decarb-controls{display:flex; flex-wrap:wrap; gap:.9rem; justify-content:center; align-items:center; margin:.5rem 0 .6rem}
 .decarb-controls label{font-weight:700}
 .decarb-readouts{display:flex; gap:1rem; justify-content:center; align-items:center; font-weight:700; margin:.2rem 0 .4rem}
