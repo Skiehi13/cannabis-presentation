@@ -48,7 +48,7 @@
       </div>
     </section>
 
-    <!-- NEW: Interactive Freezing Point Depression -->
+    <!-- Interactive Freezing Point Depression -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
         <h2>Freezing Point Depression — play with solutes</h2>
@@ -58,7 +58,7 @@
             <input id="fpdMolality" type="range" min="0" max="3.0" step="0.05" value="0.80" />
             <div class="readout">
               <span>m = <strong id="fpdMolalityVal">0.80</strong></span>
-              <span>Van’t Hoff i = 
+              <span>Van’t Hoff i =
                 <select id="fpdI" aria-label="van't Hoff factor">
                   <option value="1" selected>1 (non-electrolyte)</option>
                   <option value="2">2 (NaCl ~ideal)</option>
@@ -83,13 +83,10 @@
           </div>
           <div>
             <svg class="viz" viewBox="0 0 160 260" role="img" aria-label="Thermometer showing depressed freezing point">
-              <!-- Tube -->
               <rect x="70" y="20" width="20" height="160" rx="10" ry="10" fill="#fff" stroke="#222" stroke-width="3"/>
               <circle cx="80" cy="210" r="28" fill="#fff" stroke="#222" stroke-width="3"/>
-              <!-- Mercury -->
               <rect id="fpdMercury" x="72" y="160" width="16" height="60" rx="8" ry="8" fill="#ff6868"/>
               <circle cx="80" cy="210" r="24" fill="#ff6868"/>
-              <!-- Scale -->
               <g class="ticks">
                 <g class="tick"><line x1="95" y1="60" x2="120" y2="60"/><text x="125" y="64">0 °C</text></g>
                 <g class="tick"><line x1="95" y1="100" x2="120" y2="100"/><text x="125" y="104">−5 °C</text></g>
@@ -261,7 +258,6 @@
           <span id="rcTempVal">120 °C</span>
         </div>
         <svg id="rcDiagram" class="rc-svg" viewBox="0 0 700 320" role="img" aria-label="Reaction coordinate energy diagram">
-          <defs></defs>
           <line x1="60" y1="280" x2="660" y2="280" class="baseline"/>
           <text x="20" y="150" class="axis" transform="rotate(-90 20,150)">Energy</text>
           <text x="330" y="310" class="axis">Reaction coordinate</text>
@@ -276,7 +272,6 @@
             <text id="eaText" class="ea-text" x="332" y="210">E<tspan baseline-shift="sub">a</tspan></text>
           </g>
 
-          <!-- moving “temperature” dots -->
           <g id="tempDots">
             <circle class="dot" cx="120" cy="270" r="6"/>
             <circle class="dot" cx="140" cy="270" r="6"/>
@@ -365,7 +360,57 @@
       </div>
     </section>
 
-    <!-- REFERENCES (combined; auto-sorted/deduped by JS into two lists if needed) -->
+    <!-- DECARB LAB — THCA → THC + CO₂ (fixed & working) -->
+    <section class="slide" data-duration="55" id="decarb-lab">
+      <div class="inner poster-frame center">
+        <h2>Decarb Lab: THCA → THC + CO₂</h2>
+
+        <div class="lab-controls">
+          <div class="lab-control">
+            <label for="labTemp">Temperature (°C)</label>
+            <input id="labTemp" type="range" min="80" max="160" step="1" value="120">
+            <div class="lab-readout">T = <strong id="labTempVal">120</strong> °C</div>
+          </div>
+
+          <div class="lab-control">
+            <label><input id="labCat" type="checkbox"> Use catalyst (lowers E<sub>a</sub>)</label>
+            <div class="lab-readout">E<sub>a</sub> ≈ <strong id="labEaVal">120</strong> kJ·mol⁻¹</div>
+          </div>
+
+          <div class="lab-control">
+            <label for="labSpeed">Viz speed</label>
+            <input id="labSpeed" type="range" min="0.5" max="2.0" step="0.1" value="1.0">
+            <div class="lab-readout">x <strong id="labSpeedVal">1.0</strong></div>
+          </div>
+
+          <div class="lab-buttons">
+            <button id="labStart" class="btn" type="button">Start</button>
+            <button id="labPause" class="btn" type="button">Pause</button>
+            <button id="labReset" class="btn" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="lab-counters">
+          <span class="chip">THCA: <strong id="labCountTHCA">24</strong></span>
+          <span class="chip">THC: <strong id="labCountTHC">0</strong></span>
+          <span class="chip">CO₂ bubbles: <strong id="labCountCO2">0</strong></span>
+          <span class="chip">Rel. rate: <strong id="labRelRate">1.00×</strong></span>
+        </div>
+
+        <div class="lab-stage-wrap">
+          <canvas id="labCanvas" width="900" height="360" aria-label="Decarb simulation canvas">
+            Your browser does not support canvas.
+          </canvas>
+          <div class="lab-label left">Reactants (THCA)</div>
+          <div class="lab-label right">Products (THC + CO₂)</div>
+        </div>
+
+        <p class="sim-note">Heat &amp; catalysts change the probability that any THCA molecule decarbs on a given moment. When it does, a CO₂ bubble launches and the THC migrates to the products chamber.</p>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- REFERENCES (combined; auto-sorted/deduped by JS across two columns if needed) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References</h2>
@@ -429,7 +474,7 @@
         <dd>More particles → water boils at a slightly higher temperature.</dd>
 
         <dt id="g-fpd">Freezing point depression</dt>
-        <dd>More particles → water freezes at a slightly lower temperature: ΔT<sub>f</sub> = i·K<sub>f</sub>·m.</dd>
+        <dd>More particles → water freezes at a lower temperature: ΔT<sub>f</sub> = i·K<sub>f</sub>·m.</dd>
 
         <dt id="g-solute">Solute</dt>
         <dd>The substance dissolved in a solvent (e.g., salts in water).</dd>
