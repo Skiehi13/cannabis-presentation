@@ -1,14 +1,13 @@
-/* Stoney Science — Presentation Engine + Interactives
+/* Stoney Science — Presentation Engine + Interactives (FIXED)
    ----------------------------------------------------------------------
-   What’s inside:
    - Deck navigation, fit-to-frame, theme, handout/print
    - Glossary launcher + focus scroll
    - Osmosis (EC) slider
-   - Reaction Coordinate (mini) interactivity
-   - NEW: Freezing Point Depression simulator
-   - NEW: pH Nutrient Availability simulator
-   - NEW: Decarb Lab (Arrhenius) with presets + animated particles
-   - NEW: Reference sorter (alphabetize + de-duplicate across slides)
+   - Freezing Point Depression simulator
+   - pH Nutrient Availability simulator
+   - Reaction Coordinate (mini) — FIXED
+   - Decarb Lab (Arrhenius) — FIXED
+   - Reference sorter (alphabetize + de-duplicate across slides)
 */
 
 window.addEventListener("DOMContentLoaded", function () {
@@ -20,23 +19,15 @@ window.addEventListener("DOMContentLoaded", function () {
   // Start / Progress Bar
   // ---------------------
   var i = 0;
-  slides.forEach(function (s) {
-    s.classList.remove("current", "anim-left", "anim-right");
-  });
+  slides.forEach(function (s) { s.classList.remove("current", "anim-left", "anim-right"); });
   slides[0].classList.add("current");
 
   var bar = document.getElementById("progressBar");
-  var durations = slides.map(function (s) {
-    return Number(s.getAttribute("data-duration") || 40);
-  });
-  var total = durations.reduce(function (a, b) {
-    return a + b;
-  }, 0);
+  var durations = slides.map(function (s) { return Number(s.getAttribute("data-duration") || 40); });
+  var total = durations.reduce(function (a, b) { return a + b; }, 0);
 
   function setProgress() {
-    var elapsed = durations.slice(0, i).reduce(function (a, b) {
-      return a + b;
-    }, 0);
+    var elapsed = durations.slice(0, i).reduce(function (a, b) { return a + b; }, 0);
     if (bar) bar.style.width = ((elapsed / total) * 100) + "%";
   }
 
@@ -165,12 +156,112 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // Reaction Coordinates (mini diagram)
+  // Freezing Point Depression sim
+  // -----------------------------------
+  (function () {
+    var mSlider = document.getElementById("fpdMolality");
+    var mVal = document.getElementById("fpdMolalityVal");
+    var iSel = document.getElementById("fpdI");
+    var deltaEl = document.getElementById("fpdDelta");
+    var tfEl = document.getElementById("fpdTF");
+    var bar = document.getElementById("fpdBar");
+    var mercury = document.getElementById("fpdMercury");
+    var label = document.getElementById("fpdLabel");
+    if (!mSlider || !iSel || !deltaEl || !tfEl || !bar || !mercury || !label) return;
+
+    var Kf = 1.86; // °C·kg/mol for water
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function update() {
+      var m = parseFloat(mSlider.value || "0");
+      var i = parseFloat(iSel.value || "1");
+      if (mVal) mVal.textContent = m.toFixed(2);
+
+      var dTf = i * Kf * m; // positive magnitude
+      var Tf = 0 - dTf;
+
+      deltaEl.textContent = (-dTf).toFixed(2);
+      tfEl.textContent = Tf.toFixed(2);
+
+      var pct = clamp(dTf / (Kf * 3 * 3), 0, 1); // normalized
+      bar.setAttribute("width", (160 * pct).toFixed(1));
+
+      var yTop = 80, yBot = 220;
+      var norm = clamp((Tf + 15) / 15, 0, 1); // map -15..0 to 0..1
+      var hgH = 140 * norm;
+      var y = yTop + (140 - hgH);
+      mercury.setAttribute("y", y.toFixed(1));
+      mercury.setAttribute("height", hgH.toFixed(1));
+      label.textContent = Tf.toFixed(1) + " °C";
+    }
+    mSlider.addEventListener("input", update);
+    iSel.addEventListener("change", update);
+    update();
+  })();
+
+  // -----------------------------------
+  // pH Nutrient Availability sim
+  // -----------------------------------
+  (function () {
+    var slider = document.getElementById("phSlider");
+    if (!slider) return;
+    var phVal = document.getElementById("phVal");
+    var phTone = document.getElementById("phTone");
+
+    var bars = {
+      N: document.getElementById("barN"),
+      P: document.getElementById("barP"),
+      K: document.getElementById("barK"),
+      Ca: document.getElementById("barCa"),
+      Mg: document.getElementById("barMg"),
+      Fe: document.getElementById("barFe"),
+      Mn: document.getElementById("barMn")
+    };
+
+    function bell(x, mu, sigma) {
+      var t = (x - mu) / sigma;
+      return Math.exp(-0.5 * t * t);
+    }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function availability(pH) {
+      return {
+        N: clamp(bell(pH, 6.2, 0.7), 0, 1),
+        P: clamp(bell(pH, 6.1, 0.6), 0, 1),
+        K: clamp(bell(pH, 6.0, 0.8), 0, 1),
+        Ca: clamp(bell(pH, 6.3, 0.6), 0, 1),
+        Mg: clamp(bell(pH, 6.3, 0.6), 0, 1),
+        Fe: clamp(bell(pH, 5.8, 0.5), 0, 1),
+        Mn: clamp(bell(pH, 5.8, 0.6), 0, 1)
+      };
+    }
+    function tone(pH) {
+      if (pH < 6.0) return "acidic";
+      if (pH > 7.0) return "alkaline";
+      return "slightly acidic";
+    }
+
+    function update() {
+      var pH = parseFloat(slider.value);
+      phVal.textContent = pH.toFixed(1);
+      phTone.textContent = tone(pH);
+      var avail = availability(pH);
+      Object.keys(bars).forEach(function (k) {
+        var el = bars[k];
+        if (!el) return;
+        el.style.width = (avail[k] * 100).toFixed(0) + "%";
+      });
+    }
+    slider.addEventListener("input", update);
+    update();
+  })();
+
+  // -----------------------------------
+  // Reaction Coordinate (mini) — FIXED
   // -----------------------------------
   (function () {
     var svg = document.getElementById("rcDiagram");
     if (!svg) return;
-    var chkEa = document.getElementById("rcEa"); // (optional checkbox; not required)
     var chkCat = document.getElementById("rcCatalyst");
     var tempSlider = document.getElementById("rcTemp");
     var tempVal = document.getElementById("rcTempVal");
@@ -207,8 +298,8 @@ window.addEventListener("DOMContentLoaded", function () {
       return "M " + x0 + "," + y0 + " C " + x1 + "," + y1 + " " + x2 + "," + y2 + " " + x3 + "," + y3;
     }
     function sync() {
-      var useCat = !!(chkCat && chkCat.checked);
       var T_C = tempSlider ? Number(tempSlider.value) : TrefC;
+      var useCat = !!(chkCat && chkCat.checked);
       var Ea_kJ = useCat ? Ea_ref_kJ * catalystFactor : Ea_ref_kJ;
 
       if (tempVal) tempVal.textContent = T_C.toFixed(0) + " °C";
@@ -220,148 +311,38 @@ window.addEventListener("DOMContentLoaded", function () {
       if (useCat) { pathCat.classList.remove("hidden"); pathUncat.classList.add("hidden"); pathCat.setAttribute("d", d); }
       else { pathCat.classList.add("hidden"); pathUncat.classList.remove("hidden"); pathUncat.setAttribute("d", d); }
 
-      if (chkEa && chkEa.checked) {
-        eaGroup.style.display = "block";
+      if (eaGroup) {
         var xPeak = 320, yReact = 280, yTop = yPeak;
         eaLine.setAttribute("x1", xPeak); eaLine.setAttribute("x2", xPeak);
         eaLine.setAttribute("y1", yTop); eaLine.setAttribute("y2", yReact);
         eaArrowUp.setAttribute("points", xPeak + "," + (yTop - 10) + " " + (xPeak - 6) + "," + (yTop + 4) + " " + (xPeak + 6) + "," + (yTop + 4));
         eaArrowDn.setAttribute("points", xPeak + "," + (yReact + 10) + " " + (xPeak - 6) + "," + (yReact - 4) + " " + (xPeak + 6) + "," + (yReact - 4));
         eaText.setAttribute("x", xPeak + 8); eaText.setAttribute("y", (yTop + yReact) / 2);
-      } else {
-        eaGroup.style.display = "none";
       }
 
-      var durRef = 2.2; var T = T_C + 273.15, Tref = TrefC + 273.15;
-      var speedFactor = clamp(T / Tref, 0.6, 1.5);
-      if (dots) dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
+      var durRef = 2.2;
+      var speedFactor = kRel(Ea_kJ, T_C);
+      if (dots) dots.style.setProperty("--dotDur", (durRef / Math.max(0.2, speedFactor)).toFixed(2) + "s");
 
       if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
     }
-    if (chkEa) chkEa.addEventListener("change", sync);
+
     if (chkCat) chkCat.addEventListener("change", sync);
     if (tempSlider) tempSlider.addEventListener("input", sync);
     if (btnReset) btnReset.addEventListener("click", function () {
-      if (chkEa) chkEa.checked = true;
       if (chkCat) chkCat.checked = false;
-      if (tempSlider) { tempSlider.value = TrefC; }
+      if (tempSlider) tempSlider.value = TrefC;
       sync();
     });
-    // default state
-    if (chkEa) chkEa.checked = true;
-    if (chkCat) chkCat.checked = false;
+
+    // init
     if (tempSlider) tempSlider.value = TrefC;
+    if (chkCat) chkCat.checked = false;
     sync();
   })();
 
   // -----------------------------------
-  // NEW: Freezing Point Depression sim
-  // -----------------------------------
-  (function () {
-    var mSlider = document.getElementById("fpdMolality");
-    var mVal = document.getElementById("fpdMolalityVal");
-    var iSel = document.getElementById("fpdI");
-    var deltaEl = document.getElementById("fpdDelta");
-    var tfEl = document.getElementById("fpdTF");
-    var bar = document.getElementById("fpdBar");
-    var mercury = document.getElementById("fpdMercury");
-    var label = document.getElementById("fpdLabel");
-    if (!mSlider || !iSel || !deltaEl || !tfEl || !bar || !mercury || !label) return;
-
-    var Kf = 1.86; // °C·kg/mol for water
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-
-    function update() {
-      var m = parseFloat(mSlider.value || "0");
-      var i = parseFloat(iSel.value || "1");
-      if (mVal) mVal.textContent = m.toFixed(2);
-
-      var dTf = i * Kf * m; // positive magnitude
-      var Tf = 0 - dTf;
-
-      deltaEl.textContent = (-dTf).toFixed(2);
-      tfEl.textContent = Tf.toFixed(2);
-
-      // Progress bar (0 to 3 m ~ up to ~ -11.16 °C)
-      var pct = clamp(dTf / (Kf * 3 * 3), 0, 1); // rough normalization
-      bar.setAttribute("width", (160 * pct).toFixed(1));
-
-      // Thermometer mercury: y ranges 80..220 (top down)
-      var yTop = 80, yBot = 220;
-      var norm = clamp((Tf + 15) / 15, 0, 1); // map -15..0 to 0..1
-      var hgH = 140 * norm; // shorter = colder
-      var y = yTop + (140 - hgH);
-      mercury.setAttribute("y", y.toFixed(1));
-      mercury.setAttribute("height", hgH.toFixed(1));
-      label.textContent = Tf.toFixed(1) + " °C";
-    }
-    mSlider.addEventListener("input", update);
-    iSel.addEventListener("change", update);
-    update();
-  })();
-
-  // -----------------------------------
-  // NEW: pH Nutrient Availability sim
-  // -----------------------------------
-  (function () {
-    var slider = document.getElementById("phSlider");
-    if (!slider) return;
-    var phVal = document.getElementById("phVal");
-    var phTone = document.getElementById("phTone");
-
-    var bars = {
-      N: document.getElementById("barN"),
-      P: document.getElementById("barP"),
-      K: document.getElementById("barK"),
-      Ca: document.getElementById("barCa"),
-      Mg: document.getElementById("barMg"),
-      Fe: document.getElementById("barFe"),
-      Mn: document.getElementById("barMn")
-    };
-
-    function bell(x, mu, sigma) {
-      // simple gaussian-like curve normalized to 0..1
-      var t = (x - mu) / sigma;
-      return Math.exp(-0.5 * t * t);
-    }
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-
-    function availability(pH) {
-      // Qualitative “widths” for hydro/coco-ish ranges
-      return {
-        N: clamp(bell(pH, 6.2, 0.7), 0, 1),
-        P: clamp(bell(pH, 6.1, 0.6), 0, 1),
-        K: clamp(bell(pH, 6.0, 0.8), 0, 1),
-        Ca: clamp(bell(pH, 6.3, 0.6), 0, 1),
-        Mg: clamp(bell(pH, 6.3, 0.6), 0, 1),
-        Fe: clamp(bell(pH, 5.8, 0.5), 0, 1),
-        Mn: clamp(bell(pH, 5.8, 0.6), 0, 1)
-      };
-    }
-    function tone(pH) {
-      if (pH < 6.0) return "acidic";
-      if (pH > 7.0) return "alkaline";
-      return "slightly acidic";
-    }
-
-    function update() {
-      var pH = parseFloat(slider.value);
-      phVal.textContent = pH.toFixed(1);
-      phTone.textContent = tone(pH);
-      var avail = availability(pH);
-      Object.keys(bars).forEach(function (k) {
-        var el = bars[k];
-        if (!el) return;
-        var w = (avail[k] * 100).toFixed(0) + "%";
-        el.style.width = w;
-      });
-    }
-    slider.addEventListener("input", update);
-    update();
-  })();
-
-  // -----------------------------------
-  // NEW: Decarb Lab (Arrhenius + Particles)
+  // Decarb Lab (Arrhenius) — FIXED
   // -----------------------------------
   (function () {
     var wrap = document.getElementById("decarb-lab");
@@ -394,24 +375,20 @@ window.addEventListener("DOMContentLoaded", function () {
     // Parameters
     var R = 8.314;            // J/mol/K
     var Ea_base = 120e3;      // J/mol baseline
-    var A_base = 0.02;        // 1/min — scaled for demo (not lab-accurate)
+    var A_base = 0.02;        // 1/min — scaled for demo (visual, not lab-accurate)
     var catalystFactor = 0.7; // lowers Ea by 30%
     var matrices = {
-      air: 1.00,   // baseline
-      oil: 1.15,   // easier heat transfer (effective A↑)
+      air: 1.00,
+      oil: 1.15,
       ethanol: 1.30
     };
 
     var playing = false;
-    var sim_t = 0; // minutes progressed (for animation)
     var reqId = null;
 
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-    function EaEffective() {
-      var Ea = Ea_base * (cat && cat.checked ? catalystFactor : 1.0);
-      return Ea;
-    }
+    function EaEffective() { return Ea_base * (cat && cat.checked ? catalystFactor : 1.0); }
     function AEffective() {
       var mult = matrices[matrix ? matrix.value : "air"] || 1.0;
       return A_base * mult;
@@ -420,27 +397,19 @@ window.addEventListener("DOMContentLoaded", function () {
       var T = T_C + 273.15;
       return AEffective() * Math.exp(-EaEffective() / (R * T)); // 1/min
     }
-    function halfLifeFromK(k) {
-      return k > 0 ? Math.log(2) / k : Infinity; // minutes
-    }
-    function conversion(k, minutes) {
-      // Simple first-order: 1 - exp(-k t)
-      var t = minutes;
-      return 1 - Math.exp(-k * t);
-    }
+    function halfLifeFromK(k) { return k > 0 ? Math.log(2) / k : Infinity; } // minutes
+    function conversion(k, minutes) { return 1 - Math.exp(-k * minutes); }    // first-order
     function terpLossEst(T_C, minutes) {
-      // A playful penalty function that ramps above 130 °C and longer times
       var base = (T_C <= 120) ? 0.05 : (T_C <= 130) ? 0.12 : 0.25;
-      var extra = Math.max(0, (T_C - 130)) * 0.01;
+      var extra = Math.max(0, T_C - 130) * 0.01;
       var tFac = Math.min(0.35, minutes * 0.0025);
       return clamp(base + extra + tFac, 0, 0.95);
     }
 
     function bezierPeakY(EaJ) {
-      // remap Ea -> peak height (lower Ea => lower hill)
       var EaMin = 70e3, EaMax = 160e3, yMax = 140, yMin = 80;
       var t = clamp((EaJ - EaMin) / (EaMax - EaMin), 0, 1);
-      return yMin + (yMax - yMin) * t; // SVG y is downward
+      return yMin + (yMax - yMin) * t; // lower Ea -> lower peak y (closer to 80)
     }
     function updateBarrier() {
       if (!barrier) return;
@@ -467,13 +436,13 @@ window.addEventListener("DOMContentLoaded", function () {
     function animateParticles(k, T_C) {
       if (!particlesG) return;
       var nodes = particlesG.querySelectorAll("circle");
-      var jumpChance = clamp(k * 0.6, 0, 0.9); // scale odds to be visible
+      var jumpChance = clamp(k * 0.6, 0, 0.9); // scaled for visible hops
       var heatJitter = clamp((T_C - 90) / 70, 0.1, 1.2);
 
       nodes.forEach(function (n) {
         var cx = parseFloat(n.getAttribute("cx"));
         var cy = parseFloat(n.getAttribute("cy"));
-        // jitter
+        // jitter with temperature
         cx += (Math.random() - 0.5) * 2 * heatJitter;
         cy += (Math.random() - 0.5) * 1.2 * heatJitter;
         cx = clamp(cx, 60, 260);
@@ -481,14 +450,12 @@ window.addEventListener("DOMContentLoaded", function () {
         n.setAttribute("cx", cx.toFixed(1));
         n.setAttribute("cy", cy.toFixed(1));
 
-        // attempt barrier hop
+        // random hop over barrier, then respawn left
         if (Math.random() < jumpChance * 0.05) {
-          // animate over the curve toward products zone
           var tx = 520 + Math.random() * 160;
           var ty = 285 + Math.random() * 10;
           n.setAttribute("cx", tx.toFixed(1));
           n.setAttribute("cy", ty.toFixed(1));
-          // optional: fade then respawn on left
           setTimeout(function () {
             n.setAttribute("cx", (70 + Math.random() * 160).toFixed(1));
             n.setAttribute("cy", (280 + Math.random() * 16).toFixed(1));
@@ -510,10 +477,10 @@ window.addEventListener("DOMContentLoaded", function () {
       var conv = conversion(k, minutes);
       var terp = terpLossEst(T_C, minutes);
 
-      if (kOut) kOut.textContent = k.toExponential(3);
-      if (t12Out) t12Out.textContent = isFinite(t12) ? t12.toFixed(1) + " min" : "—";
-      if (convOut) convOut.textContent = Math.round(conv * 100) + "%";
-      if (terpOut) terpOut.textContent = Math.round(terp * 100) + "%";
+      kOut.textContent = k.toExponential(3);
+      t12Out.textContent = isFinite(t12) ? t12.toFixed(1) + " min" : "—";
+      convOut.textContent = Math.round(conv * 100) + "%";
+      terpOut.textContent = Math.round(terp * 100) + "%";
 
       if (convBar) {
         var width = 660 * clamp(conv, 0, 1);
@@ -522,31 +489,24 @@ window.addEventListener("DOMContentLoaded", function () {
       updateBarrier();
     }
 
+    var req;
     function tick() {
-      if (!playing) return;
-      sim_t += 0.4; // simulation time speedup (min per frame-ish)
-      // advance “time” slider, but don’t exceed max
-      var tNow = Math.min(parseFloat(time.max), parseFloat(time.value) + 0.4);
-      time.value = tNow.toFixed(1);
-
-      // Update UI and particles
       var T_C = parseFloat(temp.value);
       var k = kArrhenius(T_C);
       animateParticles(k, T_C);
       updateUI();
-
-      reqId = requestAnimationFrame(tick);
+      req = requestAnimationFrame(tick);
     }
 
     function play() {
       if (playing) return;
       playing = true;
-      reqId = requestAnimationFrame(tick);
+      req = requestAnimationFrame(tick);
     }
     function pause() {
       playing = false;
-      if (reqId) cancelAnimationFrame(reqId);
-      reqId = null;
+      if (req) cancelAnimationFrame(req);
+      req = null;
     }
     function reset() {
       pause();
@@ -554,7 +514,6 @@ window.addEventListener("DOMContentLoaded", function () {
       time.value = 40;
       if (cat) cat.checked = false;
       if (matrix) matrix.value = "oil";
-      sim_t = 0;
       makeParticles(28);
       updateUI();
     }
@@ -579,58 +538,41 @@ window.addEventListener("DOMContentLoaded", function () {
     time.addEventListener("input", updateUI);
     if (cat) cat.addEventListener("change", updateUI);
     if (matrix) matrix.addEventListener("change", updateUI);
-    if (btnPlay) btnPlay.addEventListener("click", play);
-    if (btnPause) btnPause.addEventListener("click", pause);
-    if (btnReset) btnReset.addEventListener("click", reset);
+    btnPlay.addEventListener("click", function(){ play(); });
+    btnPause.addEventListener("click", function(){ pause(); });
+    btnReset.addEventListener("click", function(){ reset(); });
 
     // Init
     makeParticles(28);
-    updateUI();
+    reset(); // sets defaults + UI
   })();
 
   // ---------------------------------------------------
-  // NEW: Auto-sort & de-duplicate References (APA-ish)
+  // Auto-sort & de-duplicate References (APA-ish)
   // ---------------------------------------------------
   (function () {
-    // Find the two reference slides (1/2 and 2/2)
     var refSlides = Array.prototype.slice.call(document.querySelectorAll(".slide .refs .ref-list"));
     if (!refSlides.length) return;
 
-    // Gather all <p> items across both, normalize text, de-duplicate
     var entries = [];
     refSlides.forEach(function (list) {
       Array.prototype.slice.call(list.querySelectorAll("p")).forEach(function (p) {
         var html = p.innerHTML.trim();
-        var text = p.textContent.trim()
-          .replace(/\s+/g, " ")
-          .replace(/[‘’]/g, "'")
-          .replace(/[“”]/g, '"');
+        var text = p.textContent.trim().replace(/\s+/g, " ").replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
         if (!text) return;
         entries.push({ html: html, key: text.toLowerCase() });
       });
     });
 
-    // De-dupe by key
     var seen = new Set();
     var deduped = [];
-    entries.forEach(function (e) {
-      if (seen.has(e.key)) return;
-      seen.add(e.key);
-      deduped.push(e);
-    });
+    entries.forEach(function (e) { if (!seen.has(e.key)) { seen.add(e.key); deduped.push(e); } });
 
-    // Sort alphabetically by key
-    deduped.sort(function (a, b) {
-      if (a.key < b.key) return -1;
-      if (a.key > b.key) return 1;
-      return 0;
-    });
+    deduped.sort(function (a, b) { return a.key < b.key ? -1 : a.key > b.key ? 1 : 0; });
 
-    // Split roughly in half back onto the two slides (keep 1 slide if only one)
     var half = Math.ceil(deduped.length / 2);
     var chunks = [deduped.slice(0, half), deduped.slice(half)];
 
-    // Render back
     refSlides.forEach(function (list, idx) {
       var chunk = chunks[idx] || [];
       var html = chunk.map(function (e) { return "<p>" + e.html + "</p>"; }).join("");
@@ -663,13 +605,10 @@ window.addEventListener("DOMContentLoaded", function () {
     fitCurrent();
   }
 
-  // Refit on resize / font load / image load
   window.addEventListener("resize", fitCurrent);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCurrent);
   document.querySelectorAll(".slide img").forEach(function (imgEl) {
-    imgEl.addEventListener("load", function () {
-      if (imgEl.closest(".slide") === slides[i]) fitCurrent();
-    });
+    imgEl.addEventListener("load", function () { if (imgEl.closest(".slide") === slides[i]) fitCurrent(); });
   });
 
   setProgress();
