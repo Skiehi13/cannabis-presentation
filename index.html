@@ -15,7 +15,7 @@
   <main id="deck" tabindex="0" aria-live="polite">
 
     <!-- Title -->
-    <section class="slide" data-duration="20">
+    <section class="slide" data-duration="30">
       <div class="inner poster-frame titlecard center">
         <h1>Stoney Science</h1>
         <h2 class="subtitle">Chemistry for Cannabis Cultivators</h2>
@@ -32,7 +32,7 @@
     </section>
 
     <!-- Colligative basics -->
-    <section class="slide" data-duration="45">
+    <section class="slide" data-duration="40">
       <div class="inner poster-frame center">
         <h2>Colligative Properties: what &amp; why growers care</h2>
         <ul class="bullets">
@@ -48,8 +48,61 @@
       </div>
     </section>
 
+    <!-- NEW: Interactive — Freezing point depression -->
+    <section class="slide" data-duration="60">
+      <div class="inner poster-frame center">
+        <h2>Interactive: Freezing Point vs. Solutes</h2>
+        <p>Slide to add <button class="def" data-term="solutes">solutes</button>. Watch the freezing point of water drop (ΔT<sub>f</sub> = i·K<sub>f</sub>·m).</p>
+        <div class="two-up">
+          <div>
+            <div class="sim fpd">
+              <label for="fpdMolality">Molality (m, mol/kg)</label>
+              <input id="fpdMolality" type="range" min="0" max="3" step="0.05" value="0.5" />
+              <div class="readout">
+                <span>m: <strong id="fpdMolalityVal">0.50</strong></span>
+                <span>i (van’t Hoff): 
+                  <select id="fpdI">
+                    <option value="1">1 (nonelectrolyte: sugar)</option>
+                    <option value="2" selected>2 (NaCl)</option>
+                    <option value="3">3 (CaCl₂)</option>
+                  </select>
+                </span>
+                <span>K<sub>f</sub>(H₂O): <strong>1.86</strong> °C·kg/mol</span>
+              </div>
+              <div class="readout">
+                <span>ΔT<sub>f</sub>: <strong id="fpdDelta">-1.86</strong> °C</span>
+                <span>Freezing point: <strong id="fpdTF">-1.86</strong> °C</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <svg id="fpdThermo" class="fpd-svg" viewBox="0 0 240 300" role="img" aria-label="Freezing point thermometer">
+              <defs>
+                <linearGradient id="thermGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#76a9fa"/>
+                  <stop offset="100%" stop-color="#b6e36e"/>
+                </linearGradient>
+              </defs>
+              <rect x="40" y="10" width="160" height="16" rx="8" class="conv-bar-bg"/>
+              <rect id="fpdBar" x="40" y="10" width="0" height="16" rx="8" class="conv-bar-fg"/>
+              <text x="40" y="8" class="axis">Colder ← 0 °C → Warmer</text>
+
+              <!-- Thermometer -->
+              <rect x="100" y="60" width="40" height="160" rx="20" ry="20" fill="#fff" stroke="#222" stroke-width="3"/>
+              <circle cx="120" cy="240" r="28" fill="url(#thermGrad)" stroke="#222" stroke-width="3"/>
+              <rect id="fpdMercury" x="108" y="80" width="24" height="140" rx="12" fill="url(#thermGrad)"/>
+              <text id="fpdLabel" x="120" y="270" text-anchor="middle" class="axis">-1.9 °C</text>
+              <text x="120" y="55" text-anchor="middle" class="axis">Freezing Point</text>
+            </svg>
+          </div>
+        </div>
+        <p class="sim-note">Cold climate growers: salty solutions freeze below 0 °C → protect roots/lines from slush season.</p>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
     <!-- Osmosis in roots -->
-    <section class="slide" data-duration="45">
+    <section class="slide" data-duration="40">
       <div class="inner poster-frame two-up center">
         <div>
           <h2>Osmosis = water follows particles</h2>
@@ -73,7 +126,7 @@
     </section>
 
     <!-- Hydro systems -->
-    <section class="slide" data-duration="45">
+    <section class="slide" data-duration="40">
       <div class="inner poster-frame center">
         <h2>Hydroponics = managing solution strength</h2>
         <ul class="bullets">
@@ -89,12 +142,40 @@
       </div>
     </section>
 
-    <!-- pH infographic -->
+    <!-- pH infographic (image) -->
     <section class="slide showcase" data-duration="25">
       <div class="inner poster-frame bare">
         <figure class="fullbleed-max">
           <img src="assets/pH%20scale%20for%20Cannabis%20Cultivation%20(4).jpg" alt="pH scale for Cannabis Cultivation infographic by Amanda Mallette" />
         </figure>
+      </div>
+    </section>
+
+    <!-- NEW: Interactive — pH Simulator -->
+    <section class="slide" data-duration="60">
+      <div class="inner poster-frame center">
+        <h2>Interactive: pH & Nutrient Availability</h2>
+        <p>Slide pH and watch nutrient “doors” open/close. Keep it in the chill zone.</p>
+        <div class="sim">
+          <label for="phSlider">pH</label>
+          <input id="phSlider" type="range" min="4.0" max="9.0" step="0.1" value="6.3" />
+          <div class="readout">
+            <span>pH: <strong id="phVal">6.3</strong></span>
+            <span>acidic/alkaline: <strong id="phTone">slightly acidic</strong></span>
+          </div>
+        </div>
+
+        <div class="nutri-grid" role="table" aria-label="Nutrient availability vs pH">
+          <div class="nutri-row" role="row"><span>N</span><div class="bar"><div id="barN"></div></div></div>
+          <div class="nutri-row" role="row"><span>P</span><div class="bar"><div id="barP"></div></div></div>
+          <div class="nutri-row" role="row"><span>K</span><div class="bar"><div id="barK"></div></div></div>
+          <div class="nutri-row" role="row"><span>Ca</span><div class="bar"><div id="barCa"></div></div></div>
+          <div class="nutri-row" role="row"><span>Mg</span><div class="bar"><div id="barMg"></div></div></div>
+          <div class="nutri-row" role="row"><span>Fe</span><div class="bar"><div id="barFe"></div></div></div>
+          <div class="nutri-row" role="row"><span>Mn</span><div class="bar"><div id="barMn"></div></div></div>
+        </div>
+        <p class="sim-note">Broad, qualitative curves typical for hydro/coco targets.</p>
+        <div class="happy">HAPPY GROWING!</div>
       </div>
     </section>
 
@@ -113,49 +194,17 @@
       </div>
     </section>
 
-    <!-- Interactive — OP sweet spot -->
-    <section class="slide" data-duration="40">
+    <!-- Kinetics intro (combined context) -->
+    <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
-        <h2>Find the sweet spot</h2>
-        <p>Drag the slider to try different solution strengths. Watch the arrows to see how water moves.</p>
-        <div class="sim">
-          <label for="ecRange">Solution strength (EC mS/cm)</label>
-          <input id="ecRange" type="range" min="0.4" max="2.6" step="0.1" value="1.5" />
-          <div class="readout">
-            <span>EC: <strong id="ecVal">1.5</strong></span>
-            <span>Tonicity: <strong id="tonicity">isotonic</strong></span>
-            <span>Uptake: <strong id="uptake">balanced</strong></span>
-          </div>
-          <svg id="osmoticViz" viewBox="0 0 300 140" class="viz" role="img" aria-label="Water movement across a root cell">
-            <rect x="10" y="10" width="280" height="120" rx="16" ry="16" fill="#ffffff" stroke="#222" stroke-width="3"/>
-            <rect x="110" y="25" width="80" height="90" rx="12" ry="12" fill="#eaf7ff" stroke="#222" stroke-width="3"/>
-            <g id="arrowsIn" fill="#2f7d32">
-              <polygon points="80,45 100,45 100,40 115,50 100,60 100,55 80,55"/>
-              <polygon points="80,75 100,75 100,70 115,80 100,90 100,85 80,85"/>
-            </g>
-            <g id="arrowsOut" fill="#c62828" opacity="0.25">
-              <polygon points="205,45 185,45 185,40 170,50 185,60 185,55 205,55"/>
-              <polygon points="205,75 185,75 185,70 170,80 185,90 185,85 205,85"/>
-            </g>
-            <text x="150" y="120" text-anchor="middle" font-family="Kalam" font-size="14" fill="#333">Cell</text>
-          </svg>
-        </div>
-        <p class="sim-note">Seedlings prefer gentler EC; flowering plants tolerate (and need) stronger.</p>
-        <div class="happy">HAPPY GROWING!</div>
-      </div>
-    </section>
-
-    <!-- KINETICS (Combined) -->
-    <section class="slide" id="kinetics-combined" data-duration="35">
-      <div class="inner poster-frame center">
-        <h2>Kinetics — Model & External Factors (Combined)</h2>
+        <h2>Kinetics — Model & External Factors</h2>
         <div class="two-up">
           <div>
             <h3 class="minihead">Reaction Coordinate & Activation Energy</h3>
             <ul class="bullets">
-              <li>Transition state sits at the energy maximum; height is <em>E<sub>a</sub></em>.</li>
-              <li>Temperature raises molecular energy; more molecules surpass <em>E<sub>a</sub></em> (Arrhenius).</li>
-              <li>Catalysts lower effective <em>E<sub>a</sub></em> without changing ΔG.</li>
+              <li>Transition state sits at the energy maximum; height is <em>activation energy</em>.</li>
+              <li>Temperature raises molecular energy; more molecules surpass the barrier (Arrhenius).</li>
+              <li>Catalysts lower effective barrier without changing ΔG.</li>
             </ul>
           </div>
           <div>
@@ -171,8 +220,43 @@
       </div>
     </section>
 
-    <!-- ★ NEW: Decarb Lab — fun interactive -->
-    <section class="slide" id="decarb-lab" data-duration="55">
+    <!-- NEW: Reaction Coordinate interactive -->
+    <section class="slide" data-duration="45">
+      <div class="inner poster-frame center">
+        <h2>Interactive: Reaction Coordinate (Decarb)</h2>
+        <div class="rc-controls">
+          <label>Temperature <input id="rcTemp" type="range" min="90" max="160" value="120" step="1"></label>
+          <span class="tag" id="rcTempVal">120 °C</span>
+          <label class="toggle"><input id="rcCatalyst" type="checkbox"> Catalyst (Ea↓)</label>
+          <button class="btn" id="rcReset">Reset</button>
+        </div>
+        <div class="rc-readouts">
+          <div>E<sub>a</sub>: <strong id="rcEaVal">120</strong> kJ·mol⁻¹</div>
+          <div>Relative rate k: <strong id="rcRelRate">1.00×</strong></div>
+        </div>
+        <svg id="rcDiagram" class="rc-svg" viewBox="0 0 700 340" role="img" aria-label="Reaction coordinate">
+          <line x1="60" y1="300" x2="660" y2="300" class="baseline"/>
+          <text x="70" y="290" class="axis">THCA</text>
+          <text x="600" y="290" class="axis">THC + CO₂</text>
+          <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,160 460,180 620,240"/>
+          <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,160 460,180 620,240"/>
+          <g id="tempDots">
+            <circle class="dot" cx="110" cy="280" r="6"/>
+          </g>
+          <g id="eaGroup">
+            <line id="eaLine" class="ea-line" x1="320" y1="160" x2="320" y2="280"/>
+            <polygon id="eaArrowUp"   class="ea-arrow" points="320,150 314,164 326,164"/>
+            <polygon id="eaArrowDown" class="ea-arrow" points="320,290 314,276 326,276"/>
+            <text id="eaText" class="ea-text" x="328" y="220">Eₐ</text>
+          </g>
+        </svg>
+        <div id="terpCaution" class="decarb-warn hidden">≥130 °C speeds decarb but can burn terpenes.</div>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- NEW / UPGRADED: Decarb Lab (accurate Arrhenius) -->
+    <section class="slide" id="decarb-lab" data-duration="60">
       <div class="inner poster-frame" id="labWrap">
         <h2>Decarb Lab — Make THCA Hop the Hump</h2>
 
@@ -190,8 +274,8 @@
             </label>
 
             <label>Time
-              <input type="range" id="labTime" min="1" max="120" value="30" step="1" />
-              <span class="tag" id="labTimeVal">30 min</span>
+              <input type="range" id="labTime" min="1" max="120" value="40" step="1" />
+              <span class="tag" id="labTimeVal">40 min</span>
             </label>
 
             <label class="toggle">
@@ -214,8 +298,9 @@
             </div>
 
             <div class="readouts">
-              <div>Relative rate k: <strong id="labK">—</strong></div>
-              <div>Predicted conversion: <strong id="labConv">—</strong></div>
+              <div>k (1/min): <strong id="labK">—</strong></div>
+              <div>Half-life: <strong id="labT12">—</strong></div>
+              <div>Conversion: <strong id="labConv">—</strong></div>
               <div>Est. terpene loss: <strong id="labTerp">—</strong></div>
             </div>
 
@@ -223,43 +308,20 @@
           </div>
 
           <div class="lab-viz">
-            <!-- Energy barrier + particles animation -->
             <svg id="labSVG" class="lab-svg" viewBox="0 0 760 340" role="img" aria-label="Animated reaction coordinate with particles">
-              <defs>
-                <linearGradient id="gradReact" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#7bd0b2"/>
-                  <stop offset="100%" stop-color="#76a9fa"/>
-                </linearGradient>
-                <linearGradient id="gradProd" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#b388ff"/>
-                  <stop offset="100%" stop-color="#ffd166"/>
-                </linearGradient>
-              </defs>
-
-              <!-- baseline -->
               <line x1="50" y1="300" x2="710" y2="300" class="baseline"/>
-
-              <!-- reactant/product basins -->
-              <rect x="50" y="260" width="200" height="40" rx="10" fill="url(#gradReact)" stroke="#222" stroke-width="3"/>
-              <rect x="510" y="255" width="200" height="45" rx="10" fill="url(#gradProd)" stroke="#222" stroke-width="3"/>
-
+              <rect x="50" y="260" width="200" height="40" rx="10" fill="#fff" stroke="#222" stroke-width="3"/>
+              <rect x="510" y="255" width="200" height="45" rx="10" fill="#fff" stroke="#222" stroke-width="3"/>
               <text x="60" y="255" class="axis">THCA</text>
               <text x="520" y="250" class="axis">THC + CO₂</text>
-
-              <!-- dynamic barrier -->
-              <path id="labBarrier" class="curve uncat" d="M 250,300 C 360,120 460,160 510,300" />
-
-              <!-- particle group -->
+              <path id="labBarrier" class="curve uncat" d="M 250,300 C 360,140 460,180 510,300" />
               <g id="labParticles"></g>
-
-              <!-- conversion bar -->
               <rect x="50" y="20" width="660" height="16" rx="8" ry="8" class="conv-bar-bg"/>
               <rect id="labConvBar" x="50" y="20" width="0" height="16" rx="8" ry="8" class="conv-bar-fg"/>
               <text x="50" y="18" class="axis">Conversion</text>
             </svg>
-
             <div class="legend">
-              <span class="dot demo"></span> molecules • barrier lowers with catalyst & favorable matrix • higher temp = faster hops
+              <span class="dot demo"></span> molecules try to hop the barrier; hotter + catalyst + friendly matrix = more hops
             </div>
           </div>
         </div>
@@ -318,43 +380,37 @@
       </div>
     </section>
 
-    <!-- REFERENCES (consolidated; use one or two slides as needed) -->
+    <!-- REFERENCES (consolidated) -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>REFERENCES</h2>
         <div class="ref-list">
           <ol>
-            <li>Azoulay-Shemer, T., Palomares, A., Bagheri, A., Israelsson-Nordström, M., Engineer, C. B., Bargmann, B. O., … Schroeder, J. I. (2024). Optimizing cannabis cultivation: An efficient in vitro system for flowering induction. <i>Plant Methods, 20</i>(1), 1–15.</li>
-            <li>Bamsey, M., Zabel, P., Zeidler, C., Gyimesi, D., Mengedoht, D., Bamsey, N., … Schubert, D. (2024). A low-cost spectroscopic nutrient management system. <i>PLOS ONE, 19</i>(5), e0302638.</li>
-            <li>Barberon, M. (2014). Radial transport of nutrients. <i>Plant Physiology, 166</i>(2), 528–537.</li>
-            <li>Chandra, S., Lata, H., Khan, I. A., & ElSohly, M. A. (2024). Environmental factors for cannabis cultivation. <i>JART, 22</i>(3), 234–248.</li>
-            <li>Chowdhury, M., Kiraga, S., Islam, M. N., Ali, M., Reza, M. N., Lee, W. H., & Chung, S. O. (2023). Maximizing medical cannabis growth and quality. <i>RBPS, 4</i>(2), 156–170.</li>
-            <li>Friedman, D., et al. (2024). <i>Frontiers in Pharmacology, 15</i>, 1465136.</li>
-            <li>Grossmann, G., et al. (2016). The divining root. <i>PNAS</i>.</li>
-            <li>Hesami, M., Pepe, M., Baiton, A., & Jones, A. M. P. (2023). The <i>Cannabis</i> plant as a complex system. <i>Plants, 12</i>(3), 493.</li>
-            <li>Kim, H. J., et al. (2019). ML to remove ion interference in nutrient solutions. <i>arXiv:1907.10794</i>.</li>
-            <li>Mattoteia, D., et al. (2021). <i>Molecules, 26</i>(16), 4889.</li>
-            <li>Nguyen, N. T., McInturf, S. A., & Mendoza-Cózatl, D. G. (2022). Indoor agriculture. <i>Sustainability, 14</i>(16), 10204.</li>
-            <li>Nosalewicz, A., et al. (2024). Root growth under water deficits. <i>Frontiers in Plant Science</i>.</li>
-            <li>Park, K. S., et al. (2021). Nutrient dosing framework. <i>Frontiers in Plant Science, 12</i>, 768717.</li>
-            <li>Pollack, G. H. (2012). Self-generation of colligative properties. <i>arXiv:1203.0206</i>.</li>
-            <li>Postma, J. A., & Lynch, J. P. (2025). Flow environment & transport in roots. <i>Soft Matter, 21</i>(3), 485–497.</li>
-            <li>Potin, S., et al. (2024). Environmental impacts in cannabis cultivation. <i>Frontiers in Plant Science, 15</i>, 1322824.</li>
-            <li>Pourakbar, L., Khosh-Khui, M., & Shahsavari, N. (2023). Controlled environment systems. <i>CJPS, 103</i>(6), 671–684.</li>
-            <li>Rahmawati, Y., et al. (2023). Colligative properties learning. <i>EduLearn, 17</i>(4), 543–551.</li>
-            <li>Saloner, A., & Bernstein, N. (2024). Chemical composition of cannabis extracts. <i>Frontiers in Plant Science</i>.</li>
-            <li>Saloner, A., Sacks, M. M., & Bernstein, N. (2022). Nitrogen source & cannabis. <i>Frontiers in Plant Science</i>.</li>
-            <li>Singh, H., et al. (2022). Silicon improves uptake under stress. <i>CSSPA, 53</i>(16), 2089–2108.</li>
-            <li>Zhao, C., et al. (2022). Root osmotic sensing. <i>Plant Physiology</i>.</li>
-            <li>Atkins, P., & de Paula, J. (2018). <i>Atkins’ Physical Chemistry</i>. OUP.</li>
-            <li>Anslyn, E. V., & Dougherty, D. A. (2017). <i>Modern Physical Organic Chemistry</i>. University Science Books.</li>
-            <li>Bruice, P. Y. (2020). <i>Organic Chemistry</i> (8th ed.). Pearson.</li>
-            <li>Clayden, J., Greeves, N., & Warren, S. (2012). <i>Organic Chemistry</i> (2nd ed.). OUP.</li>
-            <li>Lowry, T. H., & Richardson, K. S. (2021). <i>Mechanism and Theory in Organic Chemistry</i> (3rd ed.). Harper & Row.</li>
-            <li>Lu, H. C., & Mackie, K. (2016). Endocannabinoid system overview. <i>Biological Psychiatry, 79</i>(7), 516–525.</li>
-            <li>Russo, E. B. (2011). Taming THC. <i>Br. J. Pharmacol., 163</i>(7), 1344–1364.</li>
-            <li>Smith, M. B. (2020). <i>March’s Advanced Organic Chemistry</i> (8th ed.). Wiley.</li>
-            <li>PubChem Compound Summary for Δ<sup>9</sup>-THC (CID 2978) & CBD (CID 644019). NCBI.</li>
+            <li>Azoulay-Shemer, T., et al. (2024). <i>Plant Methods</i>.</li>
+            <li>Bamsey, M., et al. (2024). <i>PLOS ONE</i>.</li>
+            <li>Barberon, M. (2014). <i>Plant Physiology</i>.</li>
+            <li>Chandra, S., et al. (2024). <i>JART</i>.</li>
+            <li>Chowdhury, M., et al. (2023). <i>RBPS</i>.</li>
+            <li>Friedman, D., et al. (2024). <i>Frontiers in Pharmacology</i>.</li>
+            <li>Grossmann, G., et al. (2016). <i>PNAS</i>.</li>
+            <li>Hesami, M., et al. (2023). <i>Plants</i>.</li>
+            <li>Kim, H. J., et al. (2019). <i>arXiv</i>.</li>
+            <li>Mattoteia, D., et al. (2021). <i>Molecules</i>.</li>
+            <li>Nguyen, N. T., et al. (2022). <i>Sustainability</i>.</li>
+            <li>Nosalewicz, A., et al. (2024). <i>Frontiers in Plant Science</i>.</li>
+            <li>Park, K. S., et al. (2021). <i>Frontiers in Plant Science</i>.</li>
+            <li>Pollack, G. H. (2012). <i>arXiv</i>.</li>
+            <li>Postma, J. A., & Lynch, J. P. (2025). <i>Soft Matter</i>.</li>
+            <li>Potin, S., et al. (2024). <i>Frontiers in Plant Science</i>.</li>
+            <li>Pourakbar, L., et al. (2023). <i>CJPS</i>.</li>
+            <li>Rahmawati, Y., et al. (2023). <i>EduLearn</i>.</li>
+            <li>Saloner, A., & Bernstein, N. (2024). <i>Frontiers in Plant Science</i>.</li>
+            <li>Saloner, A., Sacks, M. M., & Bernstein, N. (2022). <i>Frontiers in Plant Science</i>.</li>
+            <li>Singh, H., et al. (2022). <i>CSSPA</i>.</li>
+            <li>Zhao, C., et al. (2022). <i>Plant Physiology</i>.</li>
+            <li>Atkins & de Paula (2018). <i>Atkins’ Physical Chemistry</i>. OUP.</li>
+            <li>Anslyn & Dougherty (2017). <i>Modern Physical Organic Chemistry</i>. USB.</li>
+            <li>PubChem summaries for Δ⁹-THC (CID 2978) & CBD (CID 644019).</li>
             <li>3Dmol.js (MIT) — molecular visualization library.</li>
           </ol>
         </div>
@@ -368,22 +424,59 @@
     <p>Keys: ← / → navigate • 📖 glossary (G) • F fullscreen • D dark • H handout • P print • Space = next</p>
   </footer>
 
-  <!-- Glossary modal -->
+  <!-- Glossary modal (expanded) -->
   <div id="glossary" class="modal" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle" hidden>
     <div class="glossary-wrap poster-frame">
       <button class="close" aria-label="Close glossary">✖</button>
       <h3 id="glossaryTitle">Glossary</h3>
       <dl>
         <dt id="g-colligative">Colligative properties</dt>
-        <dd>Water behavior changes caused simply by how many particles are dissolved (not which kind).</dd>
-        <dt id="g-op">Osmotic pressure</dt>
-        <dd>The pressure needed to stop water from moving toward a stronger solution across a membrane.</dd>
-        <dt id="g-vpl">Vapor pressure lowering</dt>
-        <dd>Dissolved particles make it harder for water to evaporate.</dd>
-        <dt id="g-bpe">Boiling point elevation</dt>
-        <dd>More particles → water boils at a slightly higher temperature.</dd>
-        <dt id="g-fpd">Freezing point depression</dt>
-        <dd>More particles → water freezes at a slightly lower temperature.</dd>
+        <dd>Water behavior changes caused by how many particles are dissolved—<em>not</em> which kind.</dd>
+
+        <dt id="g-solutes">Solutes</dt>
+        <dd>Stuff dissolved in a liquid (like salts or sugars). More solute = bigger colligative effects.</dd>
+
+        <dt id="g-acidic">Acidic</dt>
+        <dd>pH &lt; 7. Tends to donate H⁺. Think lemon juice, cola.</dd>
+
+        <dt id="g-alkaline">Alkaline (basic)</dt>
+        <dd>pH &gt; 7. Tends to accept H⁺. Think baking soda, soap.</dd>
+
+        <dt id="g-ph">pH scale / meter</dt>
+        <dd>0–14 scale of acidity/alkalinity. pH meters measure hydrogen ion activity—calibrate them!</dd>
+
+        <dt id="g-kinetics">Kinetics</dt>
+        <dd>How fast reactions happen (rates), not whether they’re favorable (that’s thermodynamics).</dd>
+
+        <dt id="g-photosynthesis">Photosynthesis</dt>
+        <dd>Plants turn light + CO₂ + water into sugars. Your buds say thank you.</dd>
+
+        <dt id="g-respiration">Respiration</dt>
+        <dd>Plants burn sugars for energy—day and night business.</dd>
+
+        <dt id="g-nutrient">Nutrient uptake</dt>
+        <dd>Roots absorbing ions from solution—depends on pH, EC, and membranes behaving.</dd>
+
+        <dt id="g-rc">Reaction coordinate</dt>
+        <dd>The “path” over an energy hill from reactants to products. Peak = transition state.</dd>
+
+        <dt id="g-ea">Activation energy</dt>
+        <dd>The push needed to climb the hill. Lower E<sub>a</sub> → faster reaction.</dd>
+
+        <dt id="g-decarb">Decarboxylation</dt>
+        <dd>Heat-driven loss of CO₂. THCA → THC + CO₂ during decarb.</dd>
+
+        <dt id="g-terpenes">Terpenes</dt>
+        <dd>Volatile aroma molecules—tasty but heat-sensitive.</dd>
+
+        <dt id="g-catalyst">Catalyst</dt>
+        <dd>Helps the reaction by lowering the barrier (E<sub>a</sub>) without being consumed.</dd>
+
+        <dt id="g-thc">THC (−)-Δ⁹-trans-Tetrahydrocannabinol</dt>
+        <dd>Psychoactive cannabinoid formed by decarboxylating THCA.</dd>
+
+        <dt id="g-cbd">CBD (−)-trans-Cannabidiol</dt>
+        <dd>Non-intoxicating cannabinoid with a different ring connectivity than THC.</dd>
       </dl>
     </div>
   </div>
