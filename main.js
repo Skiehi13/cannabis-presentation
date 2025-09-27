@@ -101,7 +101,7 @@ window.addEventListener("DOMContentLoaded", function () {
   if (closeGloss)  closeGloss.addEventListener("click", function(){ toggleGlossary(false); });
   if (glossary)    glossary.addEventListener("click", function(e){ if(e.target===glossary) toggleGlossary(false); });
 
-  // Inline def buttons open glossary
+  // Inline def buttons open glossary & scroll to term
   var defBtns = document.querySelectorAll(".def");
   for (var d=0; d<defBtns.length; d++){
     defBtns[d].addEventListener("click", function(){
@@ -110,11 +110,11 @@ window.addEventListener("DOMContentLoaded", function () {
       setTimeout(function(){
         var el = document.getElementById(id);
         if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
-      }, 50);
+      }, 25);
     });
   }
 
-  // Osmosis slider behavior
+  // ====== Existing EC/Osmosis viz ======
   (function(){
     var r = document.getElementById("ecRange");
     if(!r) return;
@@ -134,11 +134,105 @@ window.addEventListener("DOMContentLoaded", function () {
     update();
   })();
 
-  // Reaction Coordinates interactivity (kept for other slides if present)
+  // ====== NEW: Freezing point depression sim ======
+  (function(){
+    var m = document.getElementById("fpdMolality");
+    var mVal = document.getElementById("fpdMolalityVal");
+    var iSel = document.getElementById("fpdI");
+    var dOut = document.getElementById("fpdDelta");
+    var tfOut= document.getElementById("fpdTF");
+    var mercury = document.getElementById("fpdMercury");
+    var bar = document.getElementById("fpdBar");
+    var label = document.getElementById("fpdLabel");
+    if(!m || !iSel || !mercury || !bar || !label) return;
+
+    var Kf = 1.86; // °C·kg/mol for water
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function update(){
+      var mol = parseFloat(m.value);
+      var i = parseFloat(iSel.value);
+      if(mVal) mVal.textContent = mol.toFixed(2);
+      var dTf = -i * Kf * mol;          // °C change
+      var Tf = 0 + dTf;
+      dOut.textContent = dTf.toFixed(2) + " °C";
+      tfOut.textContent = Tf.toFixed(2) + " °C";
+      label.textContent = Tf.toFixed(1) + " °C";
+
+      // Map freezing point -10..0 °C to mercury height
+      var frac = clamp((Tf + 10) / 10, 0, 1); // -10 => 0, 0 => 1
+      var h = 140 * frac;
+      mercury.setAttribute("y", 80 + (140 - h));
+      mercury.setAttribute("height", h);
+
+      // progress bar: more depression → more width
+      var w = clamp(Math.abs(dTf) * 30, 0, 660);
+      bar.setAttribute("width", w);
+    }
+    m.addEventListener("input", update);
+    iSel.addEventListener("input", update);
+    update();
+  })();
+
+  // ====== NEW: pH simulator ======
+  (function(){
+    var s = document.getElementById("phSlider");
+    if(!s) return;
+    var v = document.getElementById("phVal");
+    var tone = document.getElementById("phTone");
+
+    var bars = {
+      N:  document.getElementById("barN"),
+      P:  document.getElementById("barP"),
+      K:  document.getElementById("barK"),
+      Ca: document.getElementById("barCa"),
+      Mg: document.getElementById("barMg"),
+      Fe: document.getElementById("barFe"),
+      Mn: document.getElementById("barMn"),
+    };
+
+    function bell(x, mu, sigma){ return Math.exp(-0.5 * Math.pow((x-mu)/sigma, 2)); } // 0..1
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function availFor(pH){
+      // broad, qualitative maxima typical of hydro/coco
+      return {
+        N:  bell(pH, 6.2, 0.6),
+        P:  bell(pH, 6.3, 0.5),
+        K:  bell(pH, 6.2, 0.5),
+        Ca: bell(pH, 6.4, 0.5),
+        Mg: bell(pH, 6.3, 0.5),
+        Fe: bell(pH, 5.8, 0.4),
+        Mn: bell(pH, 5.8, 0.4),
+      };
+    }
+
+    function descriptor(pH){
+      if(pH < 5.5) return "acidic";
+      if(pH > 7.5) return "alkaline";
+      if(pH < 6.2) return "slightly acidic";
+      if(pH > 6.8) return "slightly alkaline";
+      return "near-neutral";
+    }
+
+    function render(){
+      var pH = parseFloat(s.value);
+      v.textContent = pH.toFixed(1);
+      tone.textContent = descriptor(pH);
+      var a = availFor(pH);
+      Object.keys(bars).forEach(function(k){
+        var w = Math.round(clamp(a[k],0,1) * 100);
+        bars[k].style.width = w + "%";
+      });
+    }
+
+    s.addEventListener("input", render);
+    render();
+  })();
+
+  // ====== Reaction coordinate mini-interactive ======
   (function(){
     var svg = document.getElementById("rcDiagram");
     if(!svg) return;
-    var chkEa = document.getElementById("rcEa");
     var chkCat = document.getElementById("rcCatalyst");
     var tempSlider = document.getElementById("rcTemp");
     var tempVal = document.getElementById("rcTempVal");
@@ -155,7 +249,7 @@ window.addEventListener("DOMContentLoaded", function () {
     var dots      = document.getElementById("tempDots");
     var terpWarn  = document.getElementById("terpCaution");
 
-    var Ea_ref_kJ = 120, catalystFactor = 0.70, TrefC = 120, R = 8.314;
+    var Ea_ref_kJ = 120, catalystFactor = 0.75, TrefC = 120, R = 8.314;
 
     function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
     function kRel(Ea_kJ, T_C){
@@ -165,7 +259,7 @@ window.addEventListener("DOMContentLoaded", function () {
       return Math.exp(exponent);
     }
     function yPeakFromEa(Ea_kJ){
-      var EaMin = 70, EaMax = 140, yMax = 160, yMin = 90;
+      var EaMin = 80, EaMax = 140, yMax = 180, yMin = 120;
       var t = clamp((Ea_kJ - EaMin)/(EaMax - EaMin), 0, 1);
       return yMax - t * (yMax - yMin);
     }
@@ -189,16 +283,22 @@ window.addEventListener("DOMContentLoaded", function () {
       else { pathCat.classList.add("hidden"); pathUncat.classList.remove("hidden"); pathUncat.setAttribute("d", d); }
 
       var durRef=2.2; var T=T_C+273.15, Tref=TrefC+273.15;
-      var speedFactor = Math.max(0.6, Math.min(1.5, T/Tref));
-      if (dots) dots.style.setProperty("--dotDur", (2.2 / speedFactor).toFixed(2) + "s");
+      var speedFactor = clamp(T/Tref, 0.6, 1.6);
+      if (dots) dots.style.setProperty("--dotDur", (durRef / speedFactor).toFixed(2) + "s");
 
       if (terpWarn) terpWarn.classList.toggle("hidden", T_C < 130);
+
+      // Update E_a arrow group placement
+      var xPeak=320, yReact=280, yTop=yPeak;
+      eaLine.setAttribute("x1",xPeak); eaLine.setAttribute("x2",xPeak);
+      eaLine.setAttribute("y1",yTop);  eaLine.setAttribute("y2",yReact);
+      eaArrowUp.setAttribute("points", `${xPeak},${yTop-10} ${xPeak-6},${yTop+4} ${xPeak+6},${yTop+4}`);
+      eaArrowDn.setAttribute("points", `${xPeak},${yReact+10} ${xPeak-6},${yReact-4} ${xPeak+6},${yReact-4}`);
+      eaText.setAttribute("x",xPeak+8); eaText.setAttribute("y",(yTop+yReact)/2);
     }
-    if (chkEa)  chkEa.addEventListener("change", sync);
     if (chkCat) chkCat.addEventListener("change", sync);
     if (tempSlider) tempSlider.addEventListener("input", sync);
     if (btnReset) btnReset.addEventListener("click", function(){
-      if (chkEa) chkEa.checked = true;
       if (chkCat) chkCat.checked = false;
       if (tempSlider){ tempSlider.value = TrefC; }
       sync();
@@ -206,7 +306,7 @@ window.addEventListener("DOMContentLoaded", function () {
     sync();
   })();
 
-  // Theme / handout utilities
+  // ====== Theme / handout utilities ======
   function isHandout(){ return document.body.classList.contains("handout"); }
   function toggleHandout(){
     var on = document.body.classList.toggle("handout");
@@ -241,7 +341,7 @@ window.addEventListener("DOMContentLoaded", function () {
   fitCurrent();
   if (deck) deck.focus();
 
-  // === NEW: Decarb Lab (fun interactive) ===
+  // ====== UPGRADED Decarb Lab (accurate Arrhenius) ======
   (function(){
     var wrap = document.getElementById("labWrap");
     if(!wrap) return;
@@ -259,6 +359,7 @@ window.addEventListener("DOMContentLoaded", function () {
     var presets = document.querySelectorAll(".preset");
 
     var kOut = document.getElementById("labK");
+    var t12Out = document.getElementById("labT12");
     var convOut = document.getElementById("labConv");
     var terpOut = document.getElementById("labTerp");
     var warn = document.getElementById("labWarn");
@@ -268,18 +369,19 @@ window.addEventListener("DOMContentLoaded", function () {
     var particlesG = document.getElementById("labParticles");
     var convBar = document.getElementById("labConvBar");
 
-    var R = 8.314;
-    // Base Ea (kJ/mol); matrix and catalyst will scale it down
-    var EaBase = 120; // ~25–30 kcal/mol
-    var catalystFactor = 0.75; // 25% drop with catalyst
-    var matrixFactorMap = { air: 1.00, oil: 0.90, ethanol: 0.85 };
+    var R = 8.314;                 // J/mol·K
+    var EaBase = 120e3;            // J/mol
+    var A_base = 3e14;             // 1/min — chosen so ~70–80% at 120°C, 40 min
+    var catalystFactor = 0.75;     // lowers Ea by 25%
+    var matrixFactorEa = { air: 1.00, oil: 0.90, ethanol: 0.85 }; // friendlier media
+    var matrixFactorA  = { air: 1.00, oil: 1.15, ethanol: 1.25 }; // pre-exponential bump
 
     var running = false;
     var simTime = 0; // simulated minutes elapsed while playing
     var lastTS = null;
 
     // particle system
-    var N = 28; // number of dots
+    var N = 28;
     var particles = [];
 
     function rand(min,max){ return Math.random()*(max-min)+min; }
@@ -304,107 +406,89 @@ window.addEventListener("DOMContentLoaded", function () {
     }
 
     function state(){
-      var T = Number(tSlider.value);
+      var T_C = Number(tSlider.value);
+      var T_K = T_C + 273.15;
       var minsTarget = Number(timeS.value);
       var useCat = !!catChk.checked;
       var mtx = matrix.value;
 
-      var Ea = EaBase * (useCat ? catalystFactor : 1.0) * (matrixFactorMap[mtx] || 1.0); // kJ/mol
-      var TrefC = 120, TrefK = TrefC + 273.15;
-      var T_K = T + 273.15;
+      var Ea = EaBase * (useCat ? catalystFactor : 1.0) * (matrixFactorEa[mtx] || 1.0); // J/mol
+      var A  = A_base * (matrixFactorA[mtx] || 1.0);                                    // 1/min
+      var k = A * Math.exp(-Ea/(R*T_K));                                                // 1/min
 
-      var EaJ = Ea*1000;
-      // Relative rate constant normalized around 120 °C, EaBase without modifiers
-      var kRef = Math.exp( -(EaBase*1000)/R * (1/TrefK - 1/TrefK) ); // = 1
-      var kRel = Math.exp( -EaJ/R * (1/T_K - 1/TrefK) ); // relative to 120°C
-      // Slight amplification so changes are visible
-      var kScaled = Math.pow(kRel, 1.0);
-
-      return { T, minsTarget, useCat, mtx, Ea, kScaled };
+      return { T_C, T_K, minsTarget, useCat, mtx, Ea, A, k };
     }
 
-    function terpLossPct(T, minutes){
-      // terp loss grows with T and time; accelerate above 130°C
-      var base = Math.max(0, T - 115) * 0.28;
-      var accel = T >= 130 ? 1.7 : 1.0;
+    function terpLossPct(T_C, minutes){
+      var base = Math.max(0, T_C - 115) * 0.28;
+      var accel = T_C >= 130 ? 1.7 : 1.0;
       var timeFactor = Math.log1p(minutes) * 1.15;
       return clamp(base * accel * timeFactor * 0.25, 0, 100);
     }
 
-    function conversionPct(kScaled, minutes){
-      // simple pseudo-first-order feel: fraction = 1 - e^(-k * t/10)
-      var frac = 1 - Math.exp(-kScaled * (minutes/10));
+    function conversionPct(k, minutes){
+      var frac = 1 - Math.exp(-k * minutes);
       return clamp(frac*100, 0, 100);
     }
 
-    function morphBarrier(Ea){
-      // Lower Ea → lower peak
-      var peakY = 170 + (Ea - 80) * 0.6; // map Ea 80–140 to y ~170–206
+    function morphBarrier(EaJ){
+      var Ea_kJ = EaJ/1000;
+      var peakY = 160 + (Ea_kJ - 80) * 0.7; // map 80–140 → ~160–202
       peakY = clamp(peakY, 120, 210);
       var d = `M 250,300 C 360,${peakY} 460,${peakY+40} 510,300`;
       barrier.setAttribute("d", d);
     }
 
-    function hopProbability(kScaled){
-      // probability per second that an individual particle attempts/finishes a hop
-      return clamp(0.05 * kScaled, 0.01, 0.45);
+    function hopProbability(k){
+      // convert k (1/min) to per-second success-ish probability
+      return clamp(k/60, 0.005, 0.5);
     }
 
     function tick(dtSec){
-      // advance simulated time if playing
-      if (running){
-        // scale sim time so 1 real sec ≈ 3 simulated min (feels snappy)
-        simTime += dtSec * 3;
-      }
+      if (running) simTime += dtSec * 3; // 1 real sec ≈ 3 simulated min
 
       var S = state();
-      if (tOut) tOut.textContent = S.T.toFixed(0) + " °C";
+      if (tOut) tOut.textContent = S.T_C.toFixed(0) + " °C";
       if (timeOut) timeOut.textContent = Math.round(S.minsTarget) + " min";
-      if (warn) warn.classList.toggle("hidden", S.T < 130);
+      if (warn) warn.classList.toggle("hidden", S.T_C < 130);
 
       morphBarrier(S.Ea);
 
-      // live metrics based on current simTime but capped at target minutes
       var minsUsed = running ? Math.min(simTime, S.minsTarget) : S.minsTarget;
-      var conv = conversionPct(S.kScaled, minsUsed);
-      var terp = terpLossPct(S.T, minsUsed);
+      var conv = conversionPct(S.k, minsUsed);
+      var terp = terpLossPct(S.T_C, minsUsed);
+      var t12 = S.k > 0 ? Math.log(2)/S.k : Infinity;
 
-      if (kOut) kOut.textContent = S.kScaled.toFixed(2) + "×";
+      if (kOut) kOut.textContent = S.k.toFixed(3);
+      if (t12Out) t12Out.textContent = (isFinite(t12)? t12.toFixed(1) + " min" : "—");
       if (convOut) convOut.textContent = conv.toFixed(0) + "%";
       if (terpOut) terpOut.textContent = Math.round(terp) + "%";
-      if (convBar) convBar.setAttribute("width", 6.6 * conv); // 0..660 px
+      if (convBar) convBar.setAttribute("width", 6.6 * conv);
 
-      // particle animation: random walks + hops with probability
-      var pHop = hopProbability(S.kScaled) * dtSec; // per-frame prob
+      // particle animation
+      var pHop = hopProbability(S.k) * dtSec;
       particles.forEach(function(p){
-        // jitter
         p.x += rand(-8,8) * dtSec * 6;
         p.y += rand(-4,4) * dtSec * 6;
-        // keep inside world bounds
         p.x = clamp(p.x, 60, 700);
         p.y = clamp(p.y, 220, 305);
 
         if (p.state === "reactant" && p.x < 250){
-          // drift toward barrier
-          p.x += rand(10,30) * dtSec * (1 + S.kScaled*0.3);
+          p.x += rand(10,30) * dtSec * (1 + S.k*0.2);
         }
 
         if (p.state === "reactant" && p.x >= 250 && Math.random() < pHop){
-          // attempt hop: chance also boosted a bit by temp
-          var bonus = (S.T - 100) * 0.002;
+          var bonus = (S.T_C - 100) * 0.002;
           if (Math.random() < 0.5 + bonus){
-            // success: jump over crest to product side
             p.x = rand(520,680);
             p.y = rand(250,290);
             p.state = "product";
           } else {
-            // bounce back
             p.x = rand(200,240);
             p.y = rand(250,300);
           }
         }
 
-        // gentle drift on product side
         if (p.state === "product"){
           p.x += rand(-6, 6) * dtSec * 5;
           p.y += rand(-3, 3) * dtSec * 5;
@@ -449,23 +533,25 @@ window.addEventListener("DOMContentLoaded", function () {
     function updateStatic(){
       var S = state();
       morphBarrier(S.Ea);
-      if (tOut) tOut.textContent = S.T.toFixed(0) + " °C";
+      if (tOut) tOut.textContent = S.T_C.toFixed(0) + " °C";
       if (timeOut) timeOut.textContent = Math.round(S.minsTarget) + " min";
-      if (warn) warn.classList.toggle("hidden", S.T < 130);
+      if (warn) warn.classList.toggle("hidden", S.T_C < 130);
 
-      var conv = conversionPct(S.kScaled, S.minsTarget);
-      var terp = terpLossPct(S.T, S.minsTarget);
-      if (kOut) kOut.textContent = S.kScaled.toFixed(2) + "×";
+      var conv = conversionPct(S.k, S.minsTarget);
+      var terp = terpLossPct(S.T_C, S.minsTarget);
+      var t12 = S.k > 0 ? Math.log(2)/S.k : Infinity;
+
+      if (kOut) kOut.textContent = S.k.toFixed(3);
+      if (t12Out) t12Out.textContent = (isFinite(t12)? t12.toFixed(1) + " min" : "—");
       if (convOut) convOut.textContent = conv.toFixed(0) + "%";
       if (terpOut) terpOut.textContent = Math.round(terp) + "%";
       if (convBar) convBar.setAttribute("width", 6.6 * conv);
     }
 
-    // wire events
     [tSlider, timeS, catChk, matrix].forEach(function(el){
       if(!el) return;
       el.addEventListener("input", function(){
-        simTime = 0; // whenever a control changes, reset sim clock for clarity
+        simTime = 0;
         updateStatic();
       });
     });
@@ -475,9 +561,8 @@ window.addEventListener("DOMContentLoaded", function () {
     if (btnReset) btnReset.addEventListener("click", function(){
       running = false; simTime = 0; lastTS = null; initParticles(); updateStatic();
     });
-    presets.forEach(function(b){ b.addEventListener("click", function(){ applyPreset(this.dataset.preset); }); });
+    (document.querySelectorAll(".preset")||[]).forEach(function(b){ b.addEventListener("click", function(){ applyPreset(this.dataset.preset); }); });
 
-    // boot
     initParticles();
     updateStatic();
     requestAnimationFrame(loop);
