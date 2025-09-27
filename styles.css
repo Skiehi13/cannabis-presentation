@@ -86,7 +86,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232f7d32' d='M12 2c-1.4 3.7-4.7 6.1-8.7 6.6C5 11.8 8.2 14.3 12 22c3.8-7.7 7-10.2 8.7-13.4C16.7 8.1 13.4 5.7 12 2z'/></svg>") no-repeat center/contain;
 }
 .tag{ padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px; background:#fff; font-weight:700; box-shadow:0 2px 0 rgba(0,0,0,.12) }
-.dark .tag{ background:#0e1418; }
+.dark .tag{ background:#0e141c; }
 
 /* Osmosis viz */
 .sim{margin-top:.5rem}
@@ -101,7 +101,6 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .rc-controls label{font-weight:700}
 .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
 .dark .btn{background:#12171c}
-.toggle{display:flex; align-items:center; gap:.4rem; font-weight:700}
 .rc-readouts{display:flex; gap:1rem; justify-content:center; align-items:center; font-weight:700; margin:.2rem 0 .4rem}
 .rc-svg{width:100%; max-width:860px; height:auto; margin:.1rem auto .2rem; display:block}
 .axis{font-family:'Kalam'; font-size:16px; fill:var(--ink)}
@@ -115,9 +114,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .ea-arrow{fill:#222}
 .ea-text{font-family:'Kalam'; font-size:20px; fill:#222}
 .dot{fill:#ff8a00; opacity:.9; animation: climb var(--dotDur,2.2s) linear infinite}
-.dot.demo{display:inline-block; width:12px; height:12px; border-radius:50%; background:#ff8a00; margin-right:.4rem; vertical-align:middle}
 @keyframes climb{ 0%{transform:translateX(0) translateY(0)} 50%{transform:translateX(220px) translateY(-160px)} 100%{transform:translateX(480px) translateY(20px)} }
-.decarb-warn,.lab-warn{ margin:.4rem auto 0; max-width:760px; font-weight:700; color:#c62828 }
 
 /* pH simulator */
 .ph-grid{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
@@ -136,10 +133,7 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .fpd-controls input[type=range]{width:100%}
 .smallbar{max-width:360px}
 .conv-bar-bg{fill:#e9eef3; stroke:#222; stroke-width:3}
-.conv-bar-fg{fill:url(#g1); }
-.conv-bar-fg{ fill:#76a9fa; } /* solid fallback */
-
-/* Legend & ticks for FPD */
+.conv-bar-fg{ fill:#76a9fa; }
 .mini-legend{list-style:none; padding:0; margin:.5rem 0 0 0; text-align:left; max-width:360px}
 .mini-legend li{display:flex; align-items:center; gap:.4rem; margin:.15rem 0}
 .swatch{display:inline-block; width:14px; height:14px; border:2px solid var(--ink); border-radius:4px}
@@ -147,26 +141,6 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .sw2{background:#b388ff}
 .ticks .tick line{stroke:#444; stroke-width:2}
 .ticks .tick text{font-family:'Kalam'; font-size:14px; fill:var(--ink)}
-
-/* Lab (Decarb) layout */
-.lab-grid{display:grid; grid-template-columns:320px 1fr; gap:1rem; align-items:start}
-.lab-controls label{display:block; font-weight:700; margin:.35rem 0 .15rem}
-.lab-controls input[type=range]{width:100%}
-.preset-row,.play-row{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.25rem}
-.readouts{display:grid; grid-template-columns:1fr 1fr; gap:.35rem .75rem; margin-top:.4rem; text-align:left; max-width:320px}
-.lab-viz{min-width:0}
-.lab-svg{width:100%; max-width:860px; height:auto; margin:.1rem auto .2rem; display:block}
-.legend{font-size:.95rem; margin-top:.25rem}
-
-/* Property table */
-.prop-table{ width:100%; border-collapse:separate; border-spacing:0; margin:.4rem 0; }
-.prop-table th, .prop-table td{ border:3px solid var(--ink); padding:.35rem .5rem; text-align:left; }
-.prop-table thead th{ background:#fff; font-family:'Kalam'; }
-.prop-table tr:first-child th:first-child{ border-top-left-radius:12px; }
-.prop-table tr:first-child th:last-child{ border-top-right-radius:12px; }
-.prop-table tr:last-child td:first-child{ border-bottom-left-radius:12px; }
-.prop-table tr:last-child td:last-child{ border-bottom-right-radius:12px; }
-.dark .prop-table thead th{ background:#12171c; }
 
 /* References */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
@@ -205,3 +179,6 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   .inner.poster-frame{ box-shadow:none; }
   .inner.poster-frame::after{ display:none; }
 }
+
+/* Hide any lingering Decarb Lab section if it exists */
+#decarb-lab, section[data-feature="decarb-lab"]{ display:none !important; }
