@@ -172,17 +172,35 @@
       </div>
     </section>
 
-    <!-- Interactive — pH nutrient availability -->
-    <section class="slide" data-duration="50">
+    <!-- pH quick hits (restored) -->
+    <section class="slide" data-duration="35">
+      <div class="inner poster-frame center">
+        <h2>pH quick hits for cultivators</h2>
+        <ul class="bullets">
+          <li>pH sets what nutrients are available; off-range pH can “lock out” key ions.</li>
+          <li><strong>Targets (typical):</strong> hydro 5.5–6.5 • coco 5.8–6.3 • soil 6.2–7.0.</li>
+          <li>Adjust slowly; log changes and re-check after mixing.</li>
+          <li>Symptoms: high pH → Fe/Mn lockout; low pH → Ca/Mg issues.</li>
+          <li>Measure well: calibrate, mind temp, rinse between readings.</li>
+        </ul>
+        <div class="happy">HAPPY GROWING!</div>
+      </div>
+    </section>
+
+    <!-- Interactive — pH nutrient availability (0–14) -->
+    <section class="slide" data-duration="55">
       <div class="inner poster-frame center">
         <h2>Interactive: pH &amp; Nutrient Availability</h2>
-        <p>Move pH and watch macro/micro availability widen or narrow.</p>
+        <p>Slide across the full pH scale (0–14). Balanced sweet spot is around 6.5.</p>
         <div class="ph-grid">
           <div class="ph-controls">
             <label for="phSlider">pH</label>
-            <input id="phSlider" type="range" min="5.2" max="7.8" step="0.1" value="6.3" />
+            <input id="phSlider" type="range" min="0" max="14" step="0.1" value="6.5" />
             <div class="readout">
-              pH = <strong id="phVal">6.3</strong> &nbsp;•&nbsp; Solution is <strong id="phTone">slightly acidic</strong>
+              pH = <strong id="phVal">6.5</strong> &nbsp;•&nbsp; Solution is <strong id="phTone">balanced</strong>
+            </div>
+            <div class="ph-axis">
+              <span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span>
             </div>
           </div>
           <div class="ph-bars">
@@ -212,7 +230,7 @@
       </div>
     </section>
 
-    <!-- Reaction Coordinate (mini) -->
+    <!-- Reaction Coordinate (mini, clarified readouts) -->
     <section class="slide" data-duration="45">
       <div class="inner poster-frame center">
         <h2>Interactive: Reaction Coordinate (Decarb)</h2>
@@ -221,17 +239,17 @@
             <input id="rcTemp" type="range" min="90" max="160" value="120" step="1">
           </label>
           <span class="tag" id="rcTempVal">120 °C</span>
-          <label class="toggle"><input id="rcCatalyst" type="checkbox"> Catalyst (Ea↓)</label>
+          <label class="toggle"><input id="rcCatalyst" type="checkbox"> Catalyst (Ea↓ ~30%)</label>
           <button class="btn" id="rcReset">Reset</button>
         </div>
         <div class="rc-readouts">
           <div>E<sub>a</sub>: <strong id="rcEaVal">120</strong> kJ·mol⁻¹</div>
-          <div>Relative rate k: <strong id="rcRelRate">1.00×</strong></div>
+          <div>Relative k (Arrhenius): <strong id="rcRelRate">1.00×</strong></div>
         </div>
         <svg id="rcDiagram" class="rc-svg" viewBox="0 0 700 340" role="img" aria-label="Reaction coordinate">
           <line x1="60" y1="300" x2="660" y2="300" class="baseline"/>
           <text x="70" y="290" class="axis">THCA</text>
-          <text x="600" y="290" class="axis">THC + CO₂</text>
+          <text x="560" y="290" class="axis">THC + CO₂</text>
           <path id="curve-uncat" class="curve uncat" d="M 80,280 C 220,160 460,180 620,240"/>
           <path id="curve-cat"   class="curve cat hidden" d="M 80,280 C 220,160 460,180 620,240"/>
           <g id="tempDots"><circle class="dot" cx="110" cy="280" r="6"/></g>
@@ -395,7 +413,7 @@
       </div>
     </section>
 
-    <!-- REFERENCES slide 1 -->
+    <!-- REFERENCES slides -->
     <section class="slide" data-duration="35">
       <div class="inner poster-frame refs center">
         <h2>References (1/2)</h2>
@@ -431,7 +449,6 @@
       </div>
     </section>
 
-    <!-- REFERENCES slide 2 -->
     <section class="slide" data-duration="30">
       <div class="inner poster-frame refs center">
         <h2>References (2/2)</h2>
