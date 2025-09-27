@@ -1,13 +1,14 @@
-/* Stoney Science — Presentation Engine + Interactives (FIXED)
+/* Stoney Science — Presentation Engine + Interactives (UPDATED)
    ----------------------------------------------------------------------
    - Deck navigation, fit-to-frame, theme, handout/print
    - Glossary launcher + focus scroll
    - Osmosis (EC) slider
    - Freezing Point Depression simulator (with labels/ticks)
-   - pH Nutrient Availability simulator
-   - Reaction Coordinate (mini) — FIXED
-   - Decarb Lab (Arrhenius) — FIXED with products fill
-   - Reference sorter (alphabetize + de-duplicate across slides)
+   - pH Nutrient Availability simulator (0–14 range, starts balanced)
+   - Reaction Coordinate (mini) — clearer & accurate relative rate
+   - Decarb Lab (Arrhenius) — real-time animation with elapsed time,
+     products fill & persist, presets, play/pause/reset
+   - Reference sorter (alphabetize + de-duplicate)
 */
 
 window.addEventListener("DOMContentLoaded", function () {
@@ -147,9 +148,9 @@ window.addEventListener("DOMContentLoaded", function () {
     function update() {
       var v = parseFloat(r.value);
       if (ecVal) ecVal.textContent = v.toFixed(1);
-      if (v < 1.1) { tone.textContent = "hypotonic"; up.textContent = "water in"; arrowsIn.style.opacity = 1; arrowsOut.style.opacity = .15; }
-      else if (v > 1.9) { tone.textContent = "hypertonic"; up.textContent = "water out"; arrowsIn.style.opacity = .15; arrowsOut.style.opacity = 1; }
-      else { tone.textContent = "isotonic"; up.textContent = "balanced"; arrowsIn.style.opacity = .8; arrowsOut.style.opacity = .25; }
+      if (v < 1.1) { tone.textContent = "hypotonic"; up.textContent = "water in"; if(arrowsIn)arrowsIn.style.opacity = 1; if(arrowsOut)arrowsOut.style.opacity = .15; }
+      else if (v > 1.9) { tone.textContent = "hypertonic"; up.textContent = "water out"; if(arrowsIn)arrowsIn.style.opacity = .15; if(arrowsOut)arrowsOut.style.opacity = 1; }
+      else { tone.textContent = "isotonic"; up.textContent = "balanced"; if(arrowsIn)arrowsIn.style.opacity = .8; if(arrowsOut)arrowsOut.style.opacity = .25; }
     }
     r.addEventListener("input", update);
     update();
@@ -177,7 +178,7 @@ window.addEventListener("DOMContentLoaded", function () {
       var i = parseFloat(iSel.value || "1");
       if (mVal) mVal.textContent = m.toFixed(2);
 
-      var dTf = i * Kf * m; // positive magnitude
+      var dTf = i * Kf * m; // magnitude
       var Tf = 0 - dTf;
 
       deltaEl.textContent = (-dTf).toFixed(2);
@@ -201,11 +202,18 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // pH Nutrient Availability sim
+  // pH Nutrient Availability sim (0–14 range, starts balanced)
   // -----------------------------------
   (function () {
     var slider = document.getElementById("phSlider");
     if (!slider) return;
+
+    // Force full 0–14 range without changing HTML
+    slider.min = "0.0";
+    slider.max = "14.0";
+    slider.step = "0.1";
+    if (!slider.dataset.initOnce) { slider.value = "6.5"; slider.dataset.initOnce = "1"; }
+
     var phVal = document.getElementById("phVal");
     var phTone = document.getElementById("phTone");
 
@@ -219,33 +227,37 @@ window.addEventListener("DOMContentLoaded", function () {
       Mn: document.getElementById("barMn")
     };
 
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     function bell(x, mu, sigma) {
       var t = (x - mu) / sigma;
       return Math.exp(-0.5 * t * t);
     }
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
+    // Centered optima & spreads for hydro/soilless cannabis
     function availability(pH) {
       return {
-        N: clamp(bell(pH, 6.2, 0.7), 0, 1),
-        P: clamp(bell(pH, 6.1, 0.6), 0, 1),
-        K: clamp(bell(pH, 6.0, 0.8), 0, 1),
-        Ca: clamp(bell(pH, 6.3, 0.6), 0, 1),
-        Mg: clamp(bell(pH, 6.3, 0.6), 0, 1),
-        Fe: clamp(bell(pH, 5.8, 0.5), 0, 1),
-        Mn: clamp(bell(pH, 5.8, 0.6), 0, 1)
+        N:  clamp(bell(pH, 6.3, 0.9), 0, 1),
+        P:  clamp(bell(pH, 6.2, 0.7), 0, 1),
+        K:  clamp(bell(pH, 6.2, 1.0), 0, 1),
+        Ca: clamp(bell(pH, 6.5, 0.7), 0, 1),
+        Mg: clamp(bell(pH, 6.4, 0.7), 0, 1),
+        Fe: clamp(bell(pH, 5.8, 0.6), 0, 1),
+        Mn: clamp(bell(pH, 5.9, 0.6), 0, 1)
       };
     }
+
     function tone(pH) {
+      if (pH < 5.5) return "strongly acidic";
       if (pH < 6.0) return "acidic";
-      if (pH > 7.0) return "alkaline";
-      return "slightly acidic";
+      if (pH <= 7.0) return "balanced";
+      if (pH <= 7.5) return "alkaline";
+      return "strongly alkaline";
     }
 
     function update() {
       var pH = parseFloat(slider.value);
-      phVal.textContent = pH.toFixed(1);
-      phTone.textContent = tone(pH);
+      if (phVal) phVal.textContent = pH.toFixed(1);
+      if (phTone) phTone.textContent = tone(pH);
       var avail = availability(pH);
       Object.keys(bars).forEach(function (k) {
         var el = bars[k];
@@ -258,7 +270,7 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // Reaction Coordinate (mini) — FIXED
+  // Reaction Coordinate (mini) — clearer & accurate
   // -----------------------------------
   (function () {
     var svg = document.getElementById("rcDiagram");
@@ -343,7 +355,7 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // Decarb Lab (Arrhenius) — FIXED with real product fill
+  // Decarb Lab (Arrhenius) — real-time elapsed animation
   // -----------------------------------
   (function () {
     var wrap = document.getElementById("decarb-lab");
@@ -351,7 +363,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     // Controls
     var temp = document.getElementById("labTemp");
-    var time = document.getElementById("labTime");
+    var timeTarget = document.getElementById("labTime"); // target/minutes
     var cat = document.getElementById("labCatalyst");
     var matrix = document.getElementById("labMatrix");
     var tVal = document.getElementById("labTempVal");
@@ -383,6 +395,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
     var TOTAL_PARTICLES = 28;
     var playing = false, req = null;
+    var simElapsedMin = 0;      // simulated elapsed minutes
+    var lastTs = null;          // last RAF timestamp
 
     function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
     function EaEffective(){ return Ea_base * (cat && cat.checked ? catalystFactor : 1.0); }
@@ -397,14 +411,14 @@ window.addEventListener("DOMContentLoaded", function () {
       return clamp(base + extra + tFac, 0, 0.95);
     }
 
-    function bezierPeakY(EaJ){
+    function yPeakFromEa(EaJ){
       var EaMin=70e3, EaMax=160e3, yMax=140, yMin=80;
       var t = clamp((EaJ - EaMin)/(EaMax - EaMin), 0, 1);
       return yMin + (yMax - yMin)*t;
     }
     function updateBarrier(){
       if(!barrier) return;
-      var y = bezierPeakY(EaEffective());
+      var y = yPeakFromEa(EaEffective());
       var d = "M 250,300 C 360,"+y.toFixed(1)+" 460,"+(y+40).toFixed(1)+" 510,300";
       barrier.setAttribute("d", d);
     }
@@ -424,7 +438,7 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    function animateReactants(k, T_C){
+    function animateReactantsFrame(k, T_C){
       var jumpProb = clamp(k*0.6, 0, 0.9);  // visible hops
       var jitter = clamp((T_C - 90)/70, 0.1, 1.2);
 
@@ -440,9 +454,8 @@ window.addEventListener("DOMContentLoaded", function () {
         n.setAttribute("cx", cx.toFixed(1));
         n.setAttribute("cy", cy.toFixed(1));
 
-        // chance to hop (visual)
+        // occasional visual hop toward product basin
         if (Math.random() < jumpProb*0.04){
-          // arc over barrier to product basin
           n.setAttribute("cx", (520 + Math.random()*160).toFixed(1));
           n.setAttribute("cy", (285 + Math.random()*10).toFixed(1));
         }
@@ -460,7 +473,6 @@ window.addEventListener("DOMContentLoaded", function () {
         var n = reactG.firstChild;
         if(!n) break;
         reactG.removeChild(n);
-        // land inside product well
         n.setAttribute("cx",(520 + Math.random()*160).toFixed(1));
         n.setAttribute("cy",(285 + Math.random()*10).toFixed(1));
         n.setAttribute("fill","#2f7d32");
@@ -482,23 +494,24 @@ window.addEventListener("DOMContentLoaded", function () {
 
     function updateUI(){
       var T_C = parseFloat(temp.value);
-      var minutes = parseFloat(time.value);
-
-      tVal.textContent = T_C.toFixed(0) + " °C";
-      timeVal.textContent = minutes.toFixed(0) + " min";
-      warn.classList.toggle("hidden", T_C < 130);
-
       var k = kArrhenius(T_C);
-      var t12 = halfLife(k);
-      var conv = conversion(k, minutes);
-      var terp = terpLoss(T_C, minutes);
 
-      kOut.textContent   = k.toExponential(3);
-      t12Out.textContent = isFinite(t12) ? t12.toFixed(1) + " min" : "—";
-      convOut.textContent= Math.round(conv*100) + "%";
-      terpOut.textContent= Math.round(terp*100) + "%";
+      // target time is upper bound for progress bar; conversion uses simElapsedMin
+      var target = parseFloat(timeTarget.value);
+      var conv = conversion(k, simElapsedMin);
+      var t12  = halfLife(k);
+      var terp = terpLoss(T_C, simElapsedMin);
+
+      if (tVal) tVal.textContent = T_C.toFixed(0) + " °C";
+      if (timeVal) timeVal.textContent = Math.min(simElapsedMin, target).toFixed(0) + " / " + target.toFixed(0) + " min";
+      if (kOut) kOut.textContent = k.toExponential(3);
+      if (t12Out) t12Out.textContent = isFinite(t12) ? t12.toFixed(1) + " min" : "—";
+      if (convOut) convOut.textContent = Math.round(conv*100) + "%";
+      if (terpOut) terpOut.textContent = Math.round(terp*100) + "%";
+      if (warn) warn.classList.toggle("hidden", T_C < 130);
 
       if (convBar){
+        var pct = clamp(simElapsedMin / target, 0, 1) * clamp(conv,0,1);
         var width = 660 * clamp(conv, 0, 1);
         convBar.setAttribute("width", width.toFixed(1));
       }
@@ -507,19 +520,42 @@ window.addEventListener("DOMContentLoaded", function () {
       reconcileParticlesToConversion(conv);
     }
 
-    function tick(){
+    function tick(ts){
+      if (!playing){ lastTs = null; return; }
+      if (lastTs == null) lastTs = ts;
+      var dtMs = ts - lastTs;
+      lastTs = ts;
+      // Advance simulated minutes (speed ~ 1 sec realtime = 1 min simulated)
+      simElapsedMin += dtMs / 1000;
+
+      // stop auto-advancing when reaching target time
+      var target = parseFloat(timeTarget.value);
+      if (simElapsedMin >= target){
+        simElapsedMin = target;
+        playing = false;
+      }
+
       var T_C = parseFloat(temp.value);
       var k = kArrhenius(T_C);
-      animateReactants(k, T_C);
+      animateReactantsFrame(k, T_C);
       updateUI();
-      req = requestAnimationFrame(tick);
+      if (playing) req = requestAnimationFrame(tick);
     }
 
-    function play(){ if(!playing){ playing=true; req=requestAnimationFrame(tick);} }
-    function pause(){ playing=false; if(req) cancelAnimationFrame(req); req=null; }
+    function play(){
+      if(!playing){
+        playing = true;
+        req = requestAnimationFrame(tick);
+      }
+    }
+    function pause(){
+      playing = false;
+    }
     function reset(){
       pause();
-      temp.value = 120; time.value = 40;
+      simElapsedMin = 0;
+      temp.value = 120;
+      timeTarget.value = 40;
       if (cat) cat.checked = false;
       if (matrix) matrix.value = "oil";
       spawnReactants(TOTAL_PARTICLES);
@@ -530,16 +566,21 @@ window.addEventListener("DOMContentLoaded", function () {
     presets.forEach(function(btn){
       btn.addEventListener("click", function(){
         var p = btn.getAttribute("data-preset");
-        if (p==="slow"){ temp.value=110; time.value=90; if(cat) cat.checked=false; matrix.value="oil"; }
-        else if (p==="balanced"){ temp.value=120; time.value=45; if(cat) cat.checked=false; matrix.value="oil"; }
-        else if (p==="toasty"){ temp.value=135; time.value=20; if(cat) cat.checked=true; matrix.value="ethanol"; }
+        if (p==="slow"){ temp.value=110; timeTarget.value=90; if(cat) cat.checked=false; matrix.value="oil"; simElapsedMin=0; }
+        else if (p==="balanced"){ temp.value=120; timeTarget.value=45; if(cat) cat.checked=false; matrix.value="oil"; simElapsedMin=0; }
+        else if (p==="toasty"){ temp.value=135; timeTarget.value=20; if(cat) cat.checked=true; matrix.value="ethanol"; simElapsedMin=0; }
         updateUI();
       });
     });
 
     // Bind
     temp.addEventListener("input", updateUI);
-    time.addEventListener("input", updateUI);
+    timeTarget.addEventListener("input", function(){
+      // keep elapsed <= target
+      var target = parseFloat(timeTarget.value);
+      if (simElapsedMin > target) simElapsedMin = target;
+      updateUI();
+    });
     if (cat) cat.addEventListener("change", updateUI);
     if (matrix) matrix.addEventListener("change", updateUI);
     btnPlay.addEventListener("click", play);
