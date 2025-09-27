@@ -3,10 +3,10 @@
    - Deck navigation, fit-to-frame, theme, handout/print
    - Glossary launcher + focus scroll
    - Osmosis (EC) slider
-   - Freezing Point Depression simulator
+   - Freezing Point Depression simulator (with labels/ticks)
    - pH Nutrient Availability simulator
    - Reaction Coordinate (mini) — FIXED
-   - Decarb Lab (Arrhenius) — FIXED
+   - Decarb Lab (Arrhenius) — FIXED with products fill
    - Reference sorter (alphabetize + de-duplicate across slides)
 */
 
@@ -156,7 +156,7 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // Freezing Point Depression sim
+  // Freezing Point Depression sim (with labels/ticks)
   // -----------------------------------
   (function () {
     var mSlider = document.getElementById("fpdMolality");
@@ -183,16 +183,17 @@ window.addEventListener("DOMContentLoaded", function () {
       deltaEl.textContent = (-dTf).toFixed(2);
       tfEl.textContent = Tf.toFixed(2);
 
-      var pct = clamp(dTf / (Kf * 3 * 3), 0, 1); // normalized
+      var pct = clamp(dTf / (Kf * 3 * 3), 0, 1);
       bar.setAttribute("width", (160 * pct).toFixed(1));
 
+      // map -15..0 °C to mercury height
       var yTop = 80, yBot = 220;
-      var norm = clamp((Tf + 15) / 15, 0, 1); // map -15..0 to 0..1
+      var norm = clamp((Tf + 15) / 15, 0, 1); // -15 → 0, 0 → 1
       var hgH = 140 * norm;
       var y = yTop + (140 - hgH);
       mercury.setAttribute("y", y.toFixed(1));
       mercury.setAttribute("height", hgH.toFixed(1));
-      label.textContent = Tf.toFixed(1) + " °C";
+      label.innerHTML = "T<sub>f</sub> = " + Tf.toFixed(1) + " °C";
     }
     mSlider.addEventListener("input", update);
     iSel.addEventListener("change", update);
@@ -342,7 +343,7 @@ window.addEventListener("DOMContentLoaded", function () {
   })();
 
   // -----------------------------------
-  // Decarb Lab (Arrhenius) — FIXED
+  // Decarb Lab (Arrhenius) — FIXED with real product fill
   // -----------------------------------
   (function () {
     var wrap = document.getElementById("decarb-lab");
@@ -367,104 +368,119 @@ window.addEventListener("DOMContentLoaded", function () {
     var terpOut = document.getElementById("labTerp");
     var warn = document.getElementById("labWarn");
 
-    // Viz
+    // Viz groups
     var barrier = document.getElementById("labBarrier");
-    var particlesG = document.getElementById("labParticles");
+    var reactG = document.getElementById("labParticles");
+    var prodG  = document.getElementById("labProducts");
     var convBar = document.getElementById("labConvBar");
 
-    // Parameters
+    // Parameters (demo-scaled)
     var R = 8.314;            // J/mol/K
     var Ea_base = 120e3;      // J/mol baseline
-    var A_base = 0.02;        // 1/min — scaled for demo (visual, not lab-accurate)
-    var catalystFactor = 0.7; // lowers Ea by 30%
-    var matrices = {
-      air: 1.00,
-      oil: 1.15,
-      ethanol: 1.30
-    };
+    var A_base = 0.02;        // 1/min — demo scale
+    var catalystFactor = 0.7; // lowers Ea ~30%
+    var matrices = { air: 1.00, oil: 1.15, ethanol: 1.30 };
 
-    var playing = false;
-    var reqId = null;
+    var TOTAL_PARTICLES = 28;
+    var playing = false, req = null;
 
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-
-    function EaEffective() { return Ea_base * (cat && cat.checked ? catalystFactor : 1.0); }
-    function AEffective() {
-      var mult = matrices[matrix ? matrix.value : "air"] || 1.0;
-      return A_base * mult;
-    }
-    function kArrhenius(T_C) {
-      var T = T_C + 273.15;
-      return AEffective() * Math.exp(-EaEffective() / (R * T)); // 1/min
-    }
-    function halfLifeFromK(k) { return k > 0 ? Math.log(2) / k : Infinity; } // minutes
-    function conversion(k, minutes) { return 1 - Math.exp(-k * minutes); }    // first-order
-    function terpLossEst(T_C, minutes) {
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+    function EaEffective(){ return Ea_base * (cat && cat.checked ? catalystFactor : 1.0); }
+    function AEffective(){ return A_base * (matrices[matrix ? matrix.value : "air"] || 1.0); }
+    function kArrhenius(T_C){ var T=T_C+273.15; return AEffective()*Math.exp(-EaEffective()/(R*T)); }
+    function halfLife(k){ return k>0 ? Math.log(2)/k : Infinity; }
+    function conversion(k, minutes){ return 1 - Math.exp(-k*minutes); }
+    function terpLoss(T_C, minutes){
       var base = (T_C <= 120) ? 0.05 : (T_C <= 130) ? 0.12 : 0.25;
       var extra = Math.max(0, T_C - 130) * 0.01;
       var tFac = Math.min(0.35, minutes * 0.0025);
       return clamp(base + extra + tFac, 0, 0.95);
     }
 
-    function bezierPeakY(EaJ) {
-      var EaMin = 70e3, EaMax = 160e3, yMax = 140, yMin = 80;
-      var t = clamp((EaJ - EaMin) / (EaMax - EaMin), 0, 1);
-      return yMin + (yMax - yMin) * t; // lower Ea -> lower peak y (closer to 80)
+    function bezierPeakY(EaJ){
+      var EaMin=70e3, EaMax=160e3, yMax=140, yMin=80;
+      var t = clamp((EaJ - EaMin)/(EaMax - EaMin), 0, 1);
+      return yMin + (yMax - yMin)*t;
     }
-    function updateBarrier() {
-      if (!barrier) return;
-      var yPeak = bezierPeakY(EaEffective());
-      var d = "M 250,300 C 360," + yPeak.toFixed(1) + " 460," + (yPeak + 40).toFixed(1) + " 510,300";
+    function updateBarrier(){
+      if(!barrier) return;
+      var y = bezierPeakY(EaEffective());
+      var d = "M 250,300 C 360,"+y.toFixed(1)+" 460,"+(y+40).toFixed(1)+" 510,300";
       barrier.setAttribute("d", d);
     }
 
-    function makeParticles(n) {
-      if (!particlesG) return;
-      particlesG.innerHTML = "";
-      for (var j = 0; j < n; j++) {
-        var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        c.setAttribute("r", (Math.random() * 4 + 3).toFixed(1));
-        c.setAttribute("cx", (70 + Math.random() * 160).toFixed(1));
-        c.setAttribute("cy", (280 + Math.random() * 16).toFixed(1));
-        c.setAttribute("fill", "#7b61ff");
-        c.setAttribute("stroke", "#222");
-        c.setAttribute("stroke-width", "2");
-        particlesG.appendChild(c);
+    function clearGroup(g){ while(g && g.firstChild){ g.removeChild(g.firstChild);} }
+    function spawnReactants(n){
+      clearGroup(reactG); clearGroup(prodG);
+      for(var j=0;j<n;j++){
+        var c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+        c.setAttribute("r",(Math.random()*4+3).toFixed(1));
+        c.setAttribute("cx",(70+Math.random()*160).toFixed(1));
+        c.setAttribute("cy",(280+Math.random()*16).toFixed(1));
+        c.setAttribute("fill","#7b61ff");
+        c.setAttribute("stroke","#222");
+        c.setAttribute("stroke-width","2");
+        reactG.appendChild(c);
       }
     }
 
-    function animateParticles(k, T_C) {
-      if (!particlesG) return;
-      var nodes = particlesG.querySelectorAll("circle");
-      var jumpChance = clamp(k * 0.6, 0, 0.9); // scaled for visible hops
-      var heatJitter = clamp((T_C - 90) / 70, 0.1, 1.2);
+    function animateReactants(k, T_C){
+      var jumpProb = clamp(k*0.6, 0, 0.9);  // visible hops
+      var jitter = clamp((T_C - 90)/70, 0.1, 1.2);
 
-      nodes.forEach(function (n) {
+      var nodes = reactG ? reactG.querySelectorAll("circle") : [];
+      nodes.forEach(function(n){
         var cx = parseFloat(n.getAttribute("cx"));
         var cy = parseFloat(n.getAttribute("cy"));
-        // jitter with temperature
-        cx += (Math.random() - 0.5) * 2 * heatJitter;
-        cy += (Math.random() - 0.5) * 1.2 * heatJitter;
+        // jitter
+        cx += (Math.random()-0.5)*2*jitter;
+        cy += (Math.random()-0.5)*1.2*jitter;
         cx = clamp(cx, 60, 260);
         cy = clamp(cy, 260, 300);
         n.setAttribute("cx", cx.toFixed(1));
         n.setAttribute("cy", cy.toFixed(1));
 
-        // random hop over barrier, then respawn left
-        if (Math.random() < jumpChance * 0.05) {
-          var tx = 520 + Math.random() * 160;
-          var ty = 285 + Math.random() * 10;
-          n.setAttribute("cx", tx.toFixed(1));
-          n.setAttribute("cy", ty.toFixed(1));
-          setTimeout(function () {
-            n.setAttribute("cx", (70 + Math.random() * 160).toFixed(1));
-            n.setAttribute("cy", (280 + Math.random() * 16).toFixed(1));
-          }, 900);
+        // chance to hop (visual)
+        if (Math.random() < jumpProb*0.04){
+          // arc over barrier to product basin
+          n.setAttribute("cx", (520 + Math.random()*160).toFixed(1));
+          n.setAttribute("cy", (285 + Math.random()*10).toFixed(1));
         }
       });
     }
 
-    function updateUI() {
+    function reconcileParticlesToConversion(conv){
+      if(!reactG || !prodG) return;
+      var wantProd = Math.round(TOTAL_PARTICLES * clamp(conv,0,1));
+      var haveProd = prodG.querySelectorAll("circle").length;
+      var haveReact= reactG.querySelectorAll("circle").length;
+
+      // move from reactants → products
+      while(haveProd < wantProd && haveReact > 0){
+        var n = reactG.firstChild;
+        if(!n) break;
+        reactG.removeChild(n);
+        // land inside product well
+        n.setAttribute("cx",(520 + Math.random()*160).toFixed(1));
+        n.setAttribute("cy",(285 + Math.random()*10).toFixed(1));
+        n.setAttribute("fill","#2f7d32");
+        prodG.appendChild(n);
+        haveProd++; haveReact--;
+      }
+      // move back if conversion decreased
+      while(haveProd > wantProd){
+        var p = prodG.firstChild;
+        if(!p) break;
+        prodG.removeChild(p);
+        p.setAttribute("cx",(70 + Math.random()*160).toFixed(1));
+        p.setAttribute("cy",(280 + Math.random()*16).toFixed(1));
+        p.setAttribute("fill","#7b61ff");
+        reactG.appendChild(p);
+        haveProd--; haveReact++;
+      }
+    }
+
+    function updateUI(){
       var T_C = parseFloat(temp.value);
       var minutes = parseFloat(time.value);
 
@@ -473,78 +489,66 @@ window.addEventListener("DOMContentLoaded", function () {
       warn.classList.toggle("hidden", T_C < 130);
 
       var k = kArrhenius(T_C);
-      var t12 = halfLifeFromK(k);
+      var t12 = halfLife(k);
       var conv = conversion(k, minutes);
-      var terp = terpLossEst(T_C, minutes);
+      var terp = terpLoss(T_C, minutes);
 
-      kOut.textContent = k.toExponential(3);
+      kOut.textContent   = k.toExponential(3);
       t12Out.textContent = isFinite(t12) ? t12.toFixed(1) + " min" : "—";
-      convOut.textContent = Math.round(conv * 100) + "%";
-      terpOut.textContent = Math.round(terp * 100) + "%";
+      convOut.textContent= Math.round(conv*100) + "%";
+      terpOut.textContent= Math.round(terp*100) + "%";
 
-      if (convBar) {
+      if (convBar){
         var width = 660 * clamp(conv, 0, 1);
         convBar.setAttribute("width", width.toFixed(1));
       }
+
       updateBarrier();
+      reconcileParticlesToConversion(conv);
     }
 
-    var req;
-    function tick() {
+    function tick(){
       var T_C = parseFloat(temp.value);
       var k = kArrhenius(T_C);
-      animateParticles(k, T_C);
+      animateReactants(k, T_C);
       updateUI();
       req = requestAnimationFrame(tick);
     }
 
-    function play() {
-      if (playing) return;
-      playing = true;
-      req = requestAnimationFrame(tick);
-    }
-    function pause() {
-      playing = false;
-      if (req) cancelAnimationFrame(req);
-      req = null;
-    }
-    function reset() {
+    function play(){ if(!playing){ playing=true; req=requestAnimationFrame(tick);} }
+    function pause(){ playing=false; if(req) cancelAnimationFrame(req); req=null; }
+    function reset(){
       pause();
-      temp.value = 120;
-      time.value = 40;
+      temp.value = 120; time.value = 40;
       if (cat) cat.checked = false;
       if (matrix) matrix.value = "oil";
-      makeParticles(28);
+      spawnReactants(TOTAL_PARTICLES);
       updateUI();
     }
 
     // Presets
-    presets.forEach(function (btn) {
-      btn.addEventListener("click", function () {
+    presets.forEach(function(btn){
+      btn.addEventListener("click", function(){
         var p = btn.getAttribute("data-preset");
-        if (p === "slow") {
-          temp.value = 110; time.value = 90; if (cat) cat.checked = false; matrix.value = "oil";
-        } else if (p === "balanced") {
-          temp.value = 120; time.value = 45; if (cat) cat.checked = false; matrix.value = "oil";
-        } else if (p === "toasty") {
-          temp.value = 135; time.value = 20; if (cat) cat.checked = true; matrix.value = "ethanol";
-        }
+        if (p==="slow"){ temp.value=110; time.value=90; if(cat) cat.checked=false; matrix.value="oil"; }
+        else if (p==="balanced"){ temp.value=120; time.value=45; if(cat) cat.checked=false; matrix.value="oil"; }
+        else if (p==="toasty"){ temp.value=135; time.value=20; if(cat) cat.checked=true; matrix.value="ethanol"; }
         updateUI();
       });
     });
 
-    // Bind controls
+    // Bind
     temp.addEventListener("input", updateUI);
     time.addEventListener("input", updateUI);
     if (cat) cat.addEventListener("change", updateUI);
     if (matrix) matrix.addEventListener("change", updateUI);
-    btnPlay.addEventListener("click", function(){ play(); });
-    btnPause.addEventListener("click", function(){ pause(); });
-    btnReset.addEventListener("click", function(){ reset(); });
+    btnPlay.addEventListener("click", play);
+    btnPause.addEventListener("click", pause);
+    btnReset.addEventListener("click", reset);
 
     // Init
-    makeParticles(28);
-    reset(); // sets defaults + UI
+    spawnReactants(TOTAL_PARTICLES);
+    reset();
   })();
 
   // ---------------------------------------------------
