@@ -139,6 +139,15 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .conv-bar-fg{fill:url(#g1); }
 .conv-bar-fg{ fill:#76a9fa; } /* solid fallback */
 
+/* Legend & ticks for FPD */
+.mini-legend{list-style:none; padding:0; margin:.5rem 0 0 0; text-align:left; max-width:360px}
+.mini-legend li{display:flex; align-items:center; gap:.4rem; margin:.15rem 0}
+.swatch{display:inline-block; width:14px; height:14px; border:2px solid var(--ink); border-radius:4px}
+.sw1{background:#76a9fa}
+.sw2{background:#b388ff}
+.ticks .tick line{stroke:#444; stroke-width:2}
+.ticks .tick text{font-family:'Kalam'; font-size:14px; fill:var(--ink)}
+
 /* Lab (Decarb) layout */
 .lab-grid{display:grid; grid-template-columns:320px 1fr; gap:1rem; align-items:start}
 .lab-controls label{display:block; font-weight:700; margin:.35rem 0 .15rem}
