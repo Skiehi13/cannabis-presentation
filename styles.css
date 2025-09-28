@@ -88,7 +88,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .tag{ padding:.08rem .4rem; border:2px solid var(--ink); border-radius:999px; background:#fff; font-weight:700; box-shadow:0 2px 0 rgba(0,0,0,.12) }
 .dark .tag{ background:#12171c; }
 
-/* Osmosis viz */
+/* =========================
+   Interactives: Osmosis/EC
+   ========================= */
 .sim{margin-top:.5rem}
 .sim label{display:block; font-weight:700; margin-bottom:.25rem}
 .sim input[type=range]{width:100%}
@@ -96,7 +98,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .viz{display:block; width:100%; max-width:580px; margin:.4rem auto}
 .sim-note{margin-top:.4rem}
 
-/* Reaction coordinates */
+/* =========================
+   Reaction coordinates mini
+   ========================= */
 .rc-controls{display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; align-items:center; margin:.4rem 0 .5rem}
 .rc-controls label{font-weight:700}
 .btn{border:3px solid var(--ink); background:#fff; border-radius:12px; padding:.2rem .6rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12)}
@@ -116,7 +120,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .dot{fill:#ff8a00; opacity:.9; animation: climb var(--dotDur,2.2s) linear infinite}
 @keyframes climb{ 0%{transform:translateX(0) translateY(0)} 50%{transform:translateX(220px) translateY(-160px)} 100%{transform:translateX(480px) translateY(20px)} }
 
-/* pH simulator */
+/* =========================
+   pH simulator (0–14)
+   ========================= */
 .ph-grid{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start}
 .ph-controls label{display:block; font-weight:700; margin-bottom:.25rem}
 .ph-controls input[type=range]{width:100%}
@@ -127,7 +133,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .dark .bar-track{background:#12171c}
 .bar-fill{height:100%; width:40%; background:var(--rainbow); transition: width .25s ease;}
 
-/* Freezing point sim */
+/* =================================
+   Freezing Point Depression sim
+   ================================= */
 .fpd-grid{display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:center}
 .fpd-controls label{display:block; font-weight:700; margin-bottom:.25rem}
 .fpd-controls input[type=range]{width:100%}
@@ -142,7 +150,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .ticks .tick line{stroke:#444; stroke-width:2}
 .ticks .tick text{font-family:'Kalam'; font-size:14px; fill:var(--ink)}
 
-/* References */
+/* =========================
+   References
+   ========================= */
 .refs .ref-list{max-height:62vh; overflow:auto; padding-right:.5rem; text-align:left}
 .presenting .refs .ref-list{ max-height:none; overflow:visible; }
 
@@ -154,7 +164,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 /* Happy Growing */
 .happy{ margin-top:.6rem; font-family:'Kalam', cursive; font-weight:700; text-align:center; letter-spacing:.8px; }
 
-/* Glossary modal */
+/* =========================
+   Glossary modal
+   ========================= */
 .modal[hidden]{display:none}
 .modal{position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; z-index:50}
 .glossary-wrap{max-width:720px; margin:auto; padding:1rem; background:var(--frame); position:relative}
@@ -163,7 +175,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
 .glossary-wrap h3{font-family:'Fredoka'; margin:.3rem 0 .6rem; text-align:center}
 .glossary-wrap dl{display:grid; grid-template-columns:1fr 2fr; gap:.4rem .8rem}
 
-/* Handout / Print */
+/* =========================
+   Handout / Print
+   ========================= */
 .handout .progress-wrap, .handout .modal{ display:none !important; }
 .handout #deck{ height:auto; padding:20px; }
 .handout .slide{ display:block !important; position:static; height:auto; overflow:visible; margin: 0 auto 24px; }
@@ -180,7 +194,9 @@ h2{font-family:'Kalam'; font-weight:700; font-size:2rem; margin:.1rem 0 .6rem}
   .inner.poster-frame::after{ display:none; }
 }
 
-/* === Decarb Lab === */
+/* =========================
+   Decarb Lab (Canvas)
+   ========================= */
 .lab-controls{
   display:grid; grid-template-columns:repeat(4, minmax(0, 1fr));
   gap:.8rem; align-items:end; margin:.4rem 0 .6rem;
